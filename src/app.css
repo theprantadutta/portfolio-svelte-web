@@ -1,0 +1,613 @@
+/*
+  Fonts are self-hosted via @fontsource-variable. Next served these through
+  next/font/google, which injected a `--font-*` variable per family onto <html>
+  and left the @theme entry below self-referential. Here the families are named
+  directly — same three faces, same `font-display: swap`, but the woff2 files
+  are fingerprinted assets in our own bundle instead of a Google Fonts fetch.
+  Variable fonts mean one file per family covers every weight in use.
+*/
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/playfair-display';
+@import '@fontsource-variable/jetbrains-mono';
+
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-inter: 'Inter Variable', system-ui, sans-serif;
+  --font-playfair: 'Playfair Display Variable', serif;
+  --font-jetbrains: 'JetBrains Mono Variable', monospace;
+
+  /* Primary — Cyan */
+  --color-primary-50: #ecfeff;
+  --color-primary-100: #cffafe;
+  --color-primary-200: #a5f3fc;
+  --color-primary-300: #67e8f9;
+  --color-primary-400: #22d3ee;
+  --color-primary-500: #06b6d4;
+  --color-primary-600: #0891b2;
+  --color-primary-700: #0e7490;
+  --color-primary-800: #155e75;
+  --color-primary-900: #164e63;
+
+  /* Secondary — Teal */
+  --color-secondary-50: #f0fdfa;
+  --color-secondary-100: #ccfbf1;
+  --color-secondary-200: #99f6e4;
+  --color-secondary-300: #5eead4;
+  --color-secondary-400: #2dd4bf;
+  --color-secondary-500: #14b8a6;
+  --color-secondary-600: #0d9488;
+  --color-secondary-700: #0f766e;
+  --color-secondary-800: #115e59;
+  --color-secondary-900: #134e4a;
+
+  /* Accent — Emerald */
+  --color-accent-50: #ecfdf5;
+  --color-accent-100: #d1fae5;
+  --color-accent-200: #a7f3d0;
+  --color-accent-300: #6ee7b7;
+  --color-accent-400: #34d399;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
+  --color-accent-700: #047857;
+  --color-accent-800: #065f46;
+  --color-accent-900: #064e3b;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility special-border {
+  /* Enhanced border utilities */
+  @apply rounded-tl-3xl rounded-tr-lg rounded-br-3xl rounded-bl-3xl;
+
+  /* Enhanced shape utilities */
+  @apply rounded-tl-3xl rounded-tr-lg rounded-br-3xl rounded-bl-3xl;
+}
+
+@utility borderBlack {
+  @apply border border-black/10 dark:border-white/10;
+}
+
+@utility border-glass {
+  border: 1px solid var(--glass-border);
+}
+
+@utility glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@utility btn {
+  /* Enhanced button system */
+  @apply special-border flex transform items-center gap-2 px-7 py-3 outline-hidden transition-all duration-300;
+  font-weight: 500;
+
+  &:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+@utility btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: 0 8px 32px rgba(6, 182, 212, 0.3);
+
+  &:hover {
+    box-shadow: 0 12px 40px rgba(6, 182, 212, 0.4);
+  }
+}
+
+@utility btn-secondary {
+  @apply glass-card text-gray-700 dark:text-gray-300;
+}
+
+@utility btn-accent {
+  background: var(--gradient-accent);
+  color: white;
+  box-shadow: 0 8px 32px rgba(52, 211, 153, 0.3);
+}
+
+@utility btn-ghost {
+  @apply border-2 border-current bg-transparent hover:bg-current hover:text-white;
+}
+
+@utility heading-primary {
+  /* Typography enhancements */
+  font-family: var(--font-playfair), serif;
+  font-weight: 700;
+  line-height: 1.2;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  @media (prefers-contrast: high) {
+    -webkit-text-fill-color: unset;
+    background: unset;
+    color: var(--text-primary);
+  }
+}
+
+@utility heading-secondary {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+@utility text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  @media (prefers-contrast: high) {
+    -webkit-text-fill-color: unset;
+    background: unset;
+    color: var(--text-primary);
+  }
+}
+
+@utility text-gradient-accent {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  @media (prefers-contrast: high) {
+    -webkit-text-fill-color: unset;
+    background: unset;
+    color: var(--text-primary);
+  }
+}
+
+@utility mono {
+  font-family: var(--font-jetbrains), 'Fira Code', monospace;
+}
+
+@utility card {
+  /* Card enhancements */
+  @apply glass-card special-border p-6 transition-all duration-300;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+@utility card-elevated {
+  @apply card shadow-xl;
+}
+
+@utility card-flat {
+  @apply special-border border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800;
+}
+
+@utility bg-pattern-dots {
+  /* Background patterns */
+  background-image: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px
+  );
+  background-size: 20px 20px;
+}
+
+@utility bg-pattern-grid {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+@utility bg-gradient-mesh {
+  background: var(--gradient-bg-primary);
+}
+
+@utility bg-gradient-mesh-secondary {
+  background: var(--gradient-bg-secondary);
+}
+
+@utility animate-fade-in-up {
+  /* Custom animations */
+  /* GPU-accelerated animations using only transform and opacity */
+  animation: fadeInUp 0.6s ease-out var(--animation-delay, 0ms) both;
+  will-change: transform, opacity;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@utility animate-fade-in {
+  animation: fadeIn 0.6s ease-out var(--animation-delay, 0ms) both;
+  will-change: opacity;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@utility animate-slide-in-left {
+  animation: slideInLeft 0.6s ease-out var(--animation-delay, 0ms) both;
+  will-change: transform, opacity;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@utility animate-slide-in-right {
+  animation: slideInRight 0.6s ease-out var(--animation-delay, 0ms) both;
+  will-change: transform, opacity;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@utility animate-scale-in {
+  animation: scaleIn 0.6s ease-out var(--animation-delay, 0ms) both;
+  will-change: transform, opacity;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@utility animate-bounce-in {
+  animation: bounceIn 0.8s ease-out var(--animation-delay, 0ms) both;
+  will-change: transform, opacity;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@utility reveal {
+  /* Scroll-driven reveal. The element is visible by default — the fade-up is
+     layered on top by the browser's own view() timeline, so visibility is never
+     gated on JavaScript. Browsers without scroll-driven animations, and users
+     who prefer reduced motion, simply get the content.
+
+     The range is length-based, not percentage-based, on purpose: `entry 40%` of
+     a very tall element resolves to thousands of pixels of scrolling, and that
+     class of proportional-to-element-height math is what left long project
+     pages blank under the old IntersectionObserver. 300px is 300px whatever the
+     element's height. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      animation-name: fadeInUp;
+      animation-duration: auto;
+      animation-timing-function: ease-out;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 300px;
+    }
+  }
+}
+
+@utility animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  will-change: transform;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@utility animate-float {
+  animation: float 3s ease-in-out infinite;
+  will-change: transform;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@utility animate-glow {
+  animation: glow 2s ease-in-out infinite;
+  will-change: transform, opacity;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@utility content-container {
+  /* Responsive utilities */
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+@utility section-spacing {
+  @apply py-12 sm:py-16 lg:py-20;
+}
+
+@utility section-spacing-sm {
+  @apply py-4 sm:py-8 lg:py-12;
+}
+
+@utility focus-ring {
+  /* Reduced motion support */
+
+  /* Focus styles for accessibility */
+  @apply focus:ring-primary-500 focus:ring-2 focus:ring-offset-2 focus:outline-hidden dark:focus:ring-offset-gray-800;
+}
+
+@utility focus-ring-inset {
+  @apply focus:ring-primary-500 focus:ring-2 focus:outline-hidden focus:ring-inset;
+}
+
+@utility custom-scrollbar {
+  /* High contrast mode support */
+
+  /* Custom scrollbar for thumbnail gallery */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 20px;
+    border: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(156, 163, 175, 0.8);
+  }
+}
+
+@layer base {
+  :root {
+    /* Line colors */
+    --line-color: #e5e7eb;
+
+    /* Brand gradients */
+    --gradient-primary: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%);
+    --gradient-accent: linear-gradient(135deg, #34d399 0%, #059669 100%);
+    --gradient-success: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+    --gradient-warm: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    --gradient-cool: linear-gradient(135deg, #5eead4 0%, #a7f3d0 100%);
+    --gradient-dark: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%);
+
+    /* Background meshes */
+    --gradient-bg-primary:
+      radial-gradient(
+        circle at 25% 25%,
+        rgba(6, 182, 212, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 75% 75%,
+        rgba(20, 184, 166, 0.1) 0%,
+        transparent 50%
+      );
+    --gradient-bg-secondary:
+      radial-gradient(
+        circle at 20% 80%,
+        rgba(52, 211, 153, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(16, 185, 129, 0.1) 0%,
+        transparent 50%
+      );
+
+    /* Light theme colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+    --border-color: #e2e8f0;
+    --border-light: #f7fafc;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg:
+      0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* Glass effect */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  html.dark {
+    --line-color: rgba(255, 255, 255, 0.2);
+
+    /* Dark theme colors */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --border-light: #475569;
+
+    /* Glass effect - dark */
+    --glass-bg: rgba(15, 23, 42, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family:
+      var(--font-inter),
+      system-ui,
+      -apple-system,
+      sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--gradient-accent);
+  }
+
+  /* Preserve v3 button cursor behavior */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translate3d(-40px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translate3d(40px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale3d(0.9, 0.9, 1);
+  }
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale3d(1.05, 1.05, 1);
+  }
+  70% {
+    transform: scale3d(0.9, 0.9, 1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    transform: translateX(0%);
+  }
+  50% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate3d(0, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale3d(1, 1, 1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale3d(1.1, 1.1, 1);
+  }
+}

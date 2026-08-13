@@ -1,0 +1,71 @@
+services:
+  portfolio-svelte-web:
+    image: portfolio/portfolio-svelte-web
+    container_name: portfolio-svelte-web
+    restart: always
+    build:
+      context: .
+      # Build-time only. Compose substitutes these from `.env` in this directory
+      # (use `docker compose --env-file .env.local ...` to source them
+      # elsewhere). PUBLIC_* is baked into the client bundle and the prerendered
+      # HTML, so changing it requires `docker compose build`, not a restart.
+      #
+      # STRAPI_API_KEY is a build arg because every page is prerendered from
+      # Strapi during the build. It is NOT needed at runtime.
+      args:
+        PUBLIC_STRAPI_PROD_API_URL: ${PUBLIC_STRAPI_PROD_API_URL:?set it in .env}
+        PUBLIC_STRAPI_DEV_API_URL: ${PUBLIC_STRAPI_DEV_API_URL:-http://localhost:1337}
+        STRAPI_API_KEY: ${STRAPI_API_KEY:?set it in .env}
+    env_file:
+      - path: .env
+        required: false
+      - path: .env.local
+        required: false
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOST: 0.0.0.0
+      # REQUIRED. adapter-node compares this against the Origin header on form
+      # POSTs as CSRF protection. Behind a reverse proxy it cannot infer the
+      # public URL, so without this every contact-form submission is rejected
+      # with "Cross-site POST form submissions are forbidden".
+      ORIGIN: https://pranta.dev
+    networks:
+      - proxy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=proxy'
+      - 'traefik.http.services.portfolio-web.loadbalancer.server.port=3000'
+
+      # --- apex + www ---------------------------------------------------------
+      # Same `cloudflare` resolver as the wildcard router below, with identical
+      # tls.domains — so a single pranta.dev + *.pranta.dev certificate covers
+      # the apex, www, and every subdomain.
+      - 'traefik.http.routers.portfolio-web.rule=Host(`pranta.dev`) || Host(`www.pranta.dev`)'
+      - 'traefik.http.routers.portfolio-web.entrypoints=websecure'
+      - 'traefik.http.routers.portfolio-web.tls.certresolver=cloudflare'
+      - 'traefik.http.routers.portfolio-web.tls.domains[0].main=pranta.dev'
+      - 'traefik.http.routers.portfolio-web.tls.domains[0].sans=*.pranta.dev'
+      - 'traefik.http.routers.portfolio-web.service=portfolio-web'
+      - 'traefik.http.routers.portfolio-web.priority=100'
+
+      # --- wildcard catch-all -------------------------------------------------
+      # priority=1 keeps this BELOW the Strapi router, so portfolio.pranta.dev
+      # still resolves to the CMS. Traefik's default priority is the rule length,
+      # and this rule is longer than the CMS one — without an explicit priority
+      # the wildcard would hijack the backend.
+      #
+      # Uses the `cloudflare` DNS-01 resolver, not `letsencrypt` — the latter is
+      # an HTTP-01 resolver and cannot issue wildcard certificates.
+      # `$$` is compose's escape for a literal `$` (regex end anchor).
+      - 'traefik.http.routers.portfolio-web-wildcard.rule=HostRegexp(`^.+\.pranta\.dev$$`)'
+      - 'traefik.http.routers.portfolio-web-wildcard.entrypoints=websecure'
+      - 'traefik.http.routers.portfolio-web-wildcard.tls.certresolver=cloudflare'
+      - 'traefik.http.routers.portfolio-web-wildcard.tls.domains[0].main=pranta.dev'
+      - 'traefik.http.routers.portfolio-web-wildcard.tls.domains[0].sans=*.pranta.dev'
+      - 'traefik.http.routers.portfolio-web-wildcard.service=portfolio-web'
+      - 'traefik.http.routers.portfolio-web-wildcard.priority=1'
+
+networks:
+  proxy:
+    external: true

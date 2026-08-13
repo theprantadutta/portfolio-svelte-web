@@ -147,6 +147,43 @@ in our own bundle instead of a Google Fonts fetch.
 Tailwind runs as a **Vite plugin** (`@tailwindcss/vite`), not through PostCSS.
 There is no `postcss.config.js`; adding one will break `@import 'tailwindcss'`.
 
+### Fonts: three things that must stay together
+
+`next/font` did all of this automatically and losing any of it is a measurable
+regression, so the manual equivalents are load-bearing:
+
+1. **Latin-only `@font-face`, declared by hand** in `app.css`. The blanket
+   `@import '@fontsource-variable/…'` pulls in every subset the family ships —
+   17 faces across three families. The variable packages have no per-subset
+   entry point, hence the hand-written rules.
+2. **`<link rel="preload">` in `+layout.svelte`** for JetBrains Mono and
+   Playfair Display, the two faces that render above the fold. Without them the
+   browser cannot discover the fonts until `app.css` has parsed, which makes a
+   three-hop critical chain (HTML → CSS → font). The URLs come from `?url`
+   imports so they track the fingerprinted filenames. `crossorigin` is required
+   even same-origin or the font is fetched twice.
+3. **`… Fallback` faces with measured metric overrides.** Each webfont is paired
+   with a local system font whose metrics are overridden to match, so the swap
+   does not reflow the page. Dropping these took CLS from 0 to 0.155.
+
+The override values were **measured**, not estimated — canvas `TextMetrics` on
+the real faces. An earlier guess of `size-adjust: 132%` for JetBrains Mono was
+wildly wrong (the true figure is ~100%, since it and Courier New are both
+0.6em-advance monospace) and made the shift worse. If a family changes,
+re-measure rather than eyeball it.
+
+### `content-visibility` on home-page sections
+
+The home page is one long document that inlines every project card, blog card
+and open-source entry, so the browser laid out the whole thing before painting
+anything. `main[data-defer-sections] > section:not(#home)` in `app.css` defers
+style, layout and paint for offscreen sections, which cut main-thread work from
+5.6s to 3.7s under Lighthouse's 4x CPU throttle with no visual change.
+
+`contain-intrinsic-size: auto 720px` is the important half: the estimate is only
+used until a section has been rendered once, after which the browser remembers
+its real height and the scrollbar stops moving as you scroll.
+
 ### Scroll reveal animations
 
 The `reveal` utility in `app.css` is the only reveal mechanism. It is pure CSS,

@@ -27,6 +27,21 @@ Roughly **57% less to download** and **3–13x faster server response**. The
 (it used `searchParams` for tag filtering); it is now a static file with the
 filter applied in the browser.
 
+Lighthouse on the home page, both production builds on the same machine:
+
+|                     |   Next |   Svelte |
+| ------------------- | -----: | -------: |
+| Unthrottled         |     90 |      100 |
+| Throttled (mobile)  |  50–61 |       67 |
+| Total Blocking Time | 700 ms | **0 ms** |
+| CLS                 |      0 |        0 |
+
+Throttled scores are noisy run to run and both stacks land in the same band,
+because Lighthouse's 4x CPU throttle is dominated by the design itself — a very
+long single-page document with heavy `backdrop-blur` glassmorphism. That cost is
+identical in both implementations. Where the stacks actually differ (JS
+execution, transfer size, server time) the port wins outright.
+
 Beyond the framework, three things account for most of the win:
 
 - **No icon library.** `react-icons` pulled a runtime into the bundle. The 78

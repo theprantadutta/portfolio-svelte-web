@@ -46,7 +46,7 @@
   <meta name="twitter:image" content="https://pranta.dev/profile.png" />
 </svelte:head>
 
-<main class="flex flex-col items-center px-4">
+<main data-defer-sections class="flex flex-col items-center px-4">
   <Intro />
   <SectionDivider />
   <About />

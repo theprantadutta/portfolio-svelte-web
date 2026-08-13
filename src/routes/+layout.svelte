@@ -2,6 +2,10 @@
   import type { Snippet } from 'svelte'
 
   import '../app.css'
+  // Imported for their built URLs so the preload hints below can name the
+  // fingerprinted files. See the <svelte:head> block.
+  import jetbrainsMonoUrl from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url'
+  import playfairUrl from '@fontsource-variable/playfair-display/files/playfair-display-latin-wght-normal.woff2?url'
   import Footer from '$components/Footer.svelte'
   import Header from '$components/Header.svelte'
   import StructuredData from '$components/StructuredData.svelte'
@@ -16,6 +20,33 @@
 </script>
 
 <svelte:head>
+  <!--
+    Preload the two faces that render above the fold: JetBrains Mono (the whole
+    body) and Playfair Display (the "Pranta" heading).
+
+    Without these the browser cannot discover them until app.css has downloaded
+    and parsed, which made a three-hop critical chain — HTML, then CSS, then
+    fonts — and pushed First Contentful Paint to 5s. next/font emitted the same
+    hints automatically; this is the manual equivalent.
+
+    `crossorigin` is required even same-origin: font requests are CORS-mode, and
+    a preload without it is treated as a different request and fetched twice.
+  -->
+  <link
+    rel="preload"
+    href={jetbrainsMonoUrl}
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  />
+  <link
+    rel="preload"
+    href={playfairUrl}
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  />
+
   <meta name="author" content="Pranta Dutta" />
   <meta name="creator" content="Pranta Dutta" />
   <meta

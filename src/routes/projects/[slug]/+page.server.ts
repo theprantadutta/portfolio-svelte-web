@@ -9,8 +9,8 @@ import type { EntryGenerator, PageServerLoad } from './$types'
  * build time.
  */
 export const entries: EntryGenerator = async () => {
-  const slugs = await getAllProjectSlugs()
-  return slugs.map((slug) => ({ slug }))
+  const projects = await getAllProjectSlugs()
+  return projects.map(({ slug }) => ({ slug }))
 }
 
 export const load: PageServerLoad = async ({ params, fetch }) => {

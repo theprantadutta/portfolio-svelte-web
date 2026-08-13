@@ -92,6 +92,9 @@ src/
     +page.server.ts           home data, fetched once at build
     projects/                 list + [slug], prerendered via entries()
     blogs/                    list + [slug] (prerender: 'auto')
+    sitemap.xml/              generated from the same data as entries()
+    robots.txt/               allows all, points at the sitemap
+    llms.txt/                 markdown site index for language models
     api/contact/+server.ts    the only route that runs per request
   lib/
     components/               UI

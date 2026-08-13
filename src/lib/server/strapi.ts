@@ -192,23 +192,36 @@ export const getAllSkills = (options?: StrapiFetchOptions) =>
     },
   })
 
-/** Slugs of every visible project — drives prerendering of /projects/[slug]. */
+export interface ProjectSlugEntry {
+  slug: string
+  updatedAt?: string
+}
+
+/**
+ * Every visible project's slug, plus when it last changed.
+ *
+ * Drives both the prerendering of /projects/[slug] and <lastmod> in the
+ * sitemap, so the two can never disagree about which pages exist.
+ */
 export const getAllProjectSlugs = async (
   options?: StrapiFetchOptions
-): Promise<string[]> => {
-  const response = await strapiFetch<{ data: Array<{ slug: string }> }>(
+): Promise<ProjectSlugEntry[]> => {
+  const response = await strapiFetch<{ data: ProjectSlugEntry[] }>(
     '/projects',
     {
       ...options,
       searchParams: {
         'fields[0]': 'slug',
+        // Explicit field selection means updatedAt has to be asked for. It
+        // feeds <lastmod> in the sitemap.
+        'fields[1]': 'updatedAt',
         'filters[$or][0][hidden][$eq]': 'false',
         'filters[$or][1][hidden][$null]': 'true',
       },
     }
   )
 
-  return response.data.map((project) => project.slug).filter(Boolean)
+  return response.data.filter((project) => project.slug)
 }
 
 /** A single visible project by slug, or null when there genuinely isn't one. */

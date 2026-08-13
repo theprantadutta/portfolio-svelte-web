@@ -197,6 +197,31 @@ never cross a `0.1` threshold, and long project pages rendered blank. For the
 same reason `animation-range` is length-based (`entry 0% entry 300px`), not a
 percentage.
 
+### robots.txt, sitemap.xml, llms.txt
+
+All three are **prerendered routes**, not files in `static/`, so their contents
+are generated from the same sources that decide which pages exist:
+
+- `sitemap.xml` is built from `getAllProjectSlugs()` and `getAllArticles()` —
+  the same two calls that drive `entries()` for the dynamic routes. It therefore
+  cannot list a page that was not prerendered, or miss one that was. A build
+  check confirms the counts match exactly (86 and 86).
+- `robots.txt` interpolates `SITE_URL` for its `Sitemap:` line, so the pointer
+  cannot drift from the sitemap's own `<loc>` values.
+- `llms.txt` follows the llmstxt.org convention. It is a young convention, not
+  a standard, and nothing depends on it.
+
+The origin URL lives once in `src/lib/site.ts`. The per-route `<link
+rel="canonical">` and OpenGraph tags still hardcode `https://pranta.dev`; if the
+domain ever changes, those need updating too.
+
+**Cloudflare note:** with no robots.txt at the origin, Cloudflare served its own
+Content Signals boilerplate — 24 lines of comments with no `User-agent`,
+`Allow` or `Sitemap` directive at all, so crawlers got no sitemap pointer.
+Cloudflare appends its signals to a real robots.txt rather than replacing it, so
+the route now supplies the actual rules. Expect the deployed file to be our
+directives plus Cloudflare's comment block.
+
 ### Client-side tag filtering on /projects
 
 `/projects` used to read `?tags=` on the server, which is exactly what kept it

@@ -55,30 +55,6 @@ export interface IOpenSourceContribution {
  */
 export const openSourceContributions: IOpenSourceContribution[] = [
   {
-    name: 'React Native Docs',
-    repo: 'react/react-native-website',
-    repoUrl: 'https://github.com/react/react-native-website',
-    description:
-      'The official React Native documentation site at reactnative.dev, maintained by Meta and the React Native community.',
-    pullRequests: [
-      {
-        number: 5200,
-        title:
-          'Remove an outdated multiline border caveat from the TextInput docs',
-        description:
-          'The TextInput page claimed that single-side border styles such as borderBottomColor are not applied when multiline is true, and pointed readers at a wrapping-View workaround that the linked example never actually demonstrated. Traced the caveat back to the original 2018 "Known issues" section and showed that Android now applies TextInput borders through the same per-edge path as any other view, with no multiline special case. The maintainer confirmed the behaviour on a physical device, and the correction was applied to the current docs plus every versioned copy from 0.81 to 0.87. Reviewed and merged by Simek.',
-        url: 'https://github.com/react/react-native-website/pull/5200',
-        resolves: [
-          {
-            number: 5151,
-            repo: 'react/react-native-website',
-            url: 'https://github.com/react/react-native-website/issues/5151',
-          },
-        ],
-      },
-    ],
-  },
-  {
     name: 'Dart & Flutter DevTools',
     repo: 'flutter/devtools',
     repoUrl: 'https://github.com/flutter/devtools',
@@ -248,6 +224,30 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         description:
           'Split log output into platform-specific implementations so Web routes to console.* instead of dart:developer.',
         url: 'https://github.com/getsentry/sentry-dart/pull/3698',
+      },
+    ],
+  },
+  {
+    name: 'React Native Docs',
+    repo: 'react/react-native-website',
+    repoUrl: 'https://github.com/react/react-native-website',
+    description:
+      'The official React Native documentation site at reactnative.dev, maintained by Meta and the React Native community.',
+    pullRequests: [
+      {
+        number: 5200,
+        title:
+          'Remove an outdated multiline border caveat from the TextInput docs',
+        description:
+          'The TextInput page claimed that single-side border styles such as borderBottomColor are not applied when multiline is true, and pointed readers at a wrapping-View workaround that the linked example never actually demonstrated. Traced the caveat back to the original 2018 "Known issues" section and showed that Android now applies TextInput borders through the same per-edge path as any other view, with no multiline special case. The maintainer confirmed the behaviour on a physical device, and the correction was applied to the current docs plus every versioned copy from 0.81 to 0.87. Reviewed and merged by Simek.',
+        url: 'https://github.com/react/react-native-website/pull/5200',
+        resolves: [
+          {
+            number: 5151,
+            repo: 'react/react-native-website',
+            url: 'https://github.com/react/react-native-website/issues/5151',
+          },
+        ],
       },
     ],
   },

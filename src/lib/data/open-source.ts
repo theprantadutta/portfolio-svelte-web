@@ -108,12 +108,13 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     repoUrl: 'https://github.com/flutter/flutter',
     description:
       'The core Flutter SDK, framework, and command-line tooling, maintained by Google. Contributed tooling fixes to the new-project templates, reviewed and merged by the Flutter team.',
+    shippedIn: 'Flutter 3.47.1',
     pullRequests: [
       {
         number: 188382,
         title: 'Format the plugin example template to match dart format',
         description:
-          'Completed the template-formatting work started in #187443: reformatted the plugin template so generated projects pass dart format out of the box, and added a regression test that generates a plugin and asserts every Dart file is format-clean — a test that caught two further template regressions before the PR landed. Approved by bkonyi and chingjun; closed the long-standing template-formatting issue.',
+          'Completed the template-formatting work started in #187443: reformatted the plugin template so generated projects pass dart format out of the box, and added a regression test that generates a plugin and asserts every Dart file is format-clean — a test that caught two further template regressions before the PR landed. Approved by bkonyi and chingjun; closed the long-standing template-formatting issue. Merged to main and awaiting its first stable release.',
         url: 'https://github.com/flutter/flutter/pull/188382',
         resolves: [
           {
@@ -127,7 +128,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         number: 187443,
         title: 'Format the new-app template to match dart format',
         description:
-          "Reformatted the flutter create --empty app template's main.dart so freshly generated projects pass dart format out of the box, instead of reporting formatting changes on the very first run. Approved by bkonyi and chingjun.",
+          "Reformatted the flutter create --empty app template's main.dart so freshly generated projects pass dart format out of the box, instead of reporting formatting changes on the very first run. Approved by bkonyi and chingjun. Shipped in the Flutter 3.47.1 stable release.",
         url: 'https://github.com/flutter/flutter/pull/187443',
       },
     ],

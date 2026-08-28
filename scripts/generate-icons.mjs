@@ -1,7 +1,8 @@
 /**
- * Generates one Svelte component per react-icons icon actually used by the
- * Next.js site, by lifting the exact GenIcon payload out of the installed
- * react-icons package. The output mirrors react-icons' own IconBase so the
+ * Generates one Svelte component per react-icons icon this site uses, by
+ * lifting the exact GenIcon payload out of an installed react-icons package.
+ * This is how src/lib/icons was built during the port off Next.js; it exists so
+ * an icon can be added later on the same terms rather than drawn by hand. The output mirrors react-icons' own IconBase so the
  * rendered SVG is attribute-for-attribute identical — same viewBox, same paths,
  * same 1em sizing, same currentColor behaviour — with no runtime library.
  */
@@ -10,11 +11,35 @@ import path from 'node:path'
 
 import * as prettier from 'prettier'
 
-// Defaults point at the sibling Next.js project, which is where react-icons is
-// installed. Override both if it moves:
-//   node scripts/generate-icons.mjs <path-to-react-icons> <output-dir>
-const RI = process.argv[2] || '../portfolio-nextjs-web/node_modules/react-icons'
+// react-icons is NOT a dependency of this project. It unpacks to ~88MB and is
+// only needed on the rare occasion an icon is added, so it is installed just
+// for the run and removed again:
+//
+//   bun add -d react-icons
+//   node scripts/generate-icons.mjs
+//   bun remove react-icons
+//
+// The committed components reproduce byte-for-byte from react-icons 5.7.0.
+// Override the
+// paths if needed: node scripts/generate-icons.mjs <react-icons-dir> <out-dir>
+const RI = process.argv[2] || 'node_modules/react-icons'
 const OUT = process.argv[3] || 'src/lib/icons'
+
+if (!fs.existsSync(path.join(RI, 'package.json'))) {
+  console.error(
+    [
+      `react-icons not found at ${RI}`,
+      '',
+      'It is intentionally not a dependency here — it unpacks to ~88MB and is',
+      'only needed when an icon is added. Install it just for this run:',
+      '',
+      '  bun add -d react-icons',
+      '  node scripts/generate-icons.mjs',
+      '  bun remove react-icons',
+    ].join('\n')
+  )
+  process.exit(1)
+}
 
 const WANTED = {
   bi: ['BiLogoPostgresql'],

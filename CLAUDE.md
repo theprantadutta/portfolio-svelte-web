@@ -27,8 +27,10 @@ is Bun's own bundler and will not invoke the package script.
 ## Project Architecture
 
 A SvelteKit 2 / Svelte 5 portfolio site. Ported from Next.js 16 (the previous
-implementation still lives in `../portfolio-nextjs-web`); the visual design is
-unchanged, the rendering model is not.
+implementation is retired and no longer checked out locally — it is archived at
+https://github.com/theprantadutta/portfolio-nextjs-web if a behaviour ever needs
+checking against the original); the visual design is unchanged, the rendering
+model is not.
 
 ### The core decision: everything is prerendered
 
@@ -134,7 +136,21 @@ There is no `next/image` and no runtime image proxy. Three separate strategies:
 were lifted out of `react-icons`' own payloads and emitted as Svelte components
 that mirror `react-icons`' `IconBase` attribute-for-attribute — same viewBox,
 same paths, same `1em` sizing, same `currentColor`. Rendering is identical to
-the Next site with no runtime icon library. Regenerate rather than edit by hand.
+the site's previous React build with no runtime icon library.
+
+Regenerate rather than edit by hand. `react-icons` is deliberately **not** a
+dependency — it unpacks to ~88MB for a script that runs when an icon is added
+and never otherwise — so install it for the run and drop it again:
+
+```bash
+bun add -d react-icons
+node scripts/generate-icons.mjs     # add the icon to WANTED in the script first
+bun remove react-icons
+```
+
+The script formats its own output with the project's Prettier config, so
+regeneration is byte-for-byte stable (verified against react-icons 5.7.0) and
+a rerun shows no diff unless an icon actually changed.
 
 ### Styling
 
@@ -340,9 +356,9 @@ docker compose build
 docker compose up -d --remove-orphans
 ```
 
-**Both projects claim the same Traefik router names and the same hostnames.**
-Only one of `portfolio-nextjs-web` and `portfolio-svelte-web` can be up at a
-time. Stop the old one before starting this one.
+This is the only app serving `pranta.dev`. The retired Next project declared
+the same Traefik router names and hostnames, so if it is ever redeployed from
+its archive the two will collide and only one can be up at a time.
 
 ## Development Notes
 

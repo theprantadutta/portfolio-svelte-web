@@ -3,8 +3,8 @@
 Personal portfolio site for [pranta.dev](https://pranta.dev) — SvelteKit 2,
 Svelte 5, Tailwind CSS v4, content from a self-hosted Strapi CMS and dev.to.
 
-A port of `../portfolio-nextjs-web` (Next.js 16). The design is unchanged; the
-rendering model is not.
+A port of the [Next.js 16 implementation](https://github.com/theprantadutta/portfolio-nextjs-web)
+it replaced. The design is unchanged; the rendering model is not.
 
 ## Why the port
 
@@ -123,5 +123,6 @@ docker compose up -d --remove-orphans
 returns 403 — `adapter-node` uses it for CSRF checks and cannot infer it behind
 a proxy. It is already in `compose.yml`.
 
-Note that this project and `portfolio-nextjs-web` declare the same Traefik
-router names and hostnames, so only one can run at a time.
+This is the only app serving `pranta.dev`. The retired Next project declared
+the same Traefik router names and hostnames, so redeploying it from its archive
+would collide with this one.

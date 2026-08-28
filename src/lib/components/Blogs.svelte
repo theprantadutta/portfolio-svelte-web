@@ -7,7 +7,7 @@
   let { articles }: { articles: DevToArticle[] } = $props()
 </script>
 
-<section id="blogs" class="scroll-mt-28">
+<section id="blogs" class="section-spacing-sm scroll-mt-28">
   <SectionMarker section="Blogs" threshold={0.3} />
   <SectionHeading>My Blogs</SectionHeading>
   <div

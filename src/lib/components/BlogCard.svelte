@@ -69,9 +69,12 @@
 
     <!-- Content - grows to fill available space -->
     <div class="relative z-10 flex flex-1 flex-col space-y-3 p-5">
-      <!-- Title - fixed 2-line height -->
+      <!-- Title - reserves 2 lines so cards line up.
+           min-h must stay BELOW the clamped height (2 x 22.5px = 45px here),
+           never above it: line-clamp hides the overflow at the box edge, so a
+           taller box just exposes a sliver of the third line under the ellipsis. -->
       <h3
-        class="line-clamp-2 min-h-[3.25rem] bg-linear-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-lg leading-tight font-bold text-transparent dark:from-white dark:via-gray-200 dark:to-white"
+        class="line-clamp-2 min-h-[2.75rem] bg-linear-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-lg leading-tight font-bold text-transparent dark:from-white dark:via-gray-200 dark:to-white"
       >
         {article.title}
       </h3>

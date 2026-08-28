@@ -58,6 +58,6 @@
   <meta property="og:url" content="https://pranta.dev/blogs" />
 </svelte:head>
 
-<main class="flex flex-col items-center px-4 pt-28 pb-20">
+<main class="flex flex-col items-center px-4 pt-12 pb-20">
   <Blogs {articles} />
 </main>

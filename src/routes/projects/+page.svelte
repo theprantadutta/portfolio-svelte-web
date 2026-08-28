@@ -49,7 +49,7 @@
   <meta property="og:url" content="https://pranta.dev/projects" />
 </svelte:head>
 
-<main class="flex scroll-mt-36 flex-col items-center px-4 pt-4 sm:pt-8">
+<main class="flex scroll-mt-36 flex-col items-center px-4">
   <Projects
     showAllProjects={true}
     projects={filteredProjects}

@@ -222,6 +222,36 @@ Cloudflare appends its signals to a real robots.txt rather than replacing it, so
 the route now supplies the actual rules. Expect the deployed file to be our
 directives plus Cloudflare's comment block.
 
+### The CV lives behind a permanent URL
+
+`/download-cv` is a non-prerendered endpoint that serves `src/lib/assets/cv.pdf`.
+
+The point is that recruiters keep the link. A dated filename makes a dated URL,
+so every revision silently broke whatever link was already sitting in an inbox
+or an application form. The URL is now fixed and the file behind it changes.
+
+**To publish a new CV:**
+
+1. Replace `src/lib/assets/cv.pdf`.
+2. Update `CV_DOWNLOAD_FILENAME` in `src/lib/constants/selectors.ts` — the date
+   still belongs in the _saved_ filename so a recruiter can tell revisions
+   apart, it just no longer belongs in the URL.
+
+Nothing else changes. The ETag is a hash of the bytes, so a new CV invalidates
+caches by itself.
+
+Two things about this route are load-bearing:
+
+- It **cannot be prerendered**. Prerendering writes the body to a file and lets
+  the static server re-derive headers from the extension, which drops
+  `Content-Disposition` — the header that makes browsers save the file under
+  the dated name rather than opening a PDF viewer on a URL called
+  "download-cv".
+- The PDF is imported with **`?inline`**, so Vite bundles it into the server
+  chunk as base64 instead of emitting a hashed file. That way serving it needs
+  no filesystem path, which would otherwise differ between `vite preview` and
+  the Docker image.
+
 ### Client-side tag filtering on /projects
 
 `/projects` used to read `?tags=` on the server, which is exactly what kept it

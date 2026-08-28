@@ -54,6 +54,7 @@ plus AI/LLM integrations. Contactable at prantadutta1997@gmail.com.
 - [Home](${SITE_URL}/): Introduction, background, skills, experience and contact form.
 - [Projects](${SITE_URL}/projects): Every shipped project, filterable by technology.
 - [Blog](${SITE_URL}/blogs): Technical writing, syndicated from dev.to.
+- [CV](${SITE_URL}/download-cv): Current resume as a PDF. Permanent link — always the latest version.
 
 ## Projects
 

@@ -232,7 +232,8 @@ or an application form. The URL is now fixed and the file behind it changes.
 
 **To publish a new CV:**
 
-1. Replace `src/lib/assets/cv.pdf`.
+1. Replace `src/lib/assets/cv.pdf`. Keep that filename — the date goes in step
+   2, not here.
 2. Update `CV_DOWNLOAD_FILENAME` in `src/lib/constants/selectors.ts` — the date
    still belongs in the _saved_ filename so a recruiter can tell revisions
    apart, it just no longer belongs in the URL.
@@ -240,13 +241,25 @@ or an application form. The URL is now fixed and the file behind it changes.
 Nothing else changes. The ETag is a hash of the bytes, so a new CV invalidates
 caches by itself.
 
+Do **not** drop the PDF into `static/` and link it directly. That is the
+arrangement this replaced, and it is the thing that breaks links already sent
+out. Verify a change with:
+
+```bash
+curl -sD- -o /dev/null http://localhost:4173/download-cv
+```
+
+Expect `200`, `content-type: application/pdf`, and a `content-disposition`
+naming the new dated file.
+
 Two things about this route are load-bearing:
 
 - It **cannot be prerendered**. Prerendering writes the body to a file and lets
   the static server re-derive headers from the extension, which drops
   `Content-Disposition` — the header that makes browsers save the file under
   the dated name rather than opening a PDF viewer on a URL called
-  "download-cv".
+  "download-cv". Symptom: the browser opens a PDF viewer and saves the file as
+  `download-cv` with no extension.
 - The PDF is imported with **`?inline`**, so Vite bundles it into the server
   chunk as base64 instead of emitting a hashed file. That way serving it needs
   no filesystem path, which would otherwise differ between `vite preview` and

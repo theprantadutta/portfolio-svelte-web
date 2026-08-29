@@ -595,14 +595,22 @@
     whole thing before it could paint anything above the fold.
 
     Scoped to the home page via the data attribute, and excluding the intro,
-    so the first screen is never deferred. `contain-intrinsic-size: auto
-    <estimate>` makes the browser use the estimate only until a section has
-    been rendered once and then remember its real height, which keeps the
-    scrollbar stable instead of jumping while scrolling.
+    so the first screen is never deferred.
+
+    The placeholder is `contain-intrinsic-height`, deliberately NOT the
+    `contain-intrinsic-size` shorthand. Given one length the shorthand applies
+    it to BOTH axes, so every skipped section also claimed a 720px *width* —
+    which on a 390px phone forced `main` open to 720px and left the whole home
+    page scrolling sideways. Only the block axis needs an estimate; the inline
+    axis should size normally.
+
+    `auto` means the estimate is used only until a section has been rendered
+    once, after which the browser remembers its real height and the scrollbar
+    stops moving as you scroll.
   */
   main[data-defer-sections] > section:not(#home) {
     content-visibility: auto;
-    contain-intrinsic-size: auto 720px;
+    contain-intrinsic-height: auto 720px;
   }
 }
 

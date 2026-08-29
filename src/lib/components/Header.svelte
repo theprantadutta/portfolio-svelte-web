@@ -3,9 +3,11 @@
   import { page } from '$app/state'
 
   import { getActiveSectionState } from '$lib/context/active-section.svelte'
+  import { SERVICES_LINK } from '$lib/constants/selectors'
   import { links } from '$lib/data/links'
   import FiBookOpen from '$icons/FiBookOpen.svelte'
   import FiBriefcase from '$icons/FiBriefcase.svelte'
+  import FiExternalLink from '$icons/FiExternalLink.svelte'
   import FiGithub from '$icons/FiGithub.svelte'
   import FiHome from '$icons/FiHome.svelte'
   import FiMail from '$icons/FiMail.svelte'
@@ -221,6 +223,35 @@
                 </a>
               </li>
             {/each}
+
+            <!--
+              Services lives in the mobile menu but not the desktop bar. The bar
+              is a fixed-width pill already 980px across at eight items, and a
+              ninth would push it past a 1024px viewport; this list scrolls
+              vertically and has room. Desktop reaches PD Labs from the hero.
+            -->
+            <li
+              class="translate-x-0 transform opacity-100 transition-all duration-200 ease-out"
+              style="transition-delay: {links.length * 30}ms"
+            >
+              <a
+                href={SERVICES_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group hover:from-primary-50 hover:to-secondary-50 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20 relative flex items-center gap-3 overflow-hidden rounded-tl-3xl rounded-tr-lg rounded-br-3xl rounded-bl-3xl px-4 py-3 text-base font-medium text-gray-700 transition-all duration-300 hover:bg-linear-to-r dark:text-gray-300"
+                onclick={() => (isMenuOpen = false)}
+              >
+                <div
+                  class="from-primary-100 to-secondary-100 dark:from-primary-900/30 dark:to-secondary-900/30 flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br transition-all duration-300 group-hover:scale-110"
+                >
+                  <FiExternalLink
+                    class="text-primary-600 dark:text-primary-400 h-4 w-4 transition-colors duration-300"
+                  />
+                </div>
+
+                <span class="flex-1">Services</span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>

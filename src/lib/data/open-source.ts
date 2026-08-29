@@ -87,6 +87,21 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     shippedIn: 'Flutter 3.47.1',
     pullRequests: [
       {
+        number: 188940,
+        title:
+          'Show AbsorbPointer and IgnorePointer side by side in the API sample',
+        description:
+          "The AbsorbPointer sample only demonstrated AbsorbPointer, leaving the difference from IgnorePointer — the thing developers actually confuse — undemonstrated. Rebuilt it as a side-by-side comparison with live tap counters, so the distinction is visible rather than described: the AbsorbPointer side swallows the tap, the IgnorePointer side lets it through to the widget behind. Rewritten to use widgets-library APIs only after review, since a widgets example should not depend on Material, and both widgets' dartdocs now link it. Fixed an invisible-label bug found along the way: WidgetsApp installs no DefaultTextStyle, so the sample's own labels were rendering white on white. Approved by navaronbracke and victorsanni; closed an issue open since 2021.",
+        url: 'https://github.com/flutter/flutter/pull/188940',
+        resolves: [
+          {
+            number: 87936,
+            repo: 'flutter/flutter',
+            url: 'https://github.com/flutter/flutter/issues/87936',
+          },
+        ],
+      },
+      {
         number: 188382,
         title: 'Format the plugin example template to match dart format',
         description:

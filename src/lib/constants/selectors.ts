@@ -17,6 +17,12 @@ export const CV_PATH = '/download-cv'
  */
 export const CV_DOWNLOAD_FILENAME = 'PRANTA_CV_SEPTEMBER_2026.pdf'
 
+/**
+ * PD Labs — the services site. A separate property on its own subdomain, so it
+ * opens in a new tab rather than navigating the portfolio away from itself.
+ */
+export const SERVICES_LINK = 'https://pdlabs.pranta.dev'
+
 export const LINKED_IN_LINK = 'https://www.linkedin.com/in/theprantadutta/'
 
 export const GITHUB_LINK = 'https://github.com/theprantadutta/'

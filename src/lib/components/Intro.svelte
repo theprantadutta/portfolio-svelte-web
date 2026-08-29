@@ -5,12 +5,14 @@
     CV_PATH,
     GITHUB_LINK,
     LINKED_IN_LINK,
+    SERVICES_LINK,
     X_LINK,
   } from '$lib/constants/selectors'
   import BsArrowRight from '$icons/BsArrowRight.svelte'
   import BsLinkedin from '$icons/BsLinkedin.svelte'
   import BsTwitterX from '$icons/BsTwitterX.svelte'
   import FaGithubSquare from '$icons/FaGithubSquare.svelte'
+  import FiExternalLink from '$icons/FiExternalLink.svelte'
   import HiDownload from '$icons/HiDownload.svelte'
 </script>
 
@@ -134,6 +136,23 @@
           class="transition-transform duration-300 group-hover:translate-y-1"
         />
         Download CV
+      </span>
+    </a>
+
+    <!-- PD Labs is a separate site, so this leaves the portfolio in place and
+         opens in a new tab. rel=noopener is what stops the opened page from
+         reaching back through window.opener. -->
+    <a
+      class="btn-secondary special-border group relative overflow-hidden px-5 py-2.5"
+      href={SERVICES_LINK}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span class="relative z-10 flex items-center gap-2">
+        Services
+        <FiExternalLink
+          class="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+        />
       </span>
     </a>
   </div>

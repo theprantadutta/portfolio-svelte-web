@@ -3,21 +3,20 @@
   import SectionMarker from '$components/SectionMarker.svelte'
   import SectionSubheading from '$components/SectionSubheading.svelte'
   import Timeline from '$components/ui/Timeline.svelte'
+  import { experiences } from '$lib/data/experience'
   import type { TimelineItemData } from '$lib/types/timeline'
-  import type { ExperienceDataAttributes } from '$lib/types/types'
   import CgWorkAlt from '$icons/CgWorkAlt.svelte'
 
-  let { experiences }: { experiences: ExperienceDataAttributes[] } = $props()
-
-  const timelineItems = $derived<TimelineItemData[]>(
-    experiences.map((item) => ({
-      date: item.date,
-      title: item.title,
-      location: item.location,
-      description: item.description,
-      icon: CgWorkAlt,
-    }))
-  )
+  // Local data rather than a Strapi collection — see src/lib/data/experience.ts.
+  // The mapping is unchanged: `location` is the employer, which is what this
+  // component has always rendered there.
+  const timelineItems: TimelineItemData[] = experiences.map((item) => ({
+    date: item.date,
+    title: item.role,
+    location: item.company,
+    description: item.description,
+    icon: CgWorkAlt,
+  }))
 </script>
 
 <section id="experience" class="section-spacing-sm scroll-mt-28">

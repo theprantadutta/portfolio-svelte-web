@@ -1,25 +1,22 @@
 import { getMostLikedArticles } from '$lib/devto'
-import {
-  getAllExperiences,
-  getAllFeaturedProjects,
-  getAllSkills,
-} from '$lib/server/strapi'
+import { getAllFeaturedProjects } from '$lib/server/strapi'
 import type { PageServerLoad } from './$types'
 
-// Runs once at build time (the whole route tree is prerendered), so the four
+// Runs once at build time (the whole route tree is prerendered), so these
 // upstream requests happen during `vite build` and never on a page view.
+//
+// Projects is the only Strapi collection left. Experience and skills are local
+// data under src/lib/data/, imported directly by the components that render
+// them — a CMS bought nothing for either, since prerendering means a rebuild is
+// needed to publish a change regardless.
 export const load: PageServerLoad = async ({ fetch }) => {
-  const [experiences, projects, skills, popularBlogs] = await Promise.all([
-    getAllExperiences({ fetch }),
+  const [projects, popularBlogs] = await Promise.all([
     getAllFeaturedProjects({ fetch }),
-    getAllSkills({ fetch }),
     getMostLikedArticles(3, fetch),
   ])
 
   return {
-    experiences: experiences.data,
     projects: projects.data,
-    skills: skills.data,
     popularBlogs,
   }
 }

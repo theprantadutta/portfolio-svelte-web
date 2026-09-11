@@ -1,19 +1,3 @@
-export type ExperienceDataAttributes = {
-  id: number
-  title: string
-  location: string
-  description: string
-  date: string
-  sortBy: number
-}
-
-export type SkillDataAttributes = {
-  id: number
-  title: string
-  rating: number
-  isFavourite: boolean
-}
-
 export type PlatformType =
   'android' | 'ios' | 'android-and-ios' | 'web' | 'cloud'
 

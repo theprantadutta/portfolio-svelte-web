@@ -57,9 +57,9 @@
   <SectionDivider />
   <PopularBlogs articles={data.popularBlogs} />
   <SectionDivider />
-  <Skills skills={data.skills} />
+  <Skills />
   <SectionDivider />
-  <Experience experiences={data.experiences} />
+  <Experience />
   <SectionDivider />
   <Contact />
 </main>

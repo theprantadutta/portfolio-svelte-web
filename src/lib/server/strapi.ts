@@ -2,9 +2,7 @@ import { env } from '$env/dynamic/private'
 import { STRAPI_URL } from '$lib/constants/urls'
 import type {
   IStrapiApiResponse,
-  ExperienceDataAttributes,
   ProjectDataAttributes,
-  SkillDataAttributes,
 } from '$lib/types/types'
 
 /**
@@ -90,20 +88,6 @@ const strapiFetch = async <T>(
   return (await response.json()) as T
 }
 
-export const getAllExperiences = (options?: StrapiFetchOptions) =>
-  strapiFetch<IStrapiApiResponse<ExperienceDataAttributes>>('/experiences', {
-    ...options,
-    searchParams: {
-      sort: 'sortBy:asc',
-      'fields[0]': 'id',
-      'fields[1]': 'title',
-      'fields[2]': 'location',
-      'fields[3]': 'description',
-      'fields[4]': 'date',
-      'fields[5]': 'sortBy',
-    },
-  })
-
 export const getAllFeaturedProjects = (options?: StrapiFetchOptions) =>
   strapiFetch<IStrapiApiResponse<ProjectDataAttributes>>('/projects', {
     ...options,
@@ -177,18 +161,6 @@ export const getAllProjects = (options?: StrapiFetchOptions) =>
       'populate[video][fields][1]': 'url',
       'populate[features][fields][0]': 'id',
       'populate[features][fields][1]': 'flag',
-    },
-  })
-
-export const getAllSkills = (options?: StrapiFetchOptions) =>
-  strapiFetch<IStrapiApiResponse<SkillDataAttributes>>('/skills', {
-    ...options,
-    searchParams: {
-      sort: 'title:asc',
-      'fields[0]': 'id',
-      'fields[1]': 'title',
-      'fields[2]': 'rating',
-      'fields[3]': 'isFavourite',
     },
   })
 

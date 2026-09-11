@@ -5,7 +5,7 @@
   import SectionSubheading from '$components/SectionSubheading.svelte'
   import { sectionInView } from '$lib/actions/section-in-view'
   import { getActiveSectionState } from '$lib/context/active-section.svelte'
-  import type { SkillDataAttributes } from '$lib/types/types'
+  import { skills } from '$lib/data/skills'
   import BiLogoPostgresql from '$icons/BiLogoPostgresql.svelte'
   import DiGoogleCloudPlatform from '$icons/DiGoogleCloudPlatform.svelte'
   import DiMsqlServer from '$icons/DiMsqlServer.svelte'
@@ -36,7 +36,8 @@
   import SiTypescript from '$icons/SiTypescript.svelte'
   import TbBrandReactNative from '$icons/TbBrandReactNative.svelte'
 
-  let { skills }: { skills: SkillDataAttributes[] } = $props()
+  // Local data rather than a Strapi collection — see src/lib/data/skills.ts.
+  // Same nineteen entries in the same order, so nothing on screen moves.
 
   // Observed on the <section> itself, exactly as the React version did with a
   // ref, rather than via a zero-size SectionMarker sentinel.
@@ -240,7 +241,7 @@
       <div class="relative">
         <!-- Hexagonal Grid -->
         <div class="mx-auto flex max-w-4xl flex-wrap justify-center gap-4">
-          {#each skills.slice(0, 19) as skill, index (skill.id)}
+          {#each skills.slice(0, 19) as skill, index (skill.title)}
             {@const Icon = getSkillIcon(skill.title)}
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -257,7 +258,7 @@
               <!-- Hexagon Shape -->
               <div class="relative h-20 w-24">
                 <div
-                  class="absolute inset-0 bg-linear-to-br {skill.isFavourite
+                  class="absolute inset-0 bg-linear-to-br {skill.favourite
                     ? 'from-primary-400 to-primary-400 shadow-primary-400/50'
                     : 'from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800'} clip-hexagon transition-all duration-300 group-hover:shadow-2xl {selectedSkill ===
                   skill.title
@@ -270,12 +271,12 @@
                   class="absolute inset-0 flex flex-col items-center justify-center p-2 text-center"
                 >
                   <Icon
-                    class="mb-1 h-6 w-6 {skill.isFavourite
+                    class="mb-1 h-6 w-6 {skill.favourite
                       ? 'text-white'
                       : 'text-gray-700 dark:text-gray-300'}"
                   />
                   <span
-                    class="text-xs leading-tight font-medium {skill.isFavourite
+                    class="text-xs leading-tight font-medium {skill.favourite
                       ? 'text-white'
                       : 'text-gray-700 dark:text-gray-300'}"
                   >
@@ -283,7 +284,7 @@
                   </span>
 
                   <!-- Favorite Badge -->
-                  {#if skill.isFavourite}
+                  {#if skill.favourite}
                     <FaHeart
                       class="absolute -top-1 -right-1 h-3 w-3 animate-pulse text-red-500"
                     />
@@ -298,7 +299,7 @@
                     <div
                       class="h-1.5 w-1.5 rounded-full transition-all duration-300 {dot <=
                       skill.rating
-                        ? skill.isFavourite
+                        ? skill.favourite
                           ? 'bg-primary-400'
                           : 'bg-gray-400 dark:bg-gray-600'
                         : 'bg-gray-200 dark:bg-gray-800'}"
@@ -326,16 +327,16 @@
             <div
               class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
             >
-              {#each category.skills as skill, index (skill.id)}
+              {#each category.skills as skill, index (skill.title)}
                 {@const Icon = getSkillIcon(skill.title)}
                 <div
-                  class="special-border glass-card group relative cursor-pointer p-4 text-center transition-all duration-300 hover:-translate-y-2 hover:scale-105 {skill.isFavourite
+                  class="special-border glass-card group relative cursor-pointer p-4 text-center transition-all duration-300 hover:-translate-y-2 hover:scale-105 {skill.favourite
                     ? 'border-primary-400/50 from-primary-500/20 to-primary-500/20 bg-linear-to-br'
                     : 'border-white/10 bg-white/5 dark:bg-gray-900/20'}"
                   style="animation-delay: {index * 50}ms"
                 >
                   <Icon
-                    class="mx-auto mb-3 h-8 w-8 {skill.isFavourite
+                    class="mx-auto mb-3 h-8 w-8 {skill.favourite
                       ? 'text-primary-400'
                       : 'text-gray-600 dark:text-gray-400'}"
                   />
@@ -346,7 +347,7 @@
                     class="mb-2 h-1.5 w-full rounded-full bg-gray-200 dark:bg-gray-700"
                   >
                     <div
-                      class="h-1.5 rounded-full transition-all duration-1000 {skill.isFavourite
+                      class="h-1.5 rounded-full transition-all duration-1000 {skill.favourite
                         ? 'from-primary-400 to-primary-400 bg-linear-to-r'
                         : `bg-linear-to-r ${category.color}`}"
                       style="width: {(skill.rating / 5) * 100}%"
@@ -358,7 +359,7 @@
                   </span>
 
                   <!-- Favorite Badge -->
-                  {#if skill.isFavourite}
+                  {#if skill.favourite}
                     <div
                       class="absolute -top-2 -right-2 rounded-full bg-red-500 p-1"
                     >

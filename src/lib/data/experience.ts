@@ -47,7 +47,12 @@ export const experiences: IExperience[] = [
       "At Trigan, I independently developed and maintained the company's official websites, overseeing the entire lifecycle from design to deployment, ensuring high performance and reliability.",
   },
   {
-    role: 'Software Developer',
+    // Both titles, one row. The promotion is to "Executive, Automation &
+    // Systems"; "Software Developer" stays in front of it so a human reading
+    // quickly and an ATS matching on keywords both still find it, and so the
+    // single JUN' 22 – PRESENT range does not imply the new title was held for
+    // the whole four years.
+    role: 'Software Developer → Executive, Automation & Systems',
     company: 'KDS Group',
     place: 'Chattogram, Bangladesh',
     date: 'JUN’ 22 – PRESENT',

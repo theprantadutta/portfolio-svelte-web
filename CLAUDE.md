@@ -210,8 +210,16 @@ Content is **visible by default** and the animation is layered on top. Do not
 reintroduce JS-gated reveals: an `IntersectionObserver` ratio is measured
 against the _target's_ area, so a container taller than 10x the viewport can
 never cross a `0.1` threshold, and long project pages rendered blank. For the
-same reason `animation-range` is length-based (`entry 0% entry 300px`), not a
+same reason `animation-range` is length-based (`entry 0% entry 120px`), not a
 percentage.
+
+Keep that length **short**. It is scroll distance, not element coverage, so a
+long range leaves an element part-way through the fade well after it has
+arrived on screen. At 300px the first experience row measured 0.76 opacity
+while sitting in the middle of the window with the pointer on it, which reads
+as a broken render rather than an animation — the white briefcase in the
+timeline badge came out grey. 120px finishes the fade while the element is
+still crossing the fold.
 
 ### robots.txt, sitemap.xml, llms.txt
 

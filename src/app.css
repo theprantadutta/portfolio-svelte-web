@@ -379,8 +379,18 @@
      The range is length-based, not percentage-based, on purpose: `entry 40%` of
      a very tall element resolves to thousands of pixels of scrolling, and that
      class of proportional-to-element-height math is what left long project
-     pages blank under the old IntersectionObserver. 300px is 300px whatever the
-     element's height. */
+     pages blank under the old IntersectionObserver. 120px is 120px whatever the
+     element's height.
+
+     It must also be *short*. The length is scroll distance, not element
+     coverage, so at 300px an element stayed part-way through the fade for 300px
+     of scrolling after it first appeared — long after it was sitting in the
+     middle of the screen. On a 550px-tall window the first experience row read
+     0.76 opacity with the pointer on it: the white briefcase in the timeline
+     badge came out grey and the whole row looked broken rather than
+     mid-animation. At 120px the fade finishes while the row is still crossing
+     the fold, so nothing is ever both hoverable and half-transparent. Anything
+     that raises this number brings that back. */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
       animation-name: fadeInUp;
@@ -388,7 +398,7 @@
       animation-timing-function: ease-out;
       animation-fill-mode: both;
       animation-timeline: view();
-      animation-range: entry 0% entry 300px;
+      animation-range: entry 0% entry 120px;
     }
   }
 }

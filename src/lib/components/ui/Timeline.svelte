@@ -18,7 +18,9 @@
         <!--
           Connector. It stops 1rem short of the next node, matching the 1rem
           it already leaves below this one — `top-12` starts it 16px under a
-          32px icon.
+          32px icon. `left-4` put the line's *left edge* on the icon's centre
+          rather than the line itself, hanging the 2px rule 1px to the right of
+          every badge, hence the calc.
 
           At `h-full` it ran to exactly the next icon's top edge: the row is
           `h-full` tall, the gap between rows is the same 48px the line is
@@ -28,7 +30,7 @@
         -->
         {#if !isLast}
           <div
-            class="group-hover:from-primary-400 group-hover:to-secondary-400 absolute top-12 left-4 h-[calc(100%-1rem)] w-0.5 bg-linear-to-b from-gray-300 to-gray-200 transition-all duration-500 dark:from-gray-600 dark:to-gray-700"
+            class="group-hover:from-primary-400 group-hover:to-secondary-400 absolute top-12 left-[calc(1rem-1px)] h-[calc(100%-1rem)] w-0.5 bg-linear-to-b from-gray-300 to-gray-200 transition-all duration-500 dark:from-gray-600 dark:to-gray-700"
           ></div>
         {/if}
 

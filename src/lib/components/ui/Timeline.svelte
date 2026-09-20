@@ -15,10 +15,20 @@
       {@const isLast = index === items.length - 1}
       {@const Icon = item.icon}
       <div class="group relative flex items-start {animate ? 'reveal' : ''}">
-        <!-- Timeline line -->
+        <!--
+          Connector. It stops 1rem short of the next node, matching the 1rem
+          it already leaves below this one — `top-12` starts it 16px under a
+          32px icon.
+
+          At `h-full` it ran to exactly the next icon's top edge: the row is
+          `h-full` tall, the gap between rows is the same 48px the line is
+          offset by, so the two cancelled and the line arrived flush against
+          the circle. It read as a pin stuck into a ball rather than a run of
+          track between two stations.
+        -->
         {#if !isLast}
           <div
-            class="group-hover:from-primary-400 group-hover:to-secondary-400 absolute top-12 left-4 h-full w-0.5 bg-linear-to-b from-gray-300 to-gray-200 transition-all duration-500 dark:from-gray-600 dark:to-gray-700"
+            class="group-hover:from-primary-400 group-hover:to-secondary-400 absolute top-12 left-4 h-[calc(100%-1rem)] w-0.5 bg-linear-to-b from-gray-300 to-gray-200 transition-all duration-500 dark:from-gray-600 dark:to-gray-700"
           ></div>
         {/if}
 

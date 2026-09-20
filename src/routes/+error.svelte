@@ -23,14 +23,14 @@
   <!-- Background Gradient Blobs -->
   <div class="fixed inset-0 -z-10">
     <div
-      class="from-primary-500/20 to-secondary-600/20 absolute top-1/4 left-1/4 h-96 w-96 animate-pulse rounded-full bg-linear-to-br blur-3xl"
+      class="from-primary-500/20 to-secondary-600/20 absolute top-1/4 left-1/4 h-96 w-96 animate-pulse rounded-full bg-linear-to-br blur-[100px]"
     ></div>
     <div
-      class="from-accent-500/20 absolute right-1/4 bottom-1/4 h-80 w-80 animate-pulse rounded-full bg-linear-to-br to-orange-500/20 blur-3xl"
+      class="from-accent-500/20 absolute right-1/4 bottom-1/4 h-80 w-80 animate-pulse rounded-full bg-linear-to-br to-orange-500/20 blur-[100px]"
       style="animation-delay: 2s"
     ></div>
     <div
-      class="absolute top-1/2 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 transform animate-pulse rounded-full bg-linear-to-br from-green-500/15 to-teal-500/15 blur-3xl"
+      class="absolute top-1/2 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 transform animate-pulse rounded-full bg-linear-to-br from-green-500/15 to-teal-500/15 blur-[100px]"
       style="animation-delay: 4s"
     ></div>
   </div>

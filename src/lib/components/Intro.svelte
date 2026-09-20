@@ -25,13 +25,13 @@
   <!-- Background accents -->
   <div class="pointer-events-none absolute inset-0 -z-10 hidden md:block">
     <div
-      class="from-primary-400/15 via-secondary-400/15 to-accent-400/15 absolute top-1/4 left-1/2 h-96 w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-linear-to-br opacity-70 blur-2xl"
+      class="from-primary-400/15 via-secondary-400/15 to-accent-400/15 absolute top-1/4 left-1/2 h-96 w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-linear-to-br opacity-70 blur-[100px]"
     ></div>
     <div
-      class="from-primary-400/15 to-primary-500/15 absolute top-[32%] right-[12%] h-64 w-[16rem] rounded-full bg-linear-to-br opacity-60 blur-xl"
+      class="from-primary-400/15 to-primary-500/15 absolute top-[32%] right-[12%] h-64 w-[16rem] rounded-full bg-linear-to-br opacity-60 blur-[100px]"
     ></div>
     <div
-      class="from-secondary-400/15 to-accent-500/15 absolute bottom-[18%] left-[18%] h-72 w-[18rem] rounded-full bg-linear-to-br opacity-60 blur-xl"
+      class="from-secondary-400/15 to-accent-500/15 absolute bottom-[18%] left-[18%] h-72 w-[18rem] rounded-full bg-linear-to-br opacity-60 blur-[100px]"
     ></div>
   </div>
 

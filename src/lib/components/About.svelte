@@ -66,10 +66,10 @@
     class="pointer-events-none absolute inset-0 -z-10 hidden overflow-hidden lg:block"
   >
     <div
-      class="from-secondary-400/10 to-accent-400/10 absolute top-1/4 right-0 h-72 w-[18rem] rounded-full bg-linear-to-br opacity-70 blur-2xl"
+      class="from-secondary-400/10 to-accent-400/10 absolute top-1/4 right-0 h-72 w-[18rem] rounded-full bg-linear-to-br opacity-70 blur-[100px]"
     ></div>
     <div
-      class="from-primary-400/10 to-primary-400/10 absolute bottom-[18%] left-0 h-80 w-[20rem] rounded-full bg-linear-to-br opacity-60 blur-xl"
+      class="from-primary-400/10 to-primary-400/10 absolute bottom-[18%] left-0 h-80 w-[20rem] rounded-full bg-linear-to-br opacity-60 blur-[100px]"
     ></div>
   </div>
 

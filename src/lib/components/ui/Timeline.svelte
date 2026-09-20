@@ -24,8 +24,23 @@
 
         <!-- Icon container -->
         <div class="relative z-10 shrink-0">
+          <!--
+            The glow comes first and is blurred, so it reads as light spilling
+            out from behind the badge.
+
+            It used to sit after the icon with no filter at all: an absolutely
+            positioned element beats a static sibling in paint order whatever
+            the DOM says, so a hard-edged gradient disc was being laid over the
+            briefcase on hover and washing it out. Order alone would not have
+            fixed it — the icon below is `relative` so that it is positioned
+            too, and the later of two positioned siblings wins.
+          -->
           <div
-            class="from-primary-500 to-secondary-600 flex h-8 w-8 items-center justify-center rounded-full bg-linear-to-br shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl"
+            class="from-primary-500 to-secondary-600 absolute inset-0 rounded-full bg-linear-to-br opacity-0 blur-md transition-all duration-500 group-hover:scale-150 group-hover:opacity-70"
+          ></div>
+
+          <div
+            class="from-primary-500 to-secondary-600 relative flex h-8 w-8 items-center justify-center rounded-full bg-linear-to-br shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl"
           >
             {#if Icon}
               <Icon class="h-4 w-4 text-white" />
@@ -33,11 +48,6 @@
               <div class="h-3 w-3 rounded-full bg-white"></div>
             {/if}
           </div>
-
-          <!-- Glow effect -->
-          <div
-            class="from-primary-500 to-secondary-600 absolute inset-0 h-8 w-8 rounded-full bg-linear-to-br opacity-0 transition-all duration-500 group-hover:scale-150 group-hover:opacity-20"
-          ></div>
         </div>
 
         <!-- Content -->
@@ -49,9 +59,14 @@
             {item.date}
           </div>
 
-          <!-- Content card -->
+          <!--
+            Content card. The lift is 4px here, not the 12px the project and
+            blog cards use: the date badge sits 12px above this card, so a 12px
+            lift closed the gap exactly and the card ended up touching the
+            label on every hover.
+          -->
           <div
-            class="special-border glass-card relative mx-auto max-w-4xl overflow-hidden border border-white/10 bg-white/5 p-6 backdrop-blur-xs transition-all duration-500 hover:-translate-y-3 hover:bg-white/10 hover:shadow-2xl dark:border-gray-700/30 dark:bg-gray-900/20 dark:hover:bg-gray-900/30"
+            class="special-border glass-card relative mx-auto max-w-4xl overflow-hidden border border-white/10 bg-white/5 p-6 backdrop-blur-xs transition-all duration-500 hover:-translate-y-1 hover:bg-white/10 hover:shadow-2xl dark:border-gray-700/30 dark:bg-gray-900/20 dark:hover:bg-gray-900/30"
           >
             <!-- Enhanced gradient overlay -->
             <div

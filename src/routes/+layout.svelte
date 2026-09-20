@@ -61,13 +61,13 @@
   <!-- Background gradient effects for portfolio pages -->
   <div class="pointer-events-none fixed inset-0 -z-10 hidden lg:block">
     <div
-      class="from-primary-400/15 via-secondary-400/15 to-primary-400/15 absolute -top-16 right-40 h-96 w-[24rem] rounded-full bg-linear-to-br opacity-75 blur-2xl"
+      class="from-primary-400/15 via-secondary-400/15 to-primary-400/15 absolute -top-16 right-40 h-96 w-[24rem] rounded-full bg-linear-to-br opacity-75 blur-[100px]"
     ></div>
     <div
-      class="from-secondary-400/10 via-accent-400/10 to-primary-400/10 absolute top-24 -left-60 h-120 w-152 rounded-full bg-linear-to-br opacity-70 blur-2xl"
+      class="from-secondary-400/10 via-accent-400/10 to-primary-400/10 absolute top-24 -left-60 h-120 w-152 rounded-full bg-linear-to-br opacity-70 blur-[100px]"
     ></div>
     <div
-      class="from-primary-400/10 to-primary-500/10 absolute -right-32 bottom-32 h-72 w-md rounded-full bg-linear-to-br opacity-60 blur-xl"
+      class="from-primary-400/10 to-primary-500/10 absolute -right-32 bottom-32 h-72 w-md rounded-full bg-linear-to-br opacity-60 blur-[100px]"
     ></div>
   </div>
 

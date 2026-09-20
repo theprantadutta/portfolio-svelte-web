@@ -193,10 +193,10 @@
   <!-- Background Elements -->
   <div class="absolute inset-0 -z-10">
     <div
-      class="from-primary-500/10 to-secondary-500/10 absolute top-10 left-10 h-72 w-72 animate-pulse rounded-full bg-linear-to-r blur-3xl"
+      class="from-primary-500/10 to-secondary-500/10 absolute top-10 left-10 h-72 w-72 animate-pulse rounded-full bg-linear-to-r blur-[100px]"
     ></div>
     <div
-      class="from-accent-500/10 absolute right-10 bottom-10 h-80 w-80 animate-pulse rounded-full bg-linear-to-r to-orange-500/10 blur-3xl"
+      class="from-accent-500/10 absolute right-10 bottom-10 h-80 w-80 animate-pulse rounded-full bg-linear-to-r to-orange-500/10 blur-[100px]"
       style="animation-delay: 2s"
     ></div>
   </div>

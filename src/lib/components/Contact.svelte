@@ -12,10 +12,10 @@
     class="pointer-events-none absolute inset-0 -z-10 hidden overflow-hidden lg:block"
   >
     <div
-      class="from-primary-400/10 to-secondary-400/10 absolute top-1/4 left-1/4 h-72 w-[18rem] rounded-full bg-linear-to-br opacity-70 blur-2xl"
+      class="from-primary-400/10 to-secondary-400/10 absolute top-1/4 left-1/4 h-72 w-[18rem] rounded-full bg-linear-to-br opacity-70 blur-[100px]"
     ></div>
     <div
-      class="from-secondary-400/10 to-accent-400/10 absolute right-1/4 bottom-1/4 h-64 w-[16rem] rounded-full bg-linear-to-br opacity-60 blur-xl"
+      class="from-secondary-400/10 to-accent-400/10 absolute right-1/4 bottom-1/4 h-64 w-[16rem] rounded-full bg-linear-to-br opacity-60 blur-[100px]"
     ></div>
   </div>
 

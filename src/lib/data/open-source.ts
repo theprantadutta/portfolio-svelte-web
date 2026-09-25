@@ -87,6 +87,20 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     shippedIn: 'Flutter 3.47.1',
     pullRequests: [
       {
+        number: 188941,
+        title: 'Suggest the -d flag after interactive device selection',
+        description:
+          'When several devices are connected, flutter run asks which one to use — every single time. After the choice is made, the tool now prints the exact -d flag for that device, so the prompt can be skipped next time. Covers both the standard and the extended wireless-discovery selection flows. Getting it merged meant diagnosing a presubmit failure down to a builder timeout on an unrelated web shard, rather than guessing at a flake. Approved by bkonyi and chingjun; closed a feature request open since 2020.',
+        url: 'https://github.com/flutter/flutter/pull/188941',
+        resolves: [
+          {
+            number: 63541,
+            repo: 'flutter/flutter',
+            url: 'https://github.com/flutter/flutter/issues/63541',
+          },
+        ],
+      },
+      {
         number: 188940,
         title:
           'Show AbsorbPointer and IgnorePointer side by side in the API sample',

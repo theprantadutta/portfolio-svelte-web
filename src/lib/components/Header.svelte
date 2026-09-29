@@ -57,7 +57,13 @@
 
 <svelte:window onscroll={() => (isScrolled = window.scrollY > 20)} />
 
-<header class="relative z-10">
+<!--
+  `relative z-10` makes the header its own stacking context, so the mobile
+  menu's z-999 only ranks *inside* it and the whole menu sits at 10 on the page
+  — under the floating theme toggle (z-998), which then drew over the open
+  panel. While the menu is open the header is lifted above the toggle.
+-->
+<header class="relative {isMenuOpen ? 'z-1000' : 'z-10'}">
   <!-- Desktop Navigation -->
   <nav
     class="fixed top-6 left-1/2 z-1000 hidden -translate-x-1/2 transform rounded-tl-3xl rounded-tr-lg rounded-br-3xl rounded-bl-3xl transition-all duration-500 ease-out lg:block {isScrolled
@@ -138,15 +144,29 @@
   {#if isMenuOpen}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <!--
+      Light mode gets its own treatment on both layers. The dark-mode recipe —
+      a near-transparent glass panel over a 60% black scrim — works on a dark
+      page, but on a light one the scrim turns the panel a muddy grey that the
+      page shows through, and the grey menu text loses its contrast. So in
+      light mode the scrim is a soft slate tint and the panel is near-opaque
+      white, which also stops the floating theme toggle showing through it.
+
+      The `!` is load-bearing: `glass-card` sets `background`/`border` from
+      --glass-bg/--glass-border and beats a plain bg-* utility in light mode
+      (the old bg-white/20 never applied; it rendered at the 10% glass value).
+      The dark classes carry `!` too so the light ones cannot override them;
+      gray-900/40 is exactly what dark mode already rendered.
+    -->
     <div
-      class="fixed inset-0 z-999 bg-black/60 backdrop-blur-xs transition-opacity duration-300 lg:hidden"
+      class="fixed inset-0 z-999 bg-slate-900/25 backdrop-blur-xs transition-opacity duration-300 lg:hidden dark:bg-black/60"
       onclick={toggleMenu}
     >
       <!-- Mobile Menu Panel -->
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
-        class="glass-card special-border absolute top-20 right-4 w-72 scale-100 transform border-white/30 bg-white/20 opacity-100 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-out dark:border-white/20 dark:bg-gray-900/40"
+        class="glass-card special-border absolute top-20 right-4 max-h-[calc(100dvh-6rem)] w-72 scale-100 transform overflow-y-auto border-slate-200! bg-white/95! opacity-100 shadow-2xl shadow-slate-900/15 backdrop-blur-xl transition-all duration-300 ease-out dark:border-white/20! dark:bg-gray-900/40! dark:shadow-black/40"
         style="padding: 1.5rem"
         onclick={(e) => e.stopPropagation()}
       >

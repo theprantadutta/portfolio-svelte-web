@@ -221,7 +221,10 @@
           </span>
           <span>{project.Tags.length} Tech</span>
         </div>
-        <span>{project.imageUrls.length} Screens</span>
+        <span
+          >{project.imageUrls.length}
+          {project.imageUrls.length === 1 ? 'Screen' : 'Screens'}</span
+        >
       </div>
     </div>
   </div>

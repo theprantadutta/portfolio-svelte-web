@@ -44,7 +44,7 @@
 
 {#if openSourceContributions.length > 0}
   <section id="open-source" class="section-spacing-sm w-full scroll-mt-28">
-    <SectionMarker section="Open Source" threshold={0.1} />
+    <SectionMarker section="Open Source" />
 
     <!-- Section Header -->
     <div class="mb-12 text-center">

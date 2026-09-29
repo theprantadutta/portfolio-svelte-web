@@ -20,7 +20,7 @@
   id="home"
   class="relative flex min-h-[70vh] scroll-mt-28 flex-col items-center justify-center gap-8 px-4 pb-8 text-center sm:mb-0 lg:pb-12"
 >
-  <SectionMarker section="Home" threshold={0.5} />
+  <SectionMarker section="Home" />
 
   <!-- Background accents -->
   <div class="pointer-events-none absolute inset-0 -z-10 hidden md:block">

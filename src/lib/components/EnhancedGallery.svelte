@@ -154,7 +154,8 @@
       <span
         class="text-sm font-medium text-gray-900 sm:text-base dark:text-white"
       >
-        {imageCount} Screenshots
+        {imageCount}
+        {imageCount === 1 ? 'Screenshot' : 'Screenshots'}
       </span>
     </div>
     {#if videoCount > 0}

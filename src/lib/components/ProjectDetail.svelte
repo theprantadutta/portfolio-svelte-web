@@ -54,8 +54,12 @@
     ></div>
   </div>
 
-  <!-- Back Button -->
-  <div class="fixed top-4 left-4 z-50">
+  <!--
+    Back Button. The desktop nav is a fixed, centred ~980px bar, so between lg
+    and ~1410px it reaches the top-left corner and the two overlapped. In that
+    range the button drops below the bar.
+  -->
+  <div class="fixed top-4 left-4 z-50 lg:top-24 min-[90rem]:top-4">
     <a
       href="/projects"
       class="special-border glass-card group flex items-center gap-2 px-4 py-2 transition-all duration-300 hover:bg-white/20 dark:hover:bg-gray-800/40"
@@ -118,11 +122,19 @@
         >
           <div class="flex items-center gap-2">
             <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
-            <span>{project.Tags?.length || 0} Technologies</span>
+            <span
+              >{project.Tags?.length || 0}
+              {project.Tags?.length === 1 ? 'Technology' : 'Technologies'}</span
+            >
           </div>
           <div class="flex items-center gap-2">
             <div class="h-2 w-2 rounded-full bg-green-500"></div>
-            <span>{project.imageUrls?.length || 0} Screenshots</span>
+            <span
+              >{project.imageUrls?.length || 0}
+              {project.imageUrls?.length === 1
+                ? 'Screenshot'
+                : 'Screenshots'}</span
+            >
           </div>
           <div class="flex items-center gap-2">
             <div class="bg-secondary-500 h-2 w-2 rounded-full"></div>

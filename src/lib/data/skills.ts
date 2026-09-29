@@ -44,7 +44,7 @@ export const skillCategoryOrder: SkillCategory[] = [
  * space, which rendered inside the label. Trimmed here.
  */
 export const skills: ISkill[] = [
-  { title: 'ASP.Net Core', category: 'backend', rating: 4, favourite: true },
+  { title: 'ASP.NET Core', category: 'backend', rating: 4, favourite: true },
   { title: 'Cloud Computing', category: 'cloud', rating: 4, favourite: true },
   { title: 'Dart', category: 'frontend', rating: 5, favourite: true },
   { title: 'Docker', category: 'cloud', rating: 5, favourite: true },

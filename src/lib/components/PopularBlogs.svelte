@@ -10,7 +10,7 @@
 </script>
 
 <section id="blog" class="section-spacing-sm scroll-mt-28">
-  <SectionMarker section="Blogs" threshold={0.3} />
+  <SectionMarker section="Blogs" />
   <div class="mb-16 text-center">
     <SectionHeading>Popular Blog Posts</SectionHeading>
     <SectionSubheading>

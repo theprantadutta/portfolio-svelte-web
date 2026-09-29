@@ -8,7 +8,7 @@
 </script>
 
 <section id="blogs" class="section-spacing-sm scroll-mt-28">
-  <SectionMarker section="Blogs" threshold={0.3} />
+  <SectionMarker section="Blogs" />
   <SectionHeading>My Blogs</SectionHeading>
   <div
     class="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"

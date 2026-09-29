@@ -6,7 +6,7 @@
 </script>
 
 <section id="contact" class="section-spacing-sm relative scroll-mt-28">
-  <SectionMarker section="Contact" threshold={0.3} />
+  <SectionMarker section="Contact" />
 
   <div
     class="pointer-events-none absolute inset-0 -z-10 hidden overflow-hidden lg:block"

@@ -27,8 +27,12 @@
     ></div>
   </div>
 
-  <!-- Back Button -->
-  <div class="fixed top-4 left-4 z-50">
+  <!--
+    Back Button. The desktop nav is a fixed, centred ~980px bar, so between lg
+    and ~1410px it reaches the top-left corner and the two overlapped. In that
+    range the button drops below the bar.
+  -->
+  <div class="fixed top-4 left-4 z-50 lg:top-24 min-[90rem]:top-4">
     <a
       href="/blogs"
       class="special-border glass-card group flex items-center gap-2 px-4 py-2 transition-all duration-300 hover:bg-white/20 dark:hover:bg-gray-800/40"

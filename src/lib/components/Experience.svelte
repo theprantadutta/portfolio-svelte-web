@@ -21,7 +21,7 @@
 </script>
 
 <section id="experience" class="section-spacing-sm scroll-mt-28">
-  <SectionMarker section="Experience" threshold={0.1} />
+  <SectionMarker section="Experience" />
   <!-- Section Header -->
   <div class="mb-16 text-center">
     <SectionHeading>My Experience</SectionHeading>

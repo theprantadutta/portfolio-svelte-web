@@ -55,7 +55,7 @@
   type IconComponent = Component<{ class?: string }>
 
   const getSkillIcon = (skillName: string): IconComponent => {
-    if (skillName.includes('ASP.Net Core')) return SiDotnet
+    if (skillName.includes('ASP.NET Core')) return SiDotnet
     if (skillName.includes('Cloud Computing')) return FaCloud
     if (skillName.includes('Dart')) return SiDart
     if (skillName.includes('Docker')) return FaDocker
@@ -153,11 +153,7 @@
 
 <section
   id="skills"
-  use:sectionInView={{
-    state: activeSection,
-    section: 'Skills',
-    threshold: 0.1,
-  }}
+  use:sectionInView={{ state: activeSection, section: 'Skills' }}
   class="section-spacing-sm relative scroll-mt-28 overflow-hidden"
 >
   <!-- Background Elements -->

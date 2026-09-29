@@ -617,6 +617,9 @@
     `auto` means the estimate is used only until a section has been rendered
     once, after which the browser remembers its real height and the scrollbar
     stops moving as you scroll.
+
+    Jumps (#links, deep links, back/forward) would still aim at the estimates,
+    so the home page drops the attribute before any of them. See +page.svelte.
   */
   main[data-defer-sections] > section:not(#home) {
     content-visibility: auto;

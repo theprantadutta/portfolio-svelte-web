@@ -60,7 +60,7 @@
 </script>
 
 <section id="about" class="section-spacing-sm relative scroll-mt-28">
-  <SectionMarker section="About" threshold={0.5} />
+  <SectionMarker section="About" />
 
   <!-- Background accents -->
   <div
@@ -95,7 +95,7 @@
             >mobile apps, backend APIs, and infrastructure</span
           >. My core stack is
           <span
-            class="mono from-primary-100 to-secondary-100 dark:from-primary-900/30 dark:to-secondary-900/30 rounded-sm bg-linear-to-r px-2 py-1 text-sm font-semibold"
+            class="mono from-primary-100 to-secondary-100 dark:from-primary-900/30 dark:to-secondary-900/30 rounded-sm bg-linear-to-r box-decoration-clone px-2 py-1 text-sm font-semibold sm:whitespace-nowrap"
             >Flutter, React Native, Go &amp; .NET</span
           >.
         </p>
@@ -121,7 +121,7 @@
           >. I've built an OpenAI-compatible AI gateway and production
           assistants using
           <span
-            class="mono from-secondary-100 to-accent-100 dark:from-secondary-900/30 dark:to-accent-900/30 rounded-sm bg-linear-to-r px-2 py-1 text-sm font-medium"
+            class="mono from-secondary-100 to-accent-100 dark:from-secondary-900/30 dark:to-accent-900/30 rounded-sm bg-linear-to-r box-decoration-clone px-2 py-1 text-sm font-medium sm:whitespace-nowrap"
             >MCP servers, Gemini, OpenAI &amp; Claude</span
           > that answer questions from live factory data.
         </p>
@@ -130,7 +130,7 @@
           I handle my own <span class="text-gradient font-semibold">DevOps</span
           >. Currently running production workloads on
           <span
-            class="mono to-primary-100 dark:to-primary-900/30 rounded-sm bg-linear-to-r from-green-100 px-2 py-1 text-sm font-medium dark:from-green-900/30"
+            class="mono to-primary-100 dark:to-primary-900/30 rounded-sm bg-linear-to-r from-green-100 box-decoration-clone px-2 py-1 text-sm font-medium sm:whitespace-nowrap dark:from-green-900/30"
             >Hetzner VPS</span
           >
           with

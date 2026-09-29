@@ -15,7 +15,7 @@ export const CV_PATH = '/download-cv'
  * To publish a new CV: replace src/lib/assets/cv.pdf and update this string.
  * Nothing else changes, and the public URL stays put.
  */
-export const CV_DOWNLOAD_FILENAME = 'PRANTA_CV_SEPTEMBER_2026.pdf'
+export const CV_DOWNLOAD_FILENAME = 'PRANTA_CV_OCTOBER_2026.pdf'
 
 /**
  * PD Labs — the services site. A separate property on its own subdomain, so it

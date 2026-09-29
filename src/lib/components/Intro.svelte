@@ -89,7 +89,7 @@
         class="mt-3 block text-xl font-medium text-gray-600 sm:text-3xl lg:text-4xl dark:text-gray-400"
       >
         Flutter &amp; Mobile Engineer with <span
-          class="text-gradient font-semibold">4 years</span
+          class="text-gradient font-semibold">4+ years</span
         > of experience.
       </span>
     </h1>
@@ -98,13 +98,15 @@
       class="mx-auto max-w-2xl text-lg leading-relaxed text-gray-600 sm:text-xl dark:text-gray-400"
     >
       I build mobile apps, backend APIs, and the infrastructure that connects
-      them. 4 years shipping production systems in <span
-        class="text-gradient font-semibold">Flutter</span
-      >, <span class="text-gradient font-semibold">React Native</span>,
-      <span class="text-gradient font-semibold">Go</span>, and
-      <span class="text-gradient font-semibold">.NET</span> — plus a hands-on
-      experience building
-      <span class="text-gradient font-semibold">AI/LLM integrations</span>.
+      them, and I have merged code in the <span
+        class="text-gradient font-semibold">Flutter SDK</span
+      >
+      itself. 4+ years shipping production systems in
+      <span class="text-gradient font-semibold">Flutter</span>,
+      <span class="text-gradient font-semibold">React Native</span>,
+      <span class="text-gradient font-semibold">.NET</span>, and
+      <span class="text-gradient font-semibold">Go</span>, plus AI platforms and
+      <span class="text-gradient font-semibold">LLM integrations</span>.
     </p>
   </div>
 

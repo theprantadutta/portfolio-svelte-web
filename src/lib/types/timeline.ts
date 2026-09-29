@@ -5,5 +5,7 @@ export interface TimelineItemData {
   title: string
   location?: string
   description: string
+  /** Optional bullet points rendered under the description */
+  highlights?: string[]
   icon?: Component<{ class?: string }>
 }

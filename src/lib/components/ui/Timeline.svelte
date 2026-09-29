@@ -102,6 +102,21 @@
             <p class="leading-relaxed text-gray-700 dark:text-gray-300">
               {item.description}
             </p>
+
+            {#if item.highlights?.length}
+              <ul class="mt-4 space-y-2.5">
+                {#each item.highlights as highlight (highlight)}
+                  <li
+                    class="flex gap-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300"
+                  >
+                    <span
+                      class="from-primary-500 to-secondary-500 mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-linear-to-br"
+                    ></span>
+                    <span>{highlight}</span>
+                  </li>
+                {/each}
+              </ul>
+            {/if}
           </div>
         </div>
       </div>

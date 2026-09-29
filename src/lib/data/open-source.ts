@@ -55,30 +55,6 @@ export interface IOpenSourceContribution {
  */
 export const openSourceContributions: IOpenSourceContribution[] = [
   {
-    name: 'Dart & Flutter DevTools',
-    repo: 'flutter/devtools',
-    repoUrl: 'https://github.com/flutter/devtools',
-    description:
-      'The official performance and debugging tool suite for Dart and Flutter, maintained by Google and bundled with the Flutter SDK.',
-    pullRequests: [
-      {
-        number: 9949,
-        title:
-          'Fix RenderFlex overflow in the debugger controls at narrow widths',
-        description:
-          'Fixed a layout overflow that had been open since 2022: the debugger controls already dropped their button labels on narrow screens, but the remaining icon-only content still did not fit below roughly 630px — a realistic width for DevTools embedded in an IDE side panel. Measured the exact threshold with a widget-test harness, then made the controls scroll horizontally so every control stays reachable, keeping the file explorer button pinned so the wide layout is unchanged. Added regression tests at five widths, each verified to fail without the fix. Approved and merged by srawlins.',
-        url: 'https://github.com/flutter/devtools/pull/9949',
-        resolves: [
-          {
-            number: 4917,
-            repo: 'flutter/devtools',
-            url: 'https://github.com/flutter/devtools/issues/4917',
-          },
-        ],
-      },
-    ],
-  },
-  {
     name: 'Flutter Framework',
     repo: 'flutter/flutter',
     repoUrl: 'https://github.com/flutter/flutter',
@@ -90,7 +66,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         number: 188941,
         title: 'Suggest the -d flag after interactive device selection',
         description:
-          'When several devices are connected, flutter run asks which one to use — every single time. After the choice is made, the tool now prints the exact -d flag for that device, so the prompt can be skipped next time. Covers both the standard and the extended wireless-discovery selection flows. Getting it merged meant diagnosing a presubmit failure down to a builder timeout on an unrelated web shard, rather than guessing at a flake. Approved by bkonyi and chingjun; closed a feature request open since 2020.',
+          'When several devices are connected, flutter run asks which one to use, every single time. After the choice is made, the tool now prints the exact -d flag for that device, so the prompt can be skipped next time. Covers both the standard and the extended wireless-discovery selection flows. Getting it merged meant diagnosing a presubmit failure down to a builder timeout on an unrelated web shard, rather than guessing at a flake. Approved by bkonyi and chingjun; closed a feature request open since 2020.',
         url: 'https://github.com/flutter/flutter/pull/188941',
         resolves: [
           {
@@ -105,7 +81,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         title:
           'Show AbsorbPointer and IgnorePointer side by side in the API sample',
         description:
-          "The AbsorbPointer sample only demonstrated AbsorbPointer, leaving the difference from IgnorePointer — the thing developers actually confuse — undemonstrated. Rebuilt it as a side-by-side comparison with live tap counters, so the distinction is visible rather than described: the AbsorbPointer side swallows the tap, the IgnorePointer side lets it through to the widget behind. Rewritten to use widgets-library APIs only after review, since a widgets example should not depend on Material, and both widgets' dartdocs now link it. Fixed an invisible-label bug found along the way: WidgetsApp installs no DefaultTextStyle, so the sample's own labels were rendering white on white. Approved by navaronbracke and victorsanni; closed an issue open since 2021.",
+          "The AbsorbPointer sample only demonstrated AbsorbPointer, leaving the difference from IgnorePointer (the thing developers actually confuse) undemonstrated. Rebuilt it as a side-by-side comparison with live tap counters, so the distinction is visible rather than described: the AbsorbPointer side swallows the tap, the IgnorePointer side lets it through to the widget behind. Rewritten to use widgets-library APIs only after review, since a widgets example should not depend on Material, and both widgets' dartdocs now link it. Fixed an invisible-label bug found along the way: WidgetsApp installs no DefaultTextStyle, so the sample's own labels were rendering white on white. Approved by navaronbracke and victorsanni; closed an issue open since 2021.",
         url: 'https://github.com/flutter/flutter/pull/188940',
         resolves: [
           {
@@ -119,7 +95,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         number: 188382,
         title: 'Format the plugin example template to match dart format',
         description:
-          'Completed the template-formatting work started in #187443: reformatted the plugin template so generated projects pass dart format out of the box, and added a regression test that generates a plugin and asserts every Dart file is format-clean — a test that caught two further template regressions before the PR landed. Approved by bkonyi and chingjun; closed the long-standing template-formatting issue. Merged to main and awaiting its first stable release.',
+          'Completed the template-formatting work started in #187443: reformatted the plugin template so generated projects pass dart format out of the box, and added a regression test that generates a plugin and asserts every Dart file is format-clean, a test that caught two further template regressions before the PR landed. Approved by bkonyi and chingjun; closed the long-standing template-formatting issue. Merged to main and awaiting its first stable release.',
         url: 'https://github.com/flutter/flutter/pull/188382',
         resolves: [
           {
@@ -135,6 +111,30 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         description:
           "Reformatted the flutter create --empty app template's main.dart so freshly generated projects pass dart format out of the box, instead of reporting formatting changes on the very first run. Approved by bkonyi and chingjun. Shipped in the Flutter 3.47.1 stable release.",
         url: 'https://github.com/flutter/flutter/pull/187443',
+      },
+    ],
+  },
+  {
+    name: 'Dart & Flutter DevTools',
+    repo: 'flutter/devtools',
+    repoUrl: 'https://github.com/flutter/devtools',
+    description:
+      'The official performance and debugging tool suite for Dart and Flutter, maintained by Google and bundled with the Flutter SDK.',
+    pullRequests: [
+      {
+        number: 9949,
+        title:
+          'Fix RenderFlex overflow in the debugger controls at narrow widths',
+        description:
+          'Fixed a layout overflow that had been open since 2022: the debugger controls already dropped their button labels on narrow screens, but the remaining icon-only content still did not fit below roughly 630px, a realistic width for DevTools embedded in an IDE side panel. Measured the exact threshold with a widget-test harness, then made the controls scroll horizontally so every control stays reachable, keeping the file explorer button pinned so the wide layout is unchanged. Added regression tests at five widths, each verified to fail without the fix. Approved and merged by srawlins.',
+        url: 'https://github.com/flutter/devtools/pull/9949',
+        resolves: [
+          {
+            number: 4917,
+            repo: 'flutter/devtools',
+            url: 'https://github.com/flutter/devtools/issues/4917',
+          },
+        ],
       },
     ],
   },
@@ -157,7 +157,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         number: 11880,
         title: 'Report a clear error for enhanced enums in pigeon',
         description:
-          "Pigeon silently generated broken output when an input file used an enhanced enum (one with a constructor, fields, methods, or arguments on its values) — the enum's members were coalesced into the following class. The parser now detects every enhanced-enum shape and reports a clear error instead, with a fix for a parser crash on enum getters found during self-review. Approved by tarrinneal and stuartmorgan-g; shipped in pigeon 27.1.2.",
+          "Pigeon silently generated broken output when an input file used an enhanced enum (one with a constructor, fields, methods, or arguments on its values): the enum's members were coalesced into the following class. The parser now detects every enhanced-enum shape and reports a clear error instead, with a fix for a parser crash on enum getters found during self-review. Approved by tarrinneal and stuartmorgan-g; shipped in pigeon 27.1.2.",
         url: 'https://github.com/flutter/packages/pull/11880',
         resolves: [
           {
@@ -244,7 +244,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         number: 3697,
         title: 'runZonedGuarded error propagation',
         description:
-          'Fixed an async zone-error handler where rethrown exceptions were silently dropped — restoring uncaught-error reporting for Flutter apps.',
+          'Fixed an async zone-error handler where rethrown exceptions were silently dropped, restoring uncaught-error reporting for Flutter apps.',
         url: 'https://github.com/getsentry/sentry-dart/pull/3697',
       },
       {

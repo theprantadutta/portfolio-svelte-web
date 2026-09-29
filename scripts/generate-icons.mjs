@@ -111,16 +111,19 @@ const WANTED = {
   io5: ['IoLogoFirebase'],
   lu: ['LuBoxes'],
   si: [
+    'SiAngular',
     'SiDart',
     'SiDotnet',
     'SiFlutter',
     'SiKotlin',
     'SiKubernetes',
     'SiNextdotjs',
+    'SiPython',
     'SiRedis',
+    'SiSvelte',
     'SiTypescript',
   ],
-  tb: ['TbBrandReactNative'],
+  tb: ['TbBrain', 'TbBrandReactNative'],
 }
 
 // SVG attributes the HTML parser keeps camelCase. Everything else that is

@@ -5,11 +5,13 @@
   import SectionSubheading from '$components/SectionSubheading.svelte'
   import { sectionInView } from '$lib/actions/section-in-view'
   import { getActiveSectionState } from '$lib/context/active-section.svelte'
-  import { skills } from '$lib/data/skills'
+  import { skillCategoryOrder, skills } from '$lib/data/skills'
+  import type { SkillCategory } from '$lib/data/skills'
   import BiLogoPostgresql from '$icons/BiLogoPostgresql.svelte'
   import DiGoogleCloudPlatform from '$icons/DiGoogleCloudPlatform.svelte'
   import DiMsqlServer from '$icons/DiMsqlServer.svelte'
   import FaAppStoreIos from '$icons/FaAppStoreIos.svelte'
+  import FaBolt from '$icons/FaBolt.svelte'
   import FaCloud from '$icons/FaCloud.svelte'
   import FaCode from '$icons/FaCode.svelte'
   import FaDatabase from '$icons/FaDatabase.svelte'
@@ -26,18 +28,22 @@
   import FaTools from '$icons/FaTools.svelte'
   import IoLogoFirebase from '$icons/IoLogoFirebase.svelte'
   import LuBoxes from '$icons/LuBoxes.svelte'
+  import SiAngular from '$icons/SiAngular.svelte'
   import SiDart from '$icons/SiDart.svelte'
   import SiDotnet from '$icons/SiDotnet.svelte'
   import SiFlutter from '$icons/SiFlutter.svelte'
   import SiKotlin from '$icons/SiKotlin.svelte'
   import SiKubernetes from '$icons/SiKubernetes.svelte'
   import SiNextdotjs from '$icons/SiNextdotjs.svelte'
+  import SiPython from '$icons/SiPython.svelte'
   import SiRedis from '$icons/SiRedis.svelte'
+  import SiSvelte from '$icons/SiSvelte.svelte'
   import SiTypescript from '$icons/SiTypescript.svelte'
+  import TbBrain from '$icons/TbBrain.svelte'
   import TbBrandReactNative from '$icons/TbBrandReactNative.svelte'
 
   // Local data rather than a Strapi collection — see src/lib/data/skills.ts.
-  // Same nineteen entries in the same order, so nothing on screen moves.
+  // The Strapi-era nineteen keep their order; newer entries are appended.
 
   // Observed on the <section> itself, exactly as the React version did with a
   // ref, rather than via a zero-size SectionMarker sentinel.
@@ -65,7 +71,12 @@
     if (skillName.includes('React Native')) return TbBrandReactNative
     if (skillName.includes('Rust')) return FaRust
     if (skillName.includes('SQL Server')) return DiMsqlServer
-    if (skillName.includes('Typescript')) return SiTypescript
+    if (skillName.includes('TypeScript')) return SiTypescript
+    if (skillName.includes('Angular')) return SiAngular
+    if (skillName.includes('Svelte')) return SiSvelte
+    if (skillName.includes('Python')) return SiPython
+    if (skillName.includes('SignalR')) return FaBolt
+    if (skillName.includes('LLM')) return TbBrain
     if (skillName.includes('Google Cloud Platform'))
       return DiGoogleCloudPlatform
     if (skillName.includes('Firebase')) return IoLogoFirebase
@@ -73,84 +84,43 @@
     return FaCode
   }
 
+  // Grouped by the category stored on each skill. This used to test every
+  // title against a list of substrings per group, which quietly dropped any
+  // skill no list mentioned — Cloud Computing, Kubernetes and Microservices
+  // never appeared in the cards view at all.
+  const categoryMeta: Record<
+    SkillCategory,
+    { name: string; color: string; icon: IconComponent }
+  > = {
+    frontend: {
+      name: 'Frontend',
+      color: 'from-primary-500 to-primary-500',
+      icon: FaReact as IconComponent,
+    },
+    backend: {
+      name: 'Backend',
+      color: 'from-green-500 to-emerald-500',
+      icon: FaNodeJs as IconComponent,
+    },
+    database: {
+      name: 'Database',
+      color: 'from-orange-500 to-red-500',
+      icon: FaDatabase as IconComponent,
+    },
+    cloud: {
+      name: 'Cloud & DevOps',
+      color: 'from-secondary-500 to-accent-500',
+      icon: FaTools as IconComponent,
+    },
+  }
+
   const skillCategories = $derived(
-    [
-      {
-        name: 'Frontend',
-        skills: skills.filter((s) =>
-          [
-            'react',
-            'react native',
-            'flutter',
-            'next.js',
-            'typescript',
-            'javascript',
-            'html',
-            'css',
-            'tailwind',
-            'dart',
-          ].some((tech) => s.title.toLowerCase().includes(tech))
-        ),
-        color: 'from-primary-500 to-primary-500',
-        icon: FaReact as IconComponent,
-      },
-      {
-        name: 'Backend',
-        skills: skills.filter((s) =>
-          [
-            'node.js',
-            'python',
-            'java',
-            'golang',
-            'rust',
-            'asp.net core',
-            'express',
-            'api',
-            'microservices',
-          ].some((tech) => s.title.toLowerCase().includes(tech))
-        ),
-        color: 'from-green-500 to-emerald-500',
-        icon: FaNodeJs as IconComponent,
-      },
-      {
-        name: 'Database',
-        skills: skills.filter((s) =>
-          [
-            'mongodb',
-            'postgresql',
-            'mysql',
-            'sql server',
-            'redis',
-            'database',
-          ].some((tech) => s.title.toLowerCase().includes(tech))
-        ),
-        color: 'from-orange-500 to-red-500',
-        icon: FaDatabase as IconComponent,
-      },
-      {
-        name: 'Cloud & DevOps',
-        skills: skills.filter((s) =>
-          [
-            'docker',
-            'git',
-            'aws',
-            'google cloud platform',
-            'firebase',
-            'tools',
-          ].some((tech) => s.title.toLowerCase().includes(tech))
-        ),
-        color: 'from-secondary-500 to-accent-500',
-        icon: FaTools as IconComponent,
-      },
-      {
-        name: 'Design',
-        skills: skills.filter((s) =>
-          ['figma'].some((tech) => s.title.toLowerCase().includes(tech))
-        ),
-        color: 'from-yellow-500 to-amber-500',
-        icon: FaTools as IconComponent,
-      },
-    ].filter((cat) => cat.skills.length > 0)
+    skillCategoryOrder
+      .map((category) => ({
+        ...categoryMeta[category],
+        skills: skills.filter((s) => s.category === category),
+      }))
+      .filter((cat) => cat.skills.length > 0)
   )
 
   const stats = $derived([
@@ -173,8 +143,8 @@
       color: 'secondary',
     },
     {
-      label: 'Projects',
-      value: '20+',
+      label: 'Apps & Systems',
+      value: '25+',
       icon: FaStar as IconComponent,
       color: 'yellow',
     },
@@ -241,7 +211,7 @@
       <div class="relative">
         <!-- Hexagonal Grid -->
         <div class="mx-auto flex max-w-4xl flex-wrap justify-center gap-4">
-          {#each skills.slice(0, 19) as skill, index (skill.title)}
+          {#each skills as skill, index (skill.title)}
             {@const Icon = getSkillIcon(skill.title)}
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_static_element_interactions -->

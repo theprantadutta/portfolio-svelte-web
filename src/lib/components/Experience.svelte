@@ -15,6 +15,7 @@
     title: item.role,
     location: item.company,
     description: item.description,
+    highlights: item.highlights,
     icon: CgWorkAlt,
   }))
 </script>

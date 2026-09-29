@@ -12,47 +12,48 @@
   const coreTechnologies = [
     {
       title: 'Mobile',
-      items: ['React Native', 'Flutter', 'Android / iOS'],
+      items: ['Flutter', 'React Native', 'Android / iOS'],
     },
     {
       title: 'Backend',
-      items: ['ASP.NET Core', 'Node.js', 'System Design'],
+      items: ['ASP.NET Core', 'Node.js', 'Go'],
     },
     {
       title: 'Cloud & DevOps',
-      items: ['Docker', 'Kubernetes', 'Google Cloud'],
+      items: ['Docker', 'GitLab CI/CD', 'Self-hosted Linux'],
     },
   ]
 
+  // Every figure here is one the CV makes too, so the two never disagree.
   const achievements = [
     {
-      icon: '📱',
-      title: 'Published Apps',
-      subtitle: 'Play Store & App Store',
-      accent: 'from-green-400 to-emerald-500',
-    },
-    {
-      icon: '🏗️',
-      title: 'Infrastructure Design',
-      subtitle: 'Enterprise Solutions',
+      icon: '🏭',
+      title: '16+ In-House Systems',
+      subtitle: 'In daily use across a 20,000+ person workforce',
       accent: 'from-primary-400 to-secondary-500',
     },
     {
-      icon: '⚡',
-      title: 'Performance Tuning',
-      subtitle: 'Mobile & Web',
+      icon: '📱',
+      title: '9 Public Apps',
+      subtitle: 'Google Play, 5 also on the App Store, 11,000+ downloads',
+      accent: 'from-green-400 to-emerald-500',
+    },
+    {
+      icon: '🔀',
+      title: '12 Merged Open-Source PRs',
+      subtitle: 'Flutter SDK, DevTools, React Native docs, Supabase, Sentry',
       accent: 'from-orange-400 to-red-500',
     },
     {
       icon: '🖥️',
       title: 'Self-Hosted Infrastructure',
-      subtitle: 'Ubuntu Server Stack',
+      subtitle: '40 CI/CD pipelines, 17 self-hosted services',
       accent: 'from-primary-400 to-primary-500',
     },
     {
-      icon: '🚀',
-      title: '20+ Projects Completed',
-      subtitle: 'Web, Mobile & Cloud',
+      icon: '✍️',
+      title: '125,000+ Article Views',
+      subtitle: '5,700+ followers on Dev.to',
       accent: 'from-secondary-400 to-accent-500',
     },
   ]
@@ -89,7 +90,7 @@
           I'm a <span class="text-gradient font-semibold"
             >Flutter &amp; Mobile Engineer</span
           >
-          with 4 years of experience building
+          with 4+ years of experience building
           <span class="text-gradient-accent font-medium"
             >mobile apps, backend APIs, and infrastructure</span
           >. My core stack is
@@ -102,8 +103,7 @@
         <p class={paragraphClass}>
           I've built systems that <span class="text-gradient font-semibold"
             >actually move numbers</span
-          >
-          — an NFC-based distribution app that
+          >: an NFC-based distribution app that
           <span class="font-medium underline decoration-green-500"
             >reduced fraud by 99.99%</span
           >, an HRMS that
@@ -118,11 +118,12 @@
         <p class={paragraphClass}>
           Currently deep into <span class="text-gradient-accent font-semibold"
             >AI/LLM integrations</span
-          >. I've built production assistants using
+          >. I've built an OpenAI-compatible AI gateway and production
+          assistants using
           <span
             class="mono from-secondary-100 to-accent-100 dark:from-secondary-900/30 dark:to-accent-900/30 rounded-sm bg-linear-to-r px-2 py-1 text-sm font-medium"
             >MCP servers, Gemini, OpenAI &amp; Claude</span
-          > that answer queries dynamically from live database APIs.
+          > that answer questions from live factory data.
         </p>
 
         <p class={paragraphClass}>
@@ -140,15 +141,14 @@
 
         <p class={paragraphClass}>
           I've shipped <span class="text-gradient-accent font-semibold"
-            >20+ production apps</span
-          >
-          — including games, tools, and enterprise systems on the
-          <span class="font-medium">Google Play Store</span> and
-          <span class="font-medium">Apple App Store</span>. Outside of work, I
-          build
+            >25+ production apps and systems</span
+          >: 16+ in-house systems at KDS Group, plus 9 apps of my own on the
+          <span class="font-medium">Google Play Store</span>, 5 of them also on
+          the <span class="font-medium">Apple App Store</span>. Outside of work,
+          I build
           <span class="decoration-secondary-500 font-medium underline"
             >open-source libraries and side projects</span
-          > because building things is just what I do.
+          >, and fix bugs in the Flutter tools I use every day.
         </p>
       </div>
 

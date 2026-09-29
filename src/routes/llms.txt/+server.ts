@@ -45,17 +45,20 @@ export const GET: RequestHandler = async ({ fetch }) => {
 
 > ${SITE_DESCRIPTION}
 
-Flutter & Mobile Engineer based in Bangladesh. Builds mobile apps, backend APIs
-and the infrastructure connecting them, in Flutter, React Native, Go and .NET,
-plus AI/LLM integrations. Contactable at prantadutta1997@gmail.com.
+Flutter & Mobile Engineer based in Bangladesh, with 12 merged pull requests in
+the Flutter SDK, Flutter DevTools, Pigeon, the React Native docs, Supabase and
+Sentry. Primary developer of 16+ in-house production systems at KDS Group, used
+across a 20,000+ person workforce, plus 9 public apps on Google Play (5 also on
+the App Store). Works in Flutter, React Native, .NET and Go, plus AI platforms
+and LLM integrations. Contactable at prantadutta1997@gmail.com.
 
 ## Pages
 
 - [Home](${SITE_URL}/): Introduction, background, skills, experience and contact form.
 - [Projects](${SITE_URL}/projects): Every shipped project, filterable by technology.
 - [Blog](${SITE_URL}/blogs): Technical writing, syndicated from dev.to.
-- [CV](${SITE_URL}/download-cv): Current resume as a PDF. Permanent link — always the latest version.
-- [Services](https://pdlabs.pranta.dev): PD Labs — available for hire. Separate site.
+- [CV](${SITE_URL}/download-cv): Current resume as a PDF. Permanent link, always the latest version.
+- [Services](https://pdlabs.pranta.dev): PD Labs, available for hire. Separate site.
 
 ## Projects
 

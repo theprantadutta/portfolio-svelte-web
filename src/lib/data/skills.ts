@@ -24,11 +24,15 @@ export const skillCategoryOrder: SkillCategory[] = [
  * rebuild to appear — the CMS was buying nothing an edit here does not, while
  * costing a request on every build and a dependency that can fail one. Projects
  * stay in Strapi: dozens of fields, uploaded media, rich text, frequent change.
- * A list of nineteen names and ratings does not.
+ * A list of names and ratings does not.
  *
- * Read out of the running Strapi instance rather than retyped, and **kept in
- * the order Strapi returned them** — the hexagon view renders this array
- * directly, so the order is visible on the page.
+ * The first nineteen were read out of the running Strapi instance rather than
+ * retyped, and **kept in the order Strapi returned them** — the hexagon view
+ * renders this array directly, so the order is visible on the page. The six
+ * after them were added in October 2026 to match the CV: stack the KDS work has
+ * run on for years (TypeScript, Angular, Python, SignalR) or recently moved to
+ * (Svelte), plus the AI work. Appended rather than interleaved so the existing
+ * layout does not shuffle.
  *
  * `category` is stored rather than derived. Strapi held only title, rating and
  * isFavourite, so the cards view worked the grouping out by testing each title
@@ -64,4 +68,10 @@ export const skills: ISkill[] = [
   { title: 'Redis', category: 'database', rating: 5, favourite: false },
   { title: 'Rust', category: 'backend', rating: 3, favourite: false },
   { title: 'SQL Server', category: 'database', rating: 4, favourite: false },
+  { title: 'TypeScript', category: 'frontend', rating: 5, favourite: true },
+  { title: 'Angular', category: 'frontend', rating: 4, favourite: false },
+  { title: 'Svelte', category: 'frontend', rating: 4, favourite: false },
+  { title: 'Python', category: 'backend', rating: 4, favourite: false },
+  { title: 'SignalR', category: 'backend', rating: 4, favourite: false },
+  { title: 'AI / LLMs', category: 'backend', rating: 4, favourite: true },
 ]

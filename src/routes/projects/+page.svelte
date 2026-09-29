@@ -9,7 +9,7 @@
 
   const title = 'Projects | Pranta Dutta'
   const description =
-    'Products and tools Pranta Dutta has designed, built, and shipped — mobile apps, backend APIs, and cloud infrastructure.'
+    'Products and tools Pranta Dutta has designed, built, and shipped: mobile apps, backend APIs, and cloud infrastructure.'
 
   // Read the filter straight off the URL, but only in the browser: the page is
   // prerendered to a single static file that cannot depend on a query string,

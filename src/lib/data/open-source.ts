@@ -143,7 +143,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     repo: 'flutter/packages',
     repoUrl: 'https://github.com/flutter/packages',
     description:
-      "Flutter's first-party plugins and packages, maintained by the core Flutter team at Google. Contributed fixes and documentation improvements to path_provider and the pigeon code generator, reviewed and merged by their maintainers.",
+      "Flutter's first-party plugins and packages, maintained by the core Flutter team at Google. Contributed fixes and documentation improvements to path_provider, the pigeon code generator, and the material_ui package, reviewed and merged by their maintainers.",
     shippedIn: 'path_provider 2.1.6 · pigeon 27.1.2',
     links: [
       { label: 'pub.dev', url: 'https://pub.dev/packages/path_provider' },
@@ -153,6 +153,21 @@ export const openSourceContributions: IOpenSourceContribution[] = [
       },
     ],
     pullRequests: [
+      {
+        number: 13010,
+        title:
+          'Repaint NavigationIndicator when the selection changes without pointer input',
+        description:
+          'NavigationIndicator draws its indicator with Ink, which paints on the nearest ancestor Material rather than locally, so when the selected destination changed programmatically that Material was never told to repaint and kept showing the old frame. The fix marks the host Material for repaint on each animation tick, with a regression test proven to fail without it. Originally approved in the Flutter framework but caught by the Material/Cupertino code freeze; ported to the new material_ui package once it opened to contributions. Approved by elliette, QuncCccccc and dkwingsmt.',
+        url: 'https://github.com/flutter/packages/pull/13010',
+        resolves: [
+          {
+            number: 180359,
+            repo: 'flutter/flutter',
+            url: 'https://github.com/flutter/flutter/issues/180359',
+          },
+        ],
+      },
       {
         number: 11880,
         title: 'Report a clear error for enhanced enums in pigeon',

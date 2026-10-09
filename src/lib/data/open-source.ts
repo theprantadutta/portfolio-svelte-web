@@ -144,7 +144,8 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     repoUrl: 'https://github.com/flutter/packages',
     description:
       "Flutter's first-party plugins and packages, maintained by the core Flutter team at Google. Contributed fixes and documentation improvements to path_provider, the pigeon code generator, and the material_ui and cupertino_ui packages, reviewed and merged by their maintainers.",
-    shippedIn: 'path_provider 2.1.6 · pigeon 27.1.2',
+    shippedIn:
+      'path_provider 2.1.6 · pigeon 27.1.2 · material_ui 1.6.0 · cupertino_ui 1.1.2',
     links: [
       { label: 'pub.dev', url: 'https://pub.dev/packages/path_provider' },
       {
@@ -158,7 +159,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         title:
           'Forward showDragHandle from showCupertinoSheet to the sheet route',
         description:
-          'showCupertinoSheet accepted and documented a showDragHandle option but never passed it on to the CupertinoSheetRoute it built, so setting it had no effect. The fix forwards it on both the plain and nested-navigation paths, with one regression test per path, each proven to fail without the fix. Originally approved in the Flutter framework but caught by the Material/Cupertino code freeze; ported to the new cupertino_ui package, resolving a conflict with an argument added to the same lines since. Approved by navaronbracke and Piinks.',
+          'showCupertinoSheet accepted and documented a showDragHandle option but never passed it on to the CupertinoSheetRoute it built, so setting it had no effect. The fix forwards it on both the plain and nested-navigation paths, with one regression test per path, each proven to fail without the fix. Originally approved in the Flutter framework but caught by the Material/Cupertino code freeze; ported to the new cupertino_ui package, resolving a conflict with an argument added to the same lines since. Approved by navaronbracke and Piinks; shipped in cupertino_ui 1.1.2.',
         url: 'https://github.com/flutter/packages/pull/13011',
         resolves: [
           {
@@ -173,7 +174,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         title:
           'Repaint NavigationIndicator when the selection changes without pointer input',
         description:
-          'NavigationIndicator draws its indicator with Ink, which paints on the nearest ancestor Material rather than locally, so when the selected destination changed programmatically that Material was never told to repaint and kept showing the old frame. The fix marks the host Material for repaint on each animation tick, with a regression test proven to fail without it. Originally approved in the Flutter framework but caught by the Material/Cupertino code freeze; ported to the new material_ui package once it opened to contributions. Approved by elliette, QuncCccccc and dkwingsmt.',
+          'NavigationIndicator draws its indicator with Ink, which paints on the nearest ancestor Material rather than locally, so when the selected destination changed programmatically that Material was never told to repaint and kept showing the old frame. The fix marks the host Material for repaint on each animation tick, with a regression test proven to fail without it. Originally approved in the Flutter framework but caught by the Material/Cupertino code freeze; ported to the new material_ui package once it opened to contributions. Approved by elliette, QuncCccccc and dkwingsmt; shipped in material_ui 1.6.0.',
         url: 'https://github.com/flutter/packages/pull/13010',
         resolves: [
           {

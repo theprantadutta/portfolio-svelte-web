@@ -143,7 +143,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     repo: 'flutter/packages',
     repoUrl: 'https://github.com/flutter/packages',
     description:
-      "Flutter's first-party plugins and packages, maintained by the core Flutter team at Google. Contributed fixes and documentation improvements to path_provider, the pigeon code generator, and the material_ui package, reviewed and merged by their maintainers.",
+      "Flutter's first-party plugins and packages, maintained by the core Flutter team at Google. Contributed fixes and documentation improvements to path_provider, the pigeon code generator, and the material_ui and cupertino_ui packages, reviewed and merged by their maintainers.",
     shippedIn: 'path_provider 2.1.6 · pigeon 27.1.2',
     links: [
       { label: 'pub.dev', url: 'https://pub.dev/packages/path_provider' },
@@ -153,6 +153,21 @@ export const openSourceContributions: IOpenSourceContribution[] = [
       },
     ],
     pullRequests: [
+      {
+        number: 13011,
+        title:
+          'Forward showDragHandle from showCupertinoSheet to the sheet route',
+        description:
+          'showCupertinoSheet accepted and documented a showDragHandle option but never passed it on to the CupertinoSheetRoute it built, so setting it had no effect. The fix forwards it on both the plain and nested-navigation paths, with one regression test per path, each proven to fail without the fix. Originally approved in the Flutter framework but caught by the Material/Cupertino code freeze; ported to the new cupertino_ui package, resolving a conflict with an argument added to the same lines since. Approved by navaronbracke and Piinks.',
+        url: 'https://github.com/flutter/packages/pull/13011',
+        resolves: [
+          {
+            number: 187693,
+            repo: 'flutter/flutter',
+            url: 'https://github.com/flutter/flutter/issues/187693',
+          },
+        ],
+      },
       {
         number: 13010,
         title:

@@ -155,6 +155,21 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     ],
     pullRequests: [
       {
+        number: 13012,
+        title:
+          'Fix CupertinoPicker crashing when disposed during its tap animation',
+        description:
+          "Tapping an item that isn't centred starts a 300 ms scroll animation that CupertinoPicker awaits before reading its controller. If the picker was removed in that window, as in common select-then-hide patterns, the controller was already detached and the read threw: an assertion in debug, and 'Bad state: No element' in release. The fix returns early once the picker is no longer mounted. The regression test reproduces the exact assertion, and the full picker and date-picker suites pass. Approved by dkwingsmt and pjkammer.",
+        url: 'https://github.com/flutter/packages/pull/13012',
+        resolves: [
+          {
+            number: 192135,
+            repo: 'flutter/flutter',
+            url: 'https://github.com/flutter/flutter/issues/192135',
+          },
+        ],
+      },
+      {
         number: 13011,
         title:
           'Forward showDragHandle from showCupertinoSheet to the sheet route',

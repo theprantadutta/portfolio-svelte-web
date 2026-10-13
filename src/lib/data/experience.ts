@@ -5,11 +5,20 @@ export interface IExperience {
   company: string
   /** Where the work was done, e.g. "Chattogram, Bangladesh" */
   place: string
-  /** Display range, pre-formatted — these are not dates the site does maths on */
-  date: string
-  /** What the role involved */
+  /** First month, "YYYY-MM" */
+  start: string
+  /** Last month, "YYYY-MM", or omitted while ongoing */
+  end?: string
+  /**
+   * The git branch the role is drawn on in the /skills timeline. The
+   * full-time job line is `main`; anything that ran alongside it forks off.
+   */
+  branch: 'main' | 'contract'
+  /** One line for the timeline */
+  summary: string
+  /** What the role involved, in full */
   description: string
-  /** Optional bullet points, rendered under the description */
+  /** Optional bullet points, shown when the timeline entry is expanded */
   highlights?: string[]
 }
 
@@ -28,15 +37,18 @@ export interface IExperience {
  * Same arrangement as `open-source.ts`, and typed rather than raw JSON so a
  * missing field fails `bun run check` instead of rendering as `undefined`.
  *
- * Order here is the order rendered: oldest first, so the timeline reads down
- * the page the way a log does. There is no sort key — the array is the sort.
+ * The /skills timeline sorts by most recent activity, like
+ * `git branch --sort=-committerdate`, so the order here does not matter.
  */
 export const experiences: IExperience[] = [
   {
     role: 'Software Engineer, Intern',
     company: 'ZorgIT',
     place: 'Chattogram, Bangladesh',
-    date: 'DEC’ 21 – FEB’ 22',
+    start: '2021-12',
+    end: '2022-02',
+    branch: 'main',
+    summary: 'Next.js and React projects alongside a senior team.',
     description:
       'Completed an internship at ZorgIT, where I contributed to several projects using Next.js and React, collaborating closely with a highly experienced and dynamic team.',
   },
@@ -44,7 +56,10 @@ export const experiences: IExperience[] = [
     role: 'Front-end Engineer',
     company: 'Trigan',
     place: 'Dumfries, United Kingdom',
-    date: 'FEB’ 22 – JUN’ 22',
+    start: '2022-02',
+    end: '2022-06',
+    branch: 'main',
+    summary: "Trigan's websites end to end, from design to deployment.",
     description:
       "At Trigan, I independently developed and maintained the company's official websites, overseeing the entire lifecycle from design to deployment, ensuring high performance and reliability.",
   },
@@ -52,7 +67,10 @@ export const experiences: IExperience[] = [
     role: 'Software Developer',
     company: 'KDS Group',
     place: 'Chattogram, Bangladesh',
-    date: 'JUN’ 22 – PRESENT',
+    start: '2022-06',
+    branch: 'main',
+    summary:
+      '16+ production systems for 20,000+ people, AI gateway, 40 CI/CD pipelines.',
     description:
       "Primary developer of a garment manufacturer's internal software: 16+ production systems used across a 20,000+ person workforce, built and run end to end across mobile, web, APIs, IoT firmware, and infrastructure.",
     highlights: [
@@ -70,7 +88,11 @@ export const experiences: IExperience[] = [
     role: 'Flutter Developer (Contract, Remote)',
     company: 'Certorus',
     place: 'Remote',
-    date: 'DEC’ 25 – MAR’ 26',
+    start: '2025-12',
+    end: '2026-03',
+    branch: 'contract',
+    summary:
+      'U-Thrive, a US behavioral-health platform: 110+ commits, 14 merged PRs.',
     description:
       'Worked inside the product team on U-Thrive, a US behavioral-health platform connecting patients and clinicians, across its Flutter app, Node.js + MongoDB API on AWS, and React dashboard: 110+ commits and 14 merged pull requests.',
     highlights: [
@@ -79,3 +101,14 @@ export const experiences: IExperience[] = [
     ],
   },
 ]
+
+/**
+ * The indie side branch on the /skills timeline. Its app counts are computed
+ * from the CMS's store links; the start year and download figure come from
+ * the design and the CV respectively, and the year is still to be confirmed
+ * (TODO_CONTENT.md).
+ */
+export const indieDeveloper = {
+  since: '2021',
+  downloads: '11k+',
+}

@@ -327,3 +327,12 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     ],
   },
 ]
+
+/** Every merged pull request above, flattened in display order. */
+export const allPullRequests = () =>
+  openSourceContributions.flatMap((contribution) =>
+    contribution.pullRequests.map((pr) => ({ ...pr, contribution }))
+  )
+
+/** The URLs the GitHub snapshot looks up diff sizes for. */
+export const pullRequestUrls = () => allPullRequests().map((pr) => pr.url)

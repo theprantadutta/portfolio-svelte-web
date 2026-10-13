@@ -1,3 +1,4 @@
+import { createMemo } from '$lib/memo'
 import type { DevToArticle, DevToArticleDetail } from '$lib/types/blog-types'
 
 const DEVTO_API_BASE = 'https://dev.to/api'
@@ -102,9 +103,20 @@ const fetchDevTo = async (
   }
 }
 
-export const getAllArticles = async (
-  fetchFn?: Fetcher
-): Promise<DevToArticle[]> => {
+/**
+ * Server-side, one fetch of the article list is shared for ten minutes: every
+ * prerendered page that needs it (the blog, the home page's post count, the
+ * search index, the sitemap) reuses it instead of queueing behind the rate
+ * limiter. The browser's refresh on /blogs always goes to the network.
+ */
+const memo = createMemo(10 * 60 * 1000)
+
+export const getAllArticles = (fetchFn?: Fetcher): Promise<DevToArticle[]> =>
+  import.meta.env.SSR
+    ? memo('articles', () => fetchAllArticles(fetchFn))
+    : fetchAllArticles(fetchFn)
+
+const fetchAllArticles = async (fetchFn?: Fetcher): Promise<DevToArticle[]> => {
   const response = await fetchDevTo(
     `${DEVTO_API_BASE}/articles?username=${DEVTO_USERNAME}&per_page=1000`,
     fetchFn

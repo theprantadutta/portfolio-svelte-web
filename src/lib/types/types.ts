@@ -55,6 +55,32 @@ export type ProjectDataAttributes = {
     flag: FeatureFlag
   }[]
   hidden?: boolean | null
+  /** One short result for the project card, e.g. "fraud −99.99%" */
+  metric?: string | null
+  /** Up to three headline numbers for the pinned card and Impact panel */
+  impactStats?: ImpactStat[] | null
+  /** Rendered as `git log --oneline` on the project page */
+  changelog?: ChangelogEntry[] | null
+  updatedAt?: string
+}
+
+export interface ImpactStat {
+  id: number
+  value: string
+  label: string
+  /** Rendered in green: the number is an improvement, e.g. "−40%" */
+  highlight?: boolean | null
+}
+
+export type ChangelogType =
+  'feat' | 'fix' | 'perf' | 'release' | 'init' | 'docs' | 'refactor' | 'chore'
+
+export interface ChangelogEntry {
+  id: number
+  type: ChangelogType
+  message: string
+  /** ISO date */
+  date: string
 }
 
 export interface IStrapiImageData {

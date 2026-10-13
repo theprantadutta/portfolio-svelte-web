@@ -1,5 +1,11 @@
 import { env } from '$env/dynamic/private'
 import { STRAPI_URL } from '$lib/constants/urls'
+import { createMemo } from '$lib/memo'
+import {
+  emptyReactionCounts,
+  type ReactionCounts,
+  type ReactionEmoji,
+} from '$lib/reactions'
 import type {
   IStrapiApiResponse,
   ProjectDataAttributes,
@@ -35,12 +41,21 @@ interface StrapiFetchOptions {
    * dedupe and record the request; falls back to global fetch when omitted.
    */
   fetch?: typeof globalThis.fetch
+  /** Overrides the build-time read-only key, e.g. for the reactions token. */
+  token?: string
+  method?: 'GET' | 'POST'
+  body?: unknown
 }
 
-const defaultHeaders = () => ({
-  Authorization: `Bearer ${env.STRAPI_API_KEY}`,
-  'Content-Type': 'application/json',
-})
+/** A non-2xx answer from Strapi, with the status kept for callers to test. */
+export class StrapiError extends Error {
+  constructor(
+    readonly status: number,
+    statusText: string
+  ) {
+    super(`Strapi request failed – ${status} ${statusText}`)
+  }
+}
 
 const buildSearchParams = (params?: SearchParams) => {
   if (!params) return ''
@@ -73,96 +88,129 @@ const buildSearchParams = (params?: SearchParams) => {
 
 const strapiFetch = async <T>(
   path: string,
-  { searchParams, fetch: fetchFn = globalThis.fetch }: StrapiFetchOptions = {}
+  {
+    searchParams,
+    fetch: fetchFn = globalThis.fetch,
+    token = env.STRAPI_API_KEY,
+    method = 'GET',
+    body,
+  }: StrapiFetchOptions = {}
 ) => {
   const url = `${STRAPI_API_URL}${path}${buildSearchParams(searchParams)}`
 
-  const response = await fetchFn(url, { headers: defaultHeaders() })
+  const response = await fetchFn(url, {
+    method,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  })
 
   if (!response.ok) {
-    throw new Error(
-      `Strapi request failed – ${response.status} ${response.statusText}`
-    )
+    throw new StrapiError(response.status, response.statusText)
   }
 
   return (await response.json()) as T
 }
 
-export const getAllFeaturedProjects = (options?: StrapiFetchOptions) =>
-  strapiFetch<IStrapiApiResponse<ProjectDataAttributes>>('/projects', {
-    ...options,
-    searchParams: {
-      sort: 'sortBy:asc',
-      'filters[isFeatured][$eq]': 'true',
-      'filters[$or][0][hidden][$eq]': 'false',
-      'filters[$or][1][hidden][$null]': 'true',
-      'fields[0]': 'id',
-      'fields[1]': 'documentId',
-      'fields[2]': 'title',
-      'fields[3]': 'description',
-      'fields[4]': 'googlePlayLink',
-      'fields[5]': 'githubLink',
-      'fields[6]': 'sortBy',
-      'fields[7]': 'slug',
-      'fields[8]': 'isFeatured',
-      'fields[9]': 'platformType',
-      'fields[10]': 'projectStatus',
-      'fields[11]': 'complexity',
-      'fields[12]': 'startDate',
-      'fields[13]': 'endDate',
-      'fields[14]': 'accentColor',
-      'fields[15]': 'developerRole',
-      'fields[16]': 'appStoreLink',
-      'populate[Tags][fields][0]': 'id',
-      'populate[Tags][fields][1]': 'name',
-      'populate[cover][fields][0]': 'formats',
-      'populate[cover][fields][1]': 'url',
-      'populate[imageUrls][fields][0]': 'formats',
-      'populate[imageUrls][fields][1]': 'url',
-      'populate[video][fields][0]': 'formats',
-      'populate[video][fields][1]': 'url',
-      'populate[features][fields][0]': 'id',
-      'populate[features][fields][1]': 'flag',
-    },
-  })
+/**
+ * Strapi's REST API pages at 25 by default (`config/api.ts` in the CMS), and
+ * the site shows every project, so every list asks for the configured
+ * maximum. Before this was set, a 26th project would have silently gone
+ * missing from the site.
+ */
+const PAGE_SIZE = 100
 
+/** Prerendering dedupes on these keys; see `createMemo`. */
+const memo = createMemo(10 * 60 * 1000)
+
+const visible = {
+  'filters[$or][0][hidden][$eq]': 'false',
+  'filters[$or][1][hidden][$null]': 'true',
+}
+
+const listFields = [
+  'id',
+  'documentId',
+  'title',
+  'description',
+  'googlePlayLink',
+  'githubLink',
+  'sortBy',
+  'slug',
+  'isFeatured',
+  'platformType',
+  'projectStatus',
+  'complexity',
+  'startDate',
+  'endDate',
+  'accentColor',
+  'developerRole',
+  'appStoreLink',
+  'updatedAt',
+]
+
+/**
+ * Fields added to the CMS for the redesign. A CMS that has not been migrated
+ * yet answers 400 to a query naming them, so lists retry without them (see
+ * withRedesignFields) and the site renders, just without metrics and impact
+ * numbers, until the CMS deploy lands.
+ */
+const redesignFields = {
+  // The next free index: qs reads a sparse one like fields[100] as an object,
+  // which Strapi rejects.
+  [`fields[${listFields.length}]`]: 'metric',
+  'populate[impactStats]': 'true',
+}
+
+const withRedesignFields = async <T>(
+  query: (extra: Record<string, string>) => Promise<T>
+): Promise<T> => {
+  try {
+    return await query(redesignFields)
+  } catch (error) {
+    if (!(error instanceof StrapiError) || error.status !== 400) throw error
+    console.warn(
+      '[strapi] The CMS rejected the redesign fields (metric, impactStats); deploy portfolio-strapi-cms. Rendering without them.'
+    )
+    return query({})
+  }
+}
+
+const media = (field: string) => ({
+  [`populate[${field}][fields][0]`]: 'url',
+  [`populate[${field}][fields][1]`]: 'formats',
+  [`populate[${field}][fields][2]`]: 'width',
+  [`populate[${field}][fields][3]`]: 'height',
+})
+
+/**
+ * Every visible project, in the CMS's sort order, with what the project list,
+ * the pinned card, the skills tooltips and the search index need. The long
+ * rich-text description is left out; only the project page reads it.
+ */
 export const getAllProjects = (options?: StrapiFetchOptions) =>
-  strapiFetch<IStrapiApiResponse<ProjectDataAttributes>>('/projects', {
-    ...options,
-    searchParams: {
-      sort: 'sortBy:asc',
-      'filters[$or][0][hidden][$eq]': 'false',
-      'filters[$or][1][hidden][$null]': 'true',
-      'fields[0]': 'id',
-      'fields[1]': 'documentId',
-      'fields[2]': 'title',
-      'fields[3]': 'description',
-      'fields[4]': 'longDescription',
-      'fields[5]': 'googlePlayLink',
-      'fields[6]': 'githubLink',
-      'fields[7]': 'sortBy',
-      'fields[8]': 'slug',
-      'fields[9]': 'isFeatured',
-      'fields[10]': 'platformType',
-      'fields[11]': 'projectStatus',
-      'fields[12]': 'complexity',
-      'fields[13]': 'startDate',
-      'fields[14]': 'endDate',
-      'fields[15]': 'accentColor',
-      'fields[16]': 'developerRole',
-      'fields[17]': 'appStoreLink',
-      'populate[Tags][fields][0]': 'id',
-      'populate[Tags][fields][1]': 'name',
-      'populate[cover][fields][0]': 'formats',
-      'populate[cover][fields][1]': 'url',
-      'populate[imageUrls][fields][0]': 'formats',
-      'populate[imageUrls][fields][1]': 'url',
-      'populate[video][fields][0]': 'formats',
-      'populate[video][fields][1]': 'url',
-      'populate[features][fields][0]': 'id',
-      'populate[features][fields][1]': 'flag',
-    },
-  })
+  memo('projects', () =>
+    withRedesignFields((extra) =>
+      strapiFetch<IStrapiApiResponse<ProjectDataAttributes>>('/projects', {
+        ...options,
+        searchParams: {
+          sort: 'sortBy:asc',
+          'pagination[pageSize]': PAGE_SIZE,
+          ...visible,
+          ...Object.fromEntries(
+            listFields.map((field, i) => [`fields[${i}]`, field])
+          ),
+          'populate[Tags][fields][0]': 'name',
+          ...media('cover'),
+          ...media('imageUrls'),
+          'populate[features][fields][0]': 'flag',
+          ...extra,
+        },
+      })
+    )
+  )
 
 export interface ProjectSlugEntry {
   slug: string
@@ -178,22 +226,10 @@ export interface ProjectSlugEntry {
 export const getAllProjectSlugs = async (
   options?: StrapiFetchOptions
 ): Promise<ProjectSlugEntry[]> => {
-  const response = await strapiFetch<{ data: ProjectSlugEntry[] }>(
-    '/projects',
-    {
-      ...options,
-      searchParams: {
-        'fields[0]': 'slug',
-        // Explicit field selection means updatedAt has to be asked for. It
-        // feeds <lastmod> in the sitemap.
-        'fields[1]': 'updatedAt',
-        'filters[$or][0][hidden][$eq]': 'false',
-        'filters[$or][1][hidden][$null]': 'true',
-      },
-    }
-  )
-
-  return response.data.filter((project) => project.slug)
+  const response = await getAllProjects(options)
+  return response.data
+    .filter((project) => project.slug)
+    .map(({ slug, updatedAt }) => ({ slug, updatedAt }))
 }
 
 /** A single visible project by slug, or null when there genuinely isn't one. */
@@ -207,8 +243,9 @@ export const getProjectBySlug = async (
       ...options,
       searchParams: {
         'filters[slug][$eq]': slug,
-        'filters[$or][0][hidden][$eq]': 'false',
-        'filters[$or][1][hidden][$null]': 'true',
+        ...visible,
+        // `*` covers media and components one level deep, which is every
+        // field the project page renders, impactStats and changelog included.
         populate: '*',
       },
     }
@@ -220,4 +257,110 @@ export const getProjectBySlug = async (
   if (!response.data || response.data.length === 0) return null
 
   return response.data[0]
+}
+
+interface ReactionRow {
+  slug: string
+  emoji: ReactionEmoji
+  count: number
+}
+
+const sumReactions = (
+  rows: ReactionRow[],
+  into: Map<string, ReactionCounts>
+) => {
+  for (const row of rows) {
+    const entry = into.get(row.slug) ?? emptyReactionCounts()
+    entry[row.emoji] += row.count
+    into.set(row.slug, entry)
+  }
+  return into
+}
+
+/**
+ * Every post's reaction counts, keyed by slug, read once per build so each
+ * prerendered post ships with current numbers. The browser refreshes them
+ * from /api/reactions after paint.
+ *
+ * A 404 means the CMS predates the post-reaction collection. That is not
+ * worth failing a build over, since posts render fine with zero counts and
+ * the live refresh fills them in, so it degrades with a warning. Anything
+ * else still throws.
+ */
+export const getAllReactionCounts = (options?: StrapiFetchOptions) =>
+  memo('reactions', async () => {
+    const counts = new Map<string, ReactionCounts>()
+    let page = 1
+    let pageCount = 1
+
+    try {
+      do {
+        const response = await strapiFetch<IStrapiApiResponse<ReactionRow>>(
+          '/post-reactions',
+          {
+            ...options,
+            searchParams: {
+              'fields[0]': 'slug',
+              'fields[1]': 'emoji',
+              'fields[2]': 'count',
+              'pagination[page]': page,
+              'pagination[pageSize]': PAGE_SIZE,
+            },
+          }
+        )
+        sumReactions(response.data, counts)
+        pageCount = response.meta.pagination.pageCount
+        page++
+      } while (page <= pageCount)
+    } catch (error) {
+      if (error instanceof StrapiError && error.status === 404) {
+        console.warn(
+          '[strapi] /api/post-reactions does not exist yet, so posts show zero reactions until the CMS is deployed.'
+        )
+        return counts
+      }
+      throw error
+    }
+
+    return counts
+  })
+
+/** One post's counts, read live with the runtime reactions token. */
+export const getReactionCounts = async (
+  slug: string,
+  token: string
+): Promise<ReactionCounts> => {
+  const response = await strapiFetch<IStrapiApiResponse<ReactionRow>>(
+    '/post-reactions',
+    {
+      token,
+      searchParams: {
+        'filters[slug][$eq]': slug,
+        'fields[0]': 'slug',
+        'fields[1]': 'emoji',
+        'fields[2]': 'count',
+        'pagination[pageSize]': PAGE_SIZE,
+      },
+    }
+  )
+  return (
+    sumReactions(response.data, new Map()).get(slug) ?? emptyReactionCounts()
+  )
+}
+
+/** Adds +1 or -1 to one emoji on one post and returns the post's new counts. */
+export const react = async (
+  slug: string,
+  emoji: ReactionEmoji,
+  delta: 1 | -1,
+  token: string
+): Promise<ReactionCounts> => {
+  const response = await strapiFetch<{
+    data: { slug: string; counts: ReactionCounts }
+  }>('/post-reactions/react', {
+    token,
+    method: 'POST',
+    body: { slug, emoji, delta },
+  })
+  return response.data.counts
 }

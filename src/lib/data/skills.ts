@@ -1,77 +1,104 @@
-export type SkillCategory = 'frontend' | 'backend' | 'database' | 'cloud'
+/**
+ * The skill groups on /skills, each drawn as a git branch.
+ *
+ * `daily` is the dark chip ("daily driver"); everything else is
+ * "comfortable". `tags` lists the CMS project tags that count as using the
+ * skill, so the hover tooltip ("18 projects") is computed from the projects
+ * actually on the site instead of being typed in. A skill with no tags (or
+ * a platform skill) simply shows its level.
+ *
+ * Group order and colours follow the design. The Web group is not in the
+ * design: it holds the TypeScript frameworks from the CV that the four
+ * design groups had no place for. Confirm (see TODO_CONTENT.md).
+ */
 
-export interface ISkill {
-  /** Display name */
-  title: string
-  category: SkillCategory
-  /** 1–5 */
-  rating: number
-  favourite: boolean
+export type SkillTone = 'blue' | 'purple' | 'cyan' | 'green' | 'orange'
+
+export interface Skill {
+  name: string
+  daily: boolean
+  tags?: string[]
+  /** Count projects by platform instead of tags. */
+  platform?: 'mobile'
 }
 
-/** The order the categorised views write the groups out in. */
-export const skillCategoryOrder: SkillCategory[] = [
-  'frontend',
-  'backend',
-  'database',
-  'cloud',
-]
+export interface SkillGroup {
+  name: string
+  branch: string
+  tone: SkillTone
+  skills: Skill[]
+}
 
-/**
- * Skills, stored here rather than in Strapi.
- *
- * Every page on this site is prerendered, so CMS content already needs a
- * rebuild to appear — the CMS was buying nothing an edit here does not, while
- * costing a request on every build and a dependency that can fail one. Projects
- * stay in Strapi: dozens of fields, uploaded media, rich text, frequent change.
- * A list of names and ratings does not.
- *
- * The first nineteen were read out of the running Strapi instance rather than
- * retyped, and **kept in the order Strapi returned them** — the hexagon view
- * renders this array directly, so the order is visible on the page. The six
- * after them were added in October 2026 to match the CV: stack the KDS work has
- * run on for years (TypeScript, Angular, Python, SignalR) or recently moved to
- * (Svelte), plus the AI work. Appended rather than interleaved so the existing
- * layout does not shuffle.
- *
- * `category` is stored rather than derived. Strapi held only title, rating and
- * isFavourite, so the cards view worked the grouping out by testing each title
- * against a list of substrings per category — which silently dropped anything
- * none of the lists mentioned. Storing it means an unassigned skill is a type
- * error instead of a row that quietly vanishes.
- *
- * The one edit to the data: Strapi has "Microservices" stored with a leading
- * space, which rendered inside the label. Trimmed here.
- */
-export const skills: ISkill[] = [
-  { title: 'ASP.NET Core', category: 'backend', rating: 4, favourite: true },
-  { title: 'Cloud Computing', category: 'cloud', rating: 4, favourite: true },
-  { title: 'Dart', category: 'frontend', rating: 5, favourite: true },
-  { title: 'Docker', category: 'cloud', rating: 5, favourite: true },
-  { title: 'Flutter', category: 'frontend', rating: 5, favourite: true },
-  { title: 'Firebase', category: 'cloud', rating: 4, favourite: false },
-  { title: 'Git', category: 'cloud', rating: 5, favourite: false },
-  { title: 'Golang', category: 'backend', rating: 3, favourite: false },
+export const skillGroups: SkillGroup[] = [
   {
-    title: 'Google Cloud Platform',
-    category: 'cloud',
-    rating: 3,
-    favourite: false,
+    name: 'Mobile',
+    branch: 'mobile',
+    tone: 'blue',
+    skills: [
+      { name: 'Flutter', daily: true, tags: ['Flutter'] },
+      { name: 'Dart', daily: true, tags: ['Dart', 'Flutter'] },
+      { name: 'React Native', daily: true, tags: ['React Native'] },
+      { name: 'Kotlin', daily: false, tags: ['Kotlin'] },
+      { name: 'Android / iOS', daily: true, platform: 'mobile' },
+      { name: 'Firebase', daily: false, tags: ['Firebase'] },
+    ],
   },
-  { title: 'Kotlin', category: 'frontend', rating: 3, favourite: false },
-  { title: 'Kubernetes', category: 'cloud', rating: 3, favourite: false },
-  { title: 'Microservices', category: 'backend', rating: 3, favourite: false },
-  { title: 'Next.js', category: 'frontend', rating: 5, favourite: true },
-  { title: 'PostgreSQL', category: 'database', rating: 5, favourite: true },
-  { title: 'React', category: 'frontend', rating: 5, favourite: true },
-  { title: 'React Native', category: 'frontend', rating: 5, favourite: true },
-  { title: 'Redis', category: 'database', rating: 5, favourite: false },
-  { title: 'Rust', category: 'backend', rating: 3, favourite: false },
-  { title: 'SQL Server', category: 'database', rating: 4, favourite: false },
-  { title: 'TypeScript', category: 'frontend', rating: 5, favourite: true },
-  { title: 'Angular', category: 'frontend', rating: 4, favourite: false },
-  { title: 'Svelte', category: 'frontend', rating: 4, favourite: false },
-  { title: 'Python', category: 'backend', rating: 4, favourite: false },
-  { title: 'SignalR', category: 'backend', rating: 4, favourite: false },
-  { title: 'AI / LLMs', category: 'backend', rating: 4, favourite: true },
+  {
+    name: 'Backend',
+    branch: 'backend',
+    tone: 'purple',
+    skills: [
+      {
+        name: 'ASP.NET Core',
+        daily: true,
+        tags: ['ASP.NET Core', 'ASP.NET Core Web API', '.NET 10', 'C#'],
+      },
+      { name: 'Go', daily: true, tags: ['Go', 'Golang'] },
+      { name: 'Node.js', daily: false, tags: ['Node.js'] },
+      { name: 'SignalR', daily: false, tags: ['SignalR'] },
+      { name: 'PostgreSQL', daily: true, tags: ['PostgreSQL'] },
+      { name: 'SQL Server', daily: false, tags: ['SQL Server'] },
+      { name: 'Redis', daily: false, tags: ['Redis'] },
+    ],
+  },
+  {
+    name: 'Web',
+    branch: 'web',
+    tone: 'cyan',
+    skills: [
+      { name: 'TypeScript', daily: true, tags: ['TypeScript', 'Next.js'] },
+      { name: 'Angular', daily: false, tags: ['Angular'] },
+      { name: 'Next.js', daily: false, tags: ['Next.js'] },
+      { name: 'Svelte', daily: false, tags: ['Svelte'] },
+      { name: 'React', daily: false, tags: ['React'] },
+    ],
+  },
+  {
+    name: 'Infra',
+    branch: 'devops',
+    tone: 'green',
+    skills: [
+      { name: 'Docker', daily: true },
+      { name: 'Traefik', daily: false },
+      { name: 'GitLab CI/CD', daily: true },
+      { name: 'Hetzner VPS', daily: false },
+      { name: 'Kubernetes', daily: false },
+    ],
+  },
+  {
+    name: 'AI',
+    branch: 'ai',
+    tone: 'orange',
+    skills: [
+      {
+        name: 'LLM integrations',
+        daily: true,
+        tags: ['AI', 'LLM', 'LLM Gateway'],
+      },
+      { name: 'MCP servers', daily: true, tags: ['MCP'] },
+      { name: 'OpenAI', daily: false },
+      { name: 'Gemini', daily: false, tags: ['Gemini'] },
+      { name: 'Claude', daily: false },
+    ],
+  },
 ]

@@ -1,4 +1,8 @@
 <script lang="ts">
+  import Globe from '@lucide/svelte/icons/globe'
+  import Mail from '@lucide/svelte/icons/mail'
+  import MapPin from '@lucide/svelte/icons/map-pin'
+
   import LanguagesCard from '#components/about/LanguagesCard.svelte'
   import PageGlow from '#components/chrome/PageGlow.svelte'
   import Avatar from '#components/ui/Avatar.svelte'
@@ -96,7 +100,10 @@
       <h2 id="about-title" class="title">About</h2>
       <p class="bio">{readme.bio}</p>
       <ul class="meta">
-        <li><span aria-hidden="true">⌖</span> {profile.location}</li>
+        <li>
+          <MapPin size={14} strokeWidth={1.75} aria-hidden="true" />
+          {profile.location}
+        </li>
         <li>
           <button
             type="button"
@@ -104,12 +111,15 @@
             onclick={() => copyText(profile.email, 'email copied')}
             title="Copy email"
           >
-            <span aria-hidden="true">✉</span>
+            <Mail size={14} strokeWidth={1.75} aria-hidden="true" />
             {profile.email}
           </button>
         </li>
         <li>
-          <a href="/"><span aria-hidden="true">⌂</span> {profile.site}</a>
+          <a href="/"
+            ><Globe size={14} strokeWidth={1.75} aria-hidden="true" />
+            {profile.site}</a
+          >
         </li>
       </ul>
     </section>
@@ -336,11 +346,24 @@
     color: var(--ink-2);
   }
 
+  .meta li,
+  .meta a,
+  .copy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   .meta a,
   .copy {
     color: inherit;
     text-align: left;
     overflow-wrap: anywhere;
+  }
+
+  .meta :global(svg) {
+    flex: none;
+    color: var(--ink-3);
   }
 
   .meta a:hover,
@@ -359,16 +382,18 @@
     line-height: 1.4;
   }
 
+  /* A fixed badge column, so every label starts at the same x however wide
+     its number is; each badge sits on its label's first line. */
   .releases li {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: 50px minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 12px;
   }
 
   .version {
-    flex: none;
-    margin-top: 2px;
-    padding: 2px 7px;
+    padding: 2px 4px;
+    text-align: center;
     border-radius: 999px;
     border: 1px solid var(--green);
     color: var(--green-ink);

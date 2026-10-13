@@ -1,8 +1,18 @@
 <!doctype html>
-<html lang="en" class="scroll-smooth!">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="theme-color"
+      content="#fafaf8"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0e0f12"
+      media="(prefers-color-scheme: dark)"
+    />
     <!--
       Browsers and crawlers request /favicon.ico by convention regardless of
       what is declared here, so the file exists and is named explicitly. The
@@ -17,40 +27,62 @@
       sizes="512x512"
     />
     <link rel="apple-touch-icon" href="%sveltekit.assets%/apple-icon.png" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Pranta Dutta · Notes from shipping"
+      href="/blogs/rss.xml"
+    />
 
-    <!-- Resource hints for better performance -->
     <link rel="preconnect" href="https://res.cloudinary.com" />
-    <link rel="preconnect" href="https://pranta.vps.webdock.cloud" />
-    <link rel="dns-prefetch" href="https://placehold.co" />
+    <link rel="preconnect" href="https://media2.dev.to" />
 
     <!--
-      Applies the stored theme before first paint so the page never flashes the
-      wrong palette. Ported verbatim from the Next layout's inline script; it
-      has to stay inline and synchronous in <head> to beat the first paint.
+      Runs before first paint, synchronously, so it has to stay inline.
+
+      1. Theme: the stored choice, else the OS preference, as data-theme on
+         <html>, so the page never flashes the wrong palette.
+      2. Motion: data-js says JavaScript is running, which is what allows the
+         entrance animations to start hidden. data-ready releases them once
+         the two webfonts have loaded, so nothing animates against fallback
+         metrics and then jumps. The 900ms cap means a slow font never holds
+         the page hidden. Without JavaScript neither attribute is set and
+         every element simply renders.
     -->
     <script>
-      try {
-        const storageKey = 'theme'
-        const stored = window.localStorage.getItem(storageKey)
-        const prefersDark = window.matchMedia(
-          '(prefers-color-scheme: dark)'
-        ).matches
-        if (stored === 'dark' || (!stored && prefersDark)) {
-          document.documentElement.classList.add('dark')
-        } else {
-          document.documentElement.classList.remove('dark')
+      ;(function () {
+        var root = document.documentElement
+        try {
+          var stored = localStorage.getItem('theme')
+          var dark = stored
+            ? stored === 'dark'
+            : matchMedia('(prefers-color-scheme: dark)').matches
+          root.dataset.theme = dark ? 'dark' : 'light'
+        } catch (error) {
+          root.dataset.theme = 'light'
         }
-      } catch (error) {
-        // Fail silently – theming will fall back to default.
-      }
+
+        root.dataset.js = ''
+        var done = false
+        var ready = function () {
+          if (done) return
+          done = true
+          root.dataset.ready = ''
+        }
+        setTimeout(ready, 900)
+        if (!document.fonts || !document.fonts.load) return ready()
+        document.addEventListener('DOMContentLoaded', function () {
+          Promise.all([
+            document.fonts.load('700 1em Geist'),
+            document.fonts.load('400 1em "Geist Mono"'),
+          ]).then(ready, ready)
+        })
+      })()
     </script>
 
     %sveltekit.head%
   </head>
-  <body
-    data-sveltekit-preload-data="hover"
-    class="mono dark:text-opacity-90 bg-gray-50 text-gray-950 dark:bg-gray-900 dark:text-gray-50"
-  >
+  <body data-sveltekit-preload-data="hover">
     <div style="display: contents">%sveltekit.body%</div>
   </body>
 </html>

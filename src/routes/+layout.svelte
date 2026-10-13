@@ -1,47 +1,140 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
+  import { onMount } from 'svelte'
+  import { afterNavigate, onNavigate } from '$app/navigation'
+  import { page } from '$app/state'
 
   import '../app.css'
   // Imported for their built URLs so the preload hints below can name the
-  // fingerprinted files. See the <svelte:head> block.
-  import jetbrainsMonoUrl from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url'
-  import playfairUrl from '@fontsource-variable/playfair-display/files/playfair-display-latin-wght-normal.woff2?url'
-  import Footer from '$components/Footer.svelte'
-  import Header from '$components/Header.svelte'
+  // fingerprinted files.
+  import geistUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url'
+  import geistMonoUrl from '@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url'
+  import Nav from '$components/chrome/Nav.svelte'
+  import NavProgress from '$components/chrome/NavProgress.svelte'
+  import Toaster from '$components/chrome/Toaster.svelte'
   import StructuredData from '$components/StructuredData.svelte'
-  import ThemeSwitchLazy from '$components/ThemeSwitchLazy.svelte'
-  import { setActiveSectionState } from '$lib/context/active-section.svelte'
   import { setThemeState } from '$lib/context/theme.svelte'
+  import { ui } from '$lib/context/ui.svelte'
+  import { prefersReducedMotion } from '$lib/motion'
+  import { siteIndex } from '$lib/site-index.svelte'
+  import { startSmoothScroll } from '$lib/smooth-scroll'
 
   let { children }: { children: Snippet } = $props()
 
   setThemeState()
-  setActiveSectionState()
+
+  /**
+   * The palette and the mobile menu are only needed once someone opens them,
+   * so they stay out of the code every page evaluates on load. They are
+   * fetched when the page goes idle (or the moment one is opened first), so
+   * opening still feels instant.
+   */
+  type Lazy = typeof import('$components/chrome/CommandPalette.svelte').default
+  let CommandPalette = $state<Lazy | null>(null)
+  let MobileMenu = $state<Lazy | null>(null)
+
+  const loadOverlays = () =>
+    Promise.all([
+      import('$components/chrome/CommandPalette.svelte'),
+      import('$components/chrome/MobileMenu.svelte'),
+    ]).then(([palette, menu]) => {
+      CommandPalette = palette.default
+      MobileMenu = menu.default
+    })
+
+  $effect(() => {
+    if ((ui.paletteOpen || ui.menuOpen) && !CommandPalette) loadOverlays()
+  })
+
+  onMount(() => {
+    let stop = () => {}
+    startSmoothScroll().then((cleanup) => (stop = cleanup))
+
+    // Warm the overlays and the search index once the page is idle, so the
+    // palette and the mobile menu's counts are instant when first opened.
+    const idle =
+      window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 1500))
+    idle(() => {
+      loadOverlays()
+      siteIndex.load().catch(() => {})
+    })
+
+    return () => stop()
+  })
+
+  /**
+   * Route changes run through the View Transitions API where it exists
+   * (MOTION §3): the old page fades out over 160ms while the new one plays
+   * its own entrances, and anything sharing a view-transition-name (project
+   * screenshots and titles, blog covers and titles, the nav avatar) morphs
+   * between the two. Query-string changes (filters, search) are not page
+   * changes and skip it.
+   */
+  onNavigate((navigation) => {
+    if (!document.startViewTransition || prefersReducedMotion.current) return
+    if (navigation.from?.url.pathname === navigation.to?.url.pathname) return
+
+    return new Promise((resolve) => {
+      document.startViewTransition(async () => {
+        resolve()
+        await navigation.complete
+      })
+    })
+  })
+
+  afterNavigate(() => {
+    ui.closeMenu()
+    ui.closePalette()
+  })
+
+  const isTyping = (target: EventTarget | null) =>
+    target instanceof HTMLElement &&
+    (target.isContentEditable ||
+      ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
+
+  /** ⌘K / Ctrl+K anywhere, or `/` when not typing (the blog uses `/` itself). */
+  const onKeydown = (event: KeyboardEvent) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault()
+      if (ui.paletteOpen) ui.closePalette()
+      else ui.openPalette()
+      return
+    }
+
+    if (
+      event.key === '/' &&
+      !event.metaKey &&
+      !event.ctrlKey &&
+      !event.altKey &&
+      !isTyping(event.target) &&
+      !ui.paletteOpen &&
+      page.route.id !== '/blogs'
+    ) {
+      event.preventDefault()
+      ui.openPalette()
+    }
+  }
 </script>
+
+<svelte:window onkeydown={onKeydown} />
 
 <svelte:head>
   <!--
-    Preload the two faces that render above the fold: JetBrains Mono (the whole
-    body) and Playfair Display (the "Pranta" heading).
-
-    Without these the browser cannot discover them until app.css has downloaded
-    and parsed, which made a three-hop critical chain — HTML, then CSS, then
-    fonts — and pushed First Contentful Paint to 5s. next/font emitted the same
-    hints automatically; this is the manual equivalent.
-
-    `crossorigin` is required even same-origin: font requests are CORS-mode, and
-    a preload without it is treated as a different request and fetched twice.
+    Preload both faces: Geist sets every headline and Geist Mono the nav, so
+    both are above the fold on every page. Without the hints the browser only
+    discovers them after app.css has parsed. `crossorigin` is required even
+    same-origin, or the font is fetched twice.
   -->
   <link
     rel="preload"
-    href={jetbrainsMonoUrl}
+    href={geistUrl}
     as="font"
     type="font/woff2"
     crossorigin="anonymous"
   />
   <link
     rel="preload"
-    href={playfairUrl}
+    href={geistMonoUrl}
     as="font"
     type="font/woff2"
     crossorigin="anonymous"
@@ -53,28 +146,76 @@
     name="robots"
     content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1"
   />
-  <meta property="og:site_name" content="Pranta Dutta Portfolio" />
+  <meta property="og:site_name" content="Pranta Dutta" />
   <meta property="og:locale" content="en_US" />
 </svelte:head>
 
-<div class="relative pt-20 sm:pt-24">
-  <!-- Background gradient effects for portfolio pages -->
-  <div class="pointer-events-none fixed inset-0 -z-10 hidden lg:block">
-    <div
-      class="from-primary-400/15 via-secondary-400/15 to-primary-400/15 absolute -top-16 right-40 h-96 w-[24rem] rounded-full bg-linear-to-br opacity-75 blur-[100px]"
-    ></div>
-    <div
-      class="from-secondary-400/10 via-accent-400/10 to-primary-400/10 absolute top-24 -left-60 h-120 w-152 rounded-full bg-linear-to-br opacity-70 blur-[100px]"
-    ></div>
-    <div
-      class="from-primary-400/10 to-primary-500/10 absolute -right-32 bottom-32 h-72 w-md rounded-full bg-linear-to-br opacity-60 blur-[100px]"
-    ></div>
-  </div>
+<div class="app">
+  <div class="grid-bg" aria-hidden="true"></div>
+  <a class="skip" href="#main">Skip to content</a>
 
-  <Header />
-  {@render children()}
-  <Footer />
-  <ThemeSwitchLazy />
+  <NavProgress />
+  <Nav />
+
+  <main id="main" tabindex="-1">
+    {@render children()}
+  </main>
+
+  {#if MobileMenu}<MobileMenu />{/if}
+  {#if CommandPalette}<CommandPalette />{/if}
+  <Toaster />
 </div>
 
 <StructuredData />
+
+<style>
+  .app {
+    position: relative;
+    isolation: isolate;
+    min-height: 100dvh;
+    overflow-x: clip;
+  }
+
+  /* The 40px grid behind everything. It scrolls with the page, like the
+     artboards in the design. */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: var(--grid-opacity);
+  }
+
+  main {
+    padding-top: 16px;
+    outline: none;
+  }
+
+  .skip {
+    position: fixed;
+    z-index: 100;
+    top: 8px;
+    left: 8px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: var(--ink);
+    color: var(--on-ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    translate: 0 -200%;
+  }
+
+  .skip:focus {
+    translate: none;
+  }
+
+  @media (max-width: 1023px) {
+    main {
+      padding-top: 8px;
+    }
+  }
+</style>

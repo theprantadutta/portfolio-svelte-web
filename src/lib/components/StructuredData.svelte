@@ -1,50 +1,36 @@
 <script lang="ts">
+  import { profile, socials } from '$lib/data/profile'
+  import { SITE_URL } from '$lib/site'
+
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Pranta Dutta',
-    jobTitle: 'Full Stack Developer',
-    description:
-      'Skilled full-stack developer with 3+ years of experience in Flutter, React Native, and modern web technologies.',
-    url: 'https://pranta.dev',
-    image: 'https://pranta.dev/profile.png',
-    sameAs: [
-      'https://github.com/prantadutta',
-      'https://linkedin.com/in/prantadutta',
-    ],
+    name: profile.name,
+    jobTitle: profile.role,
+    description: `${profile.role} with ${profile.years} years of experience building production mobile apps, backend APIs and AI-powered systems.`,
+    url: SITE_URL,
+    image: `${SITE_URL}/profile.png`,
+    email: profile.email,
+    sameAs: socials
+      .filter((social) => social.id !== 'email')
+      .map((social) => social.url),
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'Bangladesh',
+      addressLocality: profile.city,
+      addressCountry: 'BD',
     },
-    email: 'prantadutta1997@gmail.com',
     knowsAbout: [
       'Flutter',
+      'Dart',
       'React Native',
-      'JavaScript',
+      'ASP.NET Core',
+      'Go',
       'TypeScript',
-      'React.js',
-      'Next.js',
-      'Node.js',
       'Mobile Development',
-      'Web Development',
-      'Full Stack Development',
+      'Backend Development',
+      'LLM Integrations',
+      'DevOps',
     ],
-    hasOccupation: {
-      '@type': 'Occupation',
-      name: 'Full Stack Developer',
-      occupationLocation: {
-        '@type': 'Country',
-        name: 'Bangladesh',
-      },
-      skills: [
-        'Flutter Development',
-        'React Native Development',
-        'Web Development',
-        'Mobile App Development',
-        'JavaScript Programming',
-        'TypeScript Programming',
-      ],
-    },
   }
 
   // A literal `<` in the payload could close the tag early once inlined, so
@@ -59,6 +45,6 @@
 </script>
 
 <svelte:head>
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -- static, escaped above -->
   {@html tag}
 </svelte:head>

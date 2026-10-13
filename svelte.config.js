@@ -27,11 +27,16 @@ const config = {
 
     alias: {
       $components: 'src/lib/components',
-      $icons: 'src/lib/icons',
     },
 
     // Slightly shorter than the default and stable across builds.
     appDir: '_app',
+
+    // Inline every stylesheet into the prerendered HTML. The global sheet is
+    // under 8 KB brotli and the per-page ones are smaller, so a page costs a
+    // few KB more and loses its render-blocking CSS round trips, which
+    // Lighthouse measured at ~330ms each on a mobile connection.
+    inlineStyleThreshold: Infinity,
   },
 }
 

@@ -1,46 +1,64 @@
 import { getContext, setContext } from 'svelte'
 import { browser } from '$app/environment'
+import { prefersReducedMotion } from 'svelte/motion'
 
 type Theme = 'light' | 'dark'
 
 const KEY = Symbol('theme')
+const STORAGE_KEY = 'theme'
 
 /**
- * Dark/light theme with localStorage persistence and system-preference
- * fallback — the runes equivalent of the old ThemeContextProvider.
+ * Light/dark theme, persisted to localStorage and defaulting to the OS
+ * preference.
  *
- * The class in `<html>` is applied before first paint by the inline script in
- * app.html, so this only has to stay in sync with what that script already
- * decided. Reading it back from the DOM (rather than defaulting to 'dark' and
- * correcting in an effect, as the React version did) means the toggle icon is
- * correct on its very first render instead of flipping a frame later.
+ * `data-theme` on <html> is set before first paint by the inline script in
+ * app.html; this class only reads it back and keeps it in sync. The toggle's
+ * icons are switched by CSS from that same attribute, so the prerendered page
+ * already shows the right one and nothing swaps after hydration.
  */
 export class ThemeState {
-  theme = $state<Theme>('dark')
+  theme = $state<Theme>('light')
 
   constructor() {
     if (!browser) return
+    this.theme =
+      document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'
+  }
 
-    const stored = window.localStorage.getItem('theme') as Theme | null
-    if (stored === 'light' || stored === 'dark') {
-      this.theme = stored
-    } else {
-      this.theme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
+  #apply(theme: Theme) {
+    this.theme = theme
+    document.documentElement.dataset.theme = theme
+    try {
+      localStorage.setItem(STORAGE_KEY, theme)
+    } catch {
+      // Private mode or storage disabled: the switch still works this visit.
+    }
+  }
+
+  /**
+   * Switches theme. With a point (the toggle button's centre), the new theme
+   * is revealed in a circle growing from it (MOTION §4 "Theme toggle"); where
+   * view transitions are unsupported, or motion is reduced, colours
+   * cross-fade instead.
+   */
+  toggle = (origin?: { x: number; y: number }) => {
+    const next: Theme = this.theme === 'light' ? 'dark' : 'light'
+    const root = document.documentElement
+
+    if (!document.startViewTransition || prefersReducedMotion.current) {
+      root.dataset.themeFade = ''
+      this.#apply(next)
+      setTimeout(() => delete root.dataset.themeFade, 250)
+      return
     }
 
-    this.#apply()
-  }
-
-  #apply() {
-    document.documentElement.classList.toggle('dark', this.theme === 'dark')
-  }
-
-  toggleTheme = () => {
-    this.theme = this.theme === 'light' ? 'dark' : 'light'
-    window.localStorage.setItem('theme', this.theme)
-    this.#apply()
+    if (origin) {
+      root.style.setProperty('--vt-x', `${origin.x}px`)
+      root.style.setProperty('--vt-y', `${origin.y}px`)
+    }
+    root.dataset.vt = 'theme'
+    const transition = document.startViewTransition(() => this.#apply(next))
+    transition.finished.finally(() => delete root.dataset.vt)
   }
 }
 

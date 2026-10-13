@@ -2,6 +2,7 @@
   import PageGlow from '#components/chrome/PageGlow.svelte'
   import CommitGraph from '#components/git/CommitGraph.svelte'
   import Heatmap from '#components/git/Heatmap.svelte'
+  import HeroPhones from '#components/projects/HeroPhones.svelte'
   import CvButton from '#components/ui/CvButton.svelte'
   import WordReveal from '#components/ui/WordReveal.svelte'
   import { heroStats, home, profile } from '#lib/data/profile.js'
@@ -106,7 +107,12 @@
       </div>
     </div>
 
-    <Heatmap activity={data.activity} stats={heroStats} />
+    <div class="side">
+      <HeroPhones phones={data.heroPhones} />
+      <div class="heat">
+        <Heatmap activity={data.activity} stats={heroStats} />
+      </div>
+    </div>
   </section>
 
   <div class="graph">
@@ -132,6 +138,20 @@
     grid-template-columns: minmax(0, 1fr) 520px;
     gap: 48px;
     align-items: end;
+  }
+
+  /* The phones stand behind the heatmap card, so the card sits on top. */
+  .side {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-self: stretch;
+    min-width: 0;
+  }
+
+  .heat {
+    position: relative;
+    z-index: 1;
   }
 
   .intro {

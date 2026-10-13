@@ -87,6 +87,12 @@ export const home = {
   lead: "I'm Pranta, a Flutter & mobile engineer. I build the apps, the APIs and the infra between them, and I've had code merged into the Flutter SDK.",
   leadShort:
     'Flutter & mobile engineer. Apps, APIs and the infra between them.',
+  /**
+   * The three phones fanned behind the heatmap on desktop: left, centre,
+   * right, by project slug. Each shows its project's first screenshot in the
+   * CMS's order; a project without screenshots is skipped.
+   */
+  heroPhones: ['pinpoint', 'snake-classic', 'odyssey'],
 }
 
 /** /about, rendered as a README. */

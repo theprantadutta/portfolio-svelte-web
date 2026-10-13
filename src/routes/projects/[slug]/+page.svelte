@@ -6,10 +6,11 @@
   import Changelog from '#components/projects/Changelog.svelte'
   import Gallery from '#components/projects/Gallery.svelte'
   import Screens from '#components/projects/Screens.svelte'
+  import StoreBadge, {
+    type StoreKind,
+  } from '#components/projects/StoreBadge.svelte'
   import SegmentedTabs from '#components/projects/SegmentedTabs.svelte'
   import StrapiBlocks from '#components/StrapiBlocks.svelte'
-  import BrandIcon from '#components/ui/BrandIcon.svelte'
-  import type { BrandName } from '#lib/brand-icons.js'
   import WordReveal from '#components/ui/WordReveal.svelte'
   import { languageColor } from '#lib/projects.js'
   import { SITE_URL } from '#lib/site.js'
@@ -131,21 +132,12 @@
   const links = $derived(
     [
       detail.googlePlayLink && {
-        label: 'Google Play',
-        icon: 'google-play',
+        kind: 'google-play',
         href: detail.googlePlayLink,
       },
-      detail.appStoreLink && {
-        label: 'App Store',
-        icon: 'apple',
-        href: detail.appStoreLink,
-      },
-      detail.githubLink && {
-        label: 'source',
-        icon: 'github',
-        href: detail.githubLink,
-      },
-    ].filter(Boolean) as { label: string; icon: BrandName; href: string }[]
+      detail.appStoreLink && { kind: 'app-store', href: detail.appStoreLink },
+      detail.githubLink && { kind: 'github', href: detail.githubLink },
+    ].filter(Boolean) as { kind: StoreKind; href: string }[]
   )
 
   const status = $derived(STATUS[project.status])
@@ -291,14 +283,7 @@
         {#if links.length}
           <ul class="links">
             {#each links as link (link.href)}
-              <li>
-                <a href={link.href} target="_blank" rel="noopener noreferrer">
-                  <span class="glyph" aria-hidden="true"
-                    ><BrandIcon name={link.icon} size={14} /></span
-                  >{link.label}
-                  <span class="ne" aria-hidden="true">↗</span>
-                </a>
-              </li>
+              <li><StoreBadge kind={link.kind} href={link.href} /></li>
             {/each}
           </ul>
         {/if}
@@ -416,38 +401,18 @@
     color: var(--ink-2);
   }
 
+  /* Equal-width badges, two to a row: the stores together, source below. */
   .links {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 8px;
-    margin: 4px 0 0;
+    margin: 6px 0 0;
     padding: 0;
     list-style: none;
-    font-family: var(--font-mono);
-    font-size: 13px;
   }
 
-  .links a {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 28px;
-    color: var(--blue-ink);
-  }
-
-  .glyph {
-    display: inline-grid;
-    place-items: center;
-    width: 14px;
-    color: var(--ink-3);
-  }
-
-  .ne {
-    transition: transform var(--dur-2) var(--ease-out);
-  }
-
-  .links a:hover .ne {
-    transform: translate(2px, -2px);
+  .links :global(.badge) {
+    width: 100%;
   }
 
   .impact {

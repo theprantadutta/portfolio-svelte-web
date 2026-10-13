@@ -1,5 +1,8 @@
 <script lang="ts">
   import Phone from '#components/projects/Phone.svelte'
+  import StoreBadge, {
+    type StoreKind,
+  } from '#components/projects/StoreBadge.svelte'
   import { tilt } from '#lib/motion/pointer.js'
   import { languageColor, type ProjectSummary } from '#lib/projects.js'
 
@@ -30,6 +33,16 @@
         : []),
     ].slice(0, 3)
   )
+
+  /** The store and source badges this project has links for. */
+  const stores = $derived.by(() => {
+    const all: [StoreKind, string | null][] = [
+      ['google-play', project.links.googlePlay],
+      ['app-store', project.links.appStore],
+      ['github', project.links.github],
+    ]
+    return all.flatMap(([kind, href]) => (href ? [{ kind, href }] : []))
+  })
 
   const STATUS_TONE = {
     live: 'green',
@@ -105,6 +118,14 @@
         >
       {/if}
     </div>
+
+    {#if stores.length}
+      <ul class="stores" aria-label="Get {project.title}">
+        {#each stores as store (store.kind)}
+          <li><StoreBadge kind={store.kind} href={store.href} /></li>
+        {/each}
+      </ul>
+    {/if}
   </div>
 
   {#if project.featureGraphic}
@@ -246,6 +267,18 @@
 
   .actions .btn {
     padding: 12px 18px;
+  }
+
+  /* Above the stretched title link, like the buttons. */
+  .stores {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   /* Real screenshots are full-length, so the phone hangs from the top and

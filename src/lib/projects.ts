@@ -56,6 +56,12 @@ export interface ProjectSummary {
   featureGraphic: ImageRef | null
   /** In the order the CMS gives them (see projectScreenshots) */
   screenshots: Screenshot[]
+  /** Store and source links, null when the project has none */
+  links: {
+    googlePlay: string | null
+    appStore: string | null
+    github: string | null
+  }
 }
 
 const MOBILE_PLATFORMS: PlatformType[] = ['android', 'ios', 'android-and-ios']
@@ -308,6 +314,11 @@ export const toProjectSummary = (
     isFeatured: Boolean(project.isFeatured),
     cover,
     featureGraphic: asFeatureGraphic(cover),
+    links: {
+      googlePlay: project.googlePlayLink?.trim() || null,
+      appStore: project.appStoreLink?.trim() || null,
+      github: project.githubLink?.trim() || null,
+    },
     screenshots: projectScreenshots(project),
   }
 }

@@ -31,6 +31,10 @@ export interface ImageRef {
   srcset?: string
 }
 
+export interface Screenshot extends ImageRef {
+  caption: string | null
+}
+
 export interface ProjectSummary {
   slug: string
   title: string
@@ -48,7 +52,10 @@ export interface ProjectSummary {
   year: string
   isFeatured: boolean
   cover: ImageRef | null
-  screenshots: ImageRef[]
+  /** The cover, when it is a 1024 × 500 Google Play feature graphic */
+  featureGraphic: ImageRef | null
+  /** In the order the CMS gives them (see projectScreenshots) */
+  screenshots: Screenshot[]
 }
 
 const MOBILE_PLATFORMS: PlatformType[] = ['android', 'ios', 'android-and-ios']
@@ -233,13 +240,57 @@ const isImage = (media: { url?: string; mime?: string }) =>
     ? media.mime.startsWith('image/')
     : !/\.(mp4|webm|mov)$/i.test(media.url ?? '')
 
-export const toProjectSummary = (
-  project: ProjectDataAttributes
-): ProjectSummary => {
-  const screenshots = (project.imageUrls ?? [])
+/**
+ * The ordered `screenshots` component when the project has any entries,
+ * lowest `order` first (ties keep their position in the list); otherwise the
+ * older `imageUrls` field in upload order, which every project used before
+ * the component existed.
+ */
+export const projectScreenshots = (
+  project: Pick<ProjectDataAttributes, 'screenshots' | 'imageUrls'>
+): Screenshot[] => {
+  const ordered = (project.screenshots ?? [])
+    .map((entry, position) => ({ entry, position }))
+    .filter(({ entry }) => entry.image)
+    .sort(
+      (a, b) =>
+        (a.entry.order ?? Infinity) - (b.entry.order ?? Infinity) ||
+        a.position - b.position
+    )
+    .map(({ entry }) => {
+      const ref = toImageRef(entry.image)
+      return ref && { ...ref, caption: entry.caption?.trim() || null }
+    })
+    .filter((shot): shot is Screenshot => shot !== null)
+
+  if (ordered.length) return ordered
+
+  return (project.imageUrls ?? [])
     .filter((media) => isImage(media as { url?: string; mime?: string }))
     .map((media) => toImageRef(media))
     .filter((ref): ref is ImageRef => ref !== null)
+    .map((ref) => ({ ...ref, caption: null }))
+}
+
+/** Google Play's feature graphic: 1024 × 500. */
+const FEATURE_GRAPHIC_RATIO = 1024 / 500
+
+/**
+ * The cover, if it has the feature graphic's shape (within 3%, so a
+ * 2048 × 1000 export counts too). Older covers are mostly phone
+ * screenshots, which the gallery shows instead.
+ */
+const asFeatureGraphic = (cover: ImageRef | null): ImageRef | null =>
+  cover &&
+  cover.height > 0 &&
+  Math.abs(cover.width / cover.height / FEATURE_GRAPHIC_RATIO - 1) <= 0.03
+    ? cover
+    : null
+
+export const toProjectSummary = (
+  project: ProjectDataAttributes
+): ProjectSummary => {
+  const cover = toImageRef(project.cover)
 
   return {
     slug: project.slug,
@@ -255,8 +306,9 @@ export const toProjectSummary = (
     status: projectStatus(project),
     year: yearOf(project.startDate),
     isFeatured: Boolean(project.isFeatured),
-    cover: toImageRef(project.cover),
-    screenshots,
+    cover,
+    featureGraphic: asFeatureGraphic(cover),
+    screenshots: projectScreenshots(project),
   }
 }
 

@@ -154,33 +154,6 @@ const listFields = [
   'updatedAt',
 ]
 
-/**
- * Fields added to the CMS for the redesign. A CMS that has not been migrated
- * yet answers 400 to a query naming them, so lists retry without them (see
- * withRedesignFields) and the site renders, just without metrics and impact
- * numbers, until the CMS deploy lands.
- */
-const redesignFields = {
-  // The next free index: qs reads a sparse one like fields[100] as an object,
-  // which Strapi rejects.
-  [`fields[${listFields.length}]`]: 'metric',
-  'populate[impactStats]': 'true',
-}
-
-const withRedesignFields = async <T>(
-  query: (extra: Record<string, string>) => Promise<T>
-): Promise<T> => {
-  try {
-    return await query(redesignFields)
-  } catch (error) {
-    if (!(error instanceof StrapiError) || error.status !== 400) throw error
-    console.warn(
-      '[strapi] The CMS rejected the redesign fields (metric, impactStats); deploy portfolio-strapi-cms. Rendering without them.'
-    )
-    return query({})
-  }
-}
-
 const media = (field: string) => ({
   [`populate[${field}][fields][0]`]: 'url',
   [`populate[${field}][fields][1]`]: 'formats',
@@ -189,13 +162,59 @@ const media = (field: string) => ({
 })
 
 /**
+ * Fields added to the CMS after it first shipped, newest first. A CMS that
+ * has not been deployed with a group answers 400 to a query naming it, so
+ * lists retry with the newest group dropped (see withOptionalFields) and the
+ * site renders without that data until the CMS deploy lands.
+ */
+const OPTIONAL_FIELDS: { name: string; params: Record<string, string> }[] = [
+  {
+    name: 'screenshots',
+    params: {
+      'populate[screenshots][fields][0]': 'order',
+      'populate[screenshots][fields][1]': 'caption',
+      'populate[screenshots][populate][image][fields][0]': 'url',
+      'populate[screenshots][populate][image][fields][1]': 'formats',
+      'populate[screenshots][populate][image][fields][2]': 'width',
+      'populate[screenshots][populate][image][fields][3]': 'height',
+    },
+  },
+  {
+    name: 'metric, impactStats',
+    params: {
+      // The next free index: qs reads a sparse one like fields[100] as an
+      // object, which Strapi rejects.
+      [`fields[${listFields.length}]`]: 'metric',
+      'populate[impactStats]': 'true',
+    },
+  },
+]
+
+const withOptionalFields = async <T>(
+  query: (extra: Record<string, string>) => Promise<T>
+): Promise<T> => {
+  for (let dropped = 0; ; dropped++) {
+    const groups = OPTIONAL_FIELDS.slice(dropped)
+    try {
+      return await query(Object.assign({}, ...groups.map((g) => g.params)))
+    } catch (error) {
+      const rejected = error instanceof StrapiError && error.status === 400
+      if (!rejected || groups.length === 0) throw error
+      console.warn(
+        `[strapi] The CMS rejected ${groups[0].name}; deploy portfolio-strapi-cms. Rendering without it.`
+      )
+    }
+  }
+}
+
+/**
  * Every visible project, in the CMS's sort order, with what the project list,
  * the pinned card, the skills tooltips and the search index need. The long
  * rich-text description is left out; only the project page reads it.
  */
 export const getAllProjects = (options?: StrapiFetchOptions) =>
   memo('projects', () =>
-    withRedesignFields((extra) =>
+    withOptionalFields((extra) =>
       strapiFetch<IStrapiApiResponse<ProjectDataAttributes>>('/projects', {
         ...options,
         searchParams: {
@@ -241,19 +260,32 @@ export const getProjectBySlug = async (
   slug: string,
   options?: StrapiFetchOptions
 ): Promise<ProjectDataAttributes | null> => {
-  const response = await strapiFetch<{ data: ProjectDataAttributes[] }>(
-    '/projects',
-    {
+  const query = (populate: Record<string, string>) =>
+    strapiFetch<{ data: ProjectDataAttributes[] }>('/projects', {
       ...options,
-      searchParams: {
-        'filters[slug][$eq]': slug,
-        ...visible,
-        // `*` covers media and components one level deep, which is every
-        // field the project page renders, impactStats and changelog included.
-        populate: '*',
-      },
-    }
-  )
+      searchParams: { 'filters[slug][$eq]': slug, ...visible, ...populate },
+    })
+
+  // Every relation by name: `populate=*` stops one level deep, so it would
+  // return the screenshots without their images. A CMS without the
+  // screenshots field answers 400 to this, and `*` then covers everything it
+  // does have.
+  const response = await query({
+    'populate[Tags]': 'true',
+    'populate[imageUrls]': 'true',
+    'populate[screenshots][populate][image]': 'true',
+    'populate[cover]': 'true',
+    'populate[video]': 'true',
+    'populate[features]': 'true',
+    'populate[impactStats]': 'true',
+    'populate[changelog]': 'true',
+  }).catch((error: unknown) => {
+    if (!(error instanceof StrapiError) || error.status !== 400) throw error
+    console.warn(
+      '[strapi] The CMS rejected screenshots; deploy portfolio-strapi-cms. Rendering without them.'
+    )
+    return query({ populate: '*' })
+  })
 
   // Genuinely no such (visible) project — a real 404, not an error. A transport
   // or HTTP failure already threw inside strapiFetch, so the build fails loudly

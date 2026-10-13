@@ -104,7 +104,22 @@
   </div>
 
   <div class="panel" use:tilt>
-    {#if shot}
+    {#if project.featureGraphic}
+      <!-- The Play Store feature graphic, when the project has one. -->
+      <div class="lean flat">
+        <img
+          class="graphic"
+          src={project.featureGraphic.url}
+          srcset={project.featureGraphic.srcset}
+          sizes="(max-width: 767px) 92vw, 380px"
+          alt="{project.title} feature graphic"
+          width={project.featureGraphic.width}
+          height={project.featureGraphic.height}
+          fetchpriority="high"
+          style:view-transition-name="project-shot-{project.slug}"
+        />
+      </div>
+    {:else if shot}
       <div class="lean">
         <Phone
           image={shot}
@@ -250,6 +265,22 @@
     transition: transform 450ms var(--ease-out);
   }
 
+  .lean.flat {
+    top: 50%;
+    width: calc(100% - 48px);
+    translate: -50% -50%;
+    transform-origin: 50% 50%;
+  }
+
+  .graphic {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1024 / 500;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 24px 50px -24px rgb(0 0 0 / 0.45);
+  }
+
   @media (max-width: 1023px) {
     .pinned {
       grid-template-columns: minmax(0, 1fr) 320px;
@@ -270,6 +301,15 @@
 
     .lean {
       top: 18px;
+    }
+
+    .lean.flat {
+      top: 50%;
+      width: calc(100% - 32px);
+    }
+
+    .graphic {
+      border-radius: 10px;
     }
 
     .panel :global(.phone) {

@@ -145,14 +145,30 @@ made that minutes of waiting.
 Strapi's REST API pages at 25 by default; every list asks for 100
 (`PAGE_SIZE`). Without it the 26th project would silently vanish.
 
-#### Redesign fields in Strapi
+#### Newer fields in Strapi
 
-Projects gained optional `metric`, `impactStats` and `changelog` (CMS
-branch `redesign/commit-log`). A CMS that predates them answers 400 to a query
-naming them, so `getAllProjects` retries without them and logs a warning
-(`withRedesignFields`). Deploy the CMS first and that warning goes away.
-Everything else about a project (kind, language, categories, status) is
-derived from fields the CMS already had, in `src/lib/projects.ts`.
+Projects gained optional `metric`, `impactStats` and `changelog` (the
+redesign), then `screenshots` (ordered screenshots). A CMS that predates a
+field answers 400 to a query naming it, so `getAllProjects` retries with the
+newest group dropped (`OPTIONAL_FIELDS` / `withOptionalFields`) and
+`getProjectBySlug` falls back to `populate=*`, each logging a warning. Deploy
+the CMS first and the warnings go away. Everything else about a project
+(kind, language, categories, status) is derived from fields the CMS already
+had, in `src/lib/projects.ts`.
+
+#### Screenshots and the feature graphic
+
+`screenshots` is a repeatable component (`order`, `image`, optional
+`caption`); the site sorts by `order`, then by position in the list. A
+project with no `screenshots` entries falls back to the older `imageUrls`
+media field in upload order, so projects can move over one at a time.
+
+The `cover` doubles as the Google Play **feature graphic**: when it is
+1024 × 500 (any image within 3% of that 2.048:1 shape), the project page
+shows it as a banner above the overview and the pinned card shows it in its
+panel. Any other cover (most are still phone screenshots) is ignored there,
+and those projects keep the three-phone gallery. Uploading a 1024 × 500 cover
+is all it takes to switch a project.
 
 #### GitHub (`src/lib/github.ts` + `src/lib/server/github.ts`)
 

@@ -37,7 +37,10 @@ export type ProjectDataAttributes = {
     id: number
     name: string
   }[]
-  imageUrls: IStrapiImageData[]
+  /** The original screenshots field: upload order, optional since the CMS gained `screenshots` */
+  imageUrls?: IStrapiImageData[] | null
+  /** Ordered screenshots; when present they replace imageUrls */
+  screenshots?: ProjectScreenshot[] | null
   sortBy: number
   slug: string
   // New fields from Strapi
@@ -62,6 +65,14 @@ export type ProjectDataAttributes = {
   /** Rendered as `git log --oneline` on the project page */
   changelog?: ChangelogEntry[] | null
   updatedAt?: string
+}
+
+export interface ProjectScreenshot {
+  id?: number
+  /** Position on the site, lowest first */
+  order?: number | null
+  caption?: string | null
+  image?: IStrapiImageData | null
 }
 
 export interface ImpactStat {

@@ -4,6 +4,7 @@
   import { page } from '$app/state'
   import PageGlow from '#components/chrome/PageGlow.svelte'
   import Changelog from '#components/projects/Changelog.svelte'
+  import FeatureGraphic from '#components/projects/FeatureGraphic.svelte'
   import Gallery from '#components/projects/Gallery.svelte'
   import Screens from '#components/projects/Screens.svelte'
   import StoreBadge, {
@@ -197,11 +198,19 @@
       aria-labelledby="project-tab-{tab}"
     >
       {#if tab === 'overview'}
-        <Gallery
-          slug={project.slug}
-          title={project.title}
-          screenshots={project.screenshots}
-        />
+        {#if project.featureGraphic}
+          <FeatureGraphic
+            slug={project.slug}
+            title={project.title}
+            image={project.featureGraphic}
+          />
+        {:else}
+          <Gallery
+            slug={project.slug}
+            title={project.title}
+            screenshots={project.screenshots}
+          />
+        {/if}
 
         {#if detail.longDescription?.length}
           <article class="card readme">

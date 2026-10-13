@@ -11,7 +11,7 @@ export const prerender = true
 interface Entry {
   path: string
   lastmod?: string
-  changefreq: 'daily' | 'weekly' | 'monthly'
+  changefreq: 'daily' | 'weekly' | 'monthly' | 'yearly'
   priority: string
 }
 
@@ -41,8 +41,12 @@ export const GET: RequestHandler = async ({ fetch }) => {
 
   const entries: Entry[] = [
     { path: '/', changefreq: 'weekly', priority: '1.0' },
+    { path: '/about', changefreq: 'monthly', priority: '0.9' },
     { path: '/projects', changefreq: 'weekly', priority: '0.9' },
+    { path: '/open-source', changefreq: 'weekly', priority: '0.8' },
     { path: '/blogs', changefreq: 'daily', priority: '0.9' },
+    { path: '/skills', changefreq: 'monthly', priority: '0.8' },
+    { path: '/contact', changefreq: 'yearly', priority: '0.7' },
 
     ...projects.map((project) => ({
       path: `/projects/${project.slug}`,

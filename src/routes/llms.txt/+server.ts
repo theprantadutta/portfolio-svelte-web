@@ -1,3 +1,5 @@
+import { allPullRequests, openSourceContributions } from '$lib/data/open-source'
+import { profile } from '$lib/data/profile'
 import { getMostLikedArticles } from '$lib/devto'
 import { getAllProjects } from '$lib/server/strapi'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '$lib/site'
@@ -11,7 +13,7 @@ import type { RequestHandler } from './$types'
  * search engine requires it and nothing breaks without it. It is here because
  * the file was being probed in the logs, it costs one prerendered file, and it
  * gives an assistant reading the site a clean index instead of making it parse
- * a glassmorphic single-page document.
+ * every page. Counts are computed from the same data the pages render.
  */
 export const prerender = true
 
@@ -41,22 +43,32 @@ export const GET: RequestHandler = async ({ fetch }) => {
       )}`
   )
 
+  const prs = allPullRequests().length
+  const repos = openSourceContributions.length
+  const onPlay = projects.data.filter((p) => p.googlePlayLink).length
+  const onAppStore = projects.data.filter((p) => p.appStoreLink).length
+
   const body = `# ${SITE_NAME}
 
 > ${SITE_DESCRIPTION}
 
-Flutter & Mobile Engineer based in Bangladesh, with 12 merged pull requests in
-the Flutter SDK, Flutter DevTools, Pigeon, the React Native docs, Supabase and
-Sentry. Primary developer of 16+ in-house production systems at KDS Group, used
-across a 20,000+ person workforce, plus 9 public apps on Google Play (5 also on
-the App Store). Works in Flutter, React Native, .NET and Go, plus AI platforms
-and LLM integrations. Contactable at prantadutta1997@gmail.com.
+${profile.role} based in ${profile.location}, with ${prs} merged pull requests
+across ${repos} open-source projects: the Flutter SDK, Flutter DevTools, Flutter
+packages, the React Native docs, Supabase and Sentry. Primary developer of 16+
+in-house production systems at KDS Group, used across a 20,000+ person
+workforce, plus ${onPlay} public apps on Google Play (${onAppStore} also on the
+App Store). Works in Flutter, React Native, .NET and Go, plus AI platforms and
+LLM integrations. Contactable at ${profile.email}.
 
 ## Pages
 
-- [Home](${SITE_URL}/): Introduction, background, skills, experience and contact form.
-- [Projects](${SITE_URL}/projects): Every shipped project, filterable by technology.
+- [Home](${SITE_URL}/): Career as a git log, plus a live GitHub activity heatmap.
+- [About](${SITE_URL}/about): Background, the systems that moved numbers, and current work.
+- [Projects](${SITE_URL}/projects): Every shipped project, filterable by Mobile, Backend and AI.
+- [Open source](${SITE_URL}/open-source): Every merged pull request, with diff sizes.
 - [Blog](${SITE_URL}/blogs): Technical writing, syndicated from dev.to.
+- [Skills](${SITE_URL}/skills): Stack by area, and work experience as a branch timeline.
+- [Contact](${SITE_URL}/contact): Contact form, social profiles and availability.
 - [CV](${SITE_URL}/download-cv): Current resume as a PDF. Permanent link, always the latest version.
 - [Services](https://pdlabs.pranta.dev): PD Labs, available for hire. Separate site.
 

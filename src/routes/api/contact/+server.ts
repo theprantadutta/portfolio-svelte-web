@@ -1,56 +1,110 @@
-import { json } from '@sveltejs/kit'
+import { json, redirect } from '@sveltejs/kit'
 import { Resend } from 'resend'
 
 import { env } from '$env/dynamic/private'
+import { isContactLabel, mergeConflict, type ContactInput } from '$lib/contact'
+import { profile } from '$lib/data/profile'
 import { contactFormEmail } from '$lib/server/contact-email'
-import { getErrorMessage, validateString } from '$lib/utils'
+import { clientAddress, createRateLimiter } from '$lib/server/rate-limit'
+import { getErrorMessage } from '$lib/utils'
 import type { RequestHandler } from './$types'
 
-// The one route in the app that is not a static file. Every page is
-// prerendered; this endpoint exists solely because RESEND_API_KEY must stay on
-// the server.
+// Runtime, not prerendered: RESEND_API_KEY has to stay on the server.
 export const prerender = false
 
-export const POST: RequestHandler = async ({ request }) => {
-  const formData = await request.formData()
+// Five pull requests per address per ten minutes is plenty for a person.
+const limiter = createRateLimiter({ limit: 5, windowMs: 10 * 60 * 1000 })
 
-  const senderEmail = formData.get('senderEmail')
-  const senderName = formData.get('senderName')
-  const message = formData.get('message')
+const text = (value: FormDataEntryValue | unknown) =>
+  typeof value === 'string' ? value : ''
 
-  // Same server-side validation the Server Action performed.
-  if (!validateString(senderEmail, 500)) {
-    return json({ error: 'Invalid sender email' }, { status: 400 })
+/**
+ * Accepts the form as JSON (the page's fetch) or as ordinary form data (the
+ * same form with JavaScript off). The JSON caller gets JSON back; a plain
+ * form post is redirected to a page a browser can show.
+ */
+export const POST: RequestHandler = async (event) => {
+  const { request } = event
+  const isJson = request.headers
+    .get('content-type')
+    ?.includes('application/json')
+
+  let raw: Record<string, unknown>
+  try {
+    if (isJson) {
+      raw = (await request.json()) as Record<string, unknown>
+    } else {
+      const form = await request.formData()
+      raw = { ...Object.fromEntries(form), labels: form.getAll('labels') }
+    }
+  } catch {
+    return json({ error: 'Could not read the form.' }, { status: 400 })
   }
-  if (!validateString(message, 5000)) {
-    return json({ error: 'Invalid message' }, { status: 400 })
+
+  const respond = (status: number, error?: string) => {
+    if (isJson) return json(error ? { error } : { ok: true }, { status })
+    redirect(303, error ? '/contact?error=1' : '/contact/merged')
   }
 
-  const resend = new Resend(env.RESEND_API_KEY)
-  const { html, text } = contactFormEmail({
-    message,
-    senderEmail,
-    senderName: typeof senderName === 'string' ? senderName : undefined,
-  })
+  // Honeypot: a field people never see. Bots that fill it get a cheerful
+  // success and nothing is sent.
+  if (text(raw.website).trim()) return respond(200)
+
+  const limit = limiter(clientAddress(event))
+  if (!limit.ok) {
+    if (!isJson) return respond(429, 'rate limited')
+    return json(
+      {
+        error: `Too many pull requests. Try again in ${Math.ceil(limit.retryAfter / 60)} min.`,
+      },
+      { status: 429, headers: { 'Retry-After': String(limit.retryAfter) } }
+    )
+  }
+
+  const input: ContactInput = {
+    name: text(raw.name).trim(),
+    email: text(raw.email).trim(),
+    title: text(raw.title).trim(),
+    description: text(raw.description).trim(),
+    labels: (Array.isArray(raw.labels) ? raw.labels : []).filter(
+      isContactLabel
+    ),
+  }
+
+  const conflict = mergeConflict(input)
+  if (conflict) return respond(400, `conflicts: ${conflict}`)
+
+  if (!env.RESEND_API_KEY) {
+    console.error('[contact] RESEND_API_KEY is not set')
+    return respond(
+      503,
+      'The inbox is offline right now. Email me directly instead.'
+    )
+  }
+
+  const { html, text: plain } = contactFormEmail(input)
 
   try {
-    const data = await resend.emails.send({
-      from: 'Contact Form <onboarding@resend.dev>',
-      to: 'prantadutta1997@gmail.com',
-      subject: 'Message from contact form',
-      replyTo: senderEmail,
+    const result = await new Resend(env.RESEND_API_KEY).emails.send({
+      from: 'Portfolio PR <onboarding@resend.dev>',
+      to: profile.email,
+      subject: `PR: ${input.title}`,
+      replyTo: input.email,
       html,
-      text,
+      text: plain,
     })
 
-    if (data.error) {
-      console.error(data.error)
-      return json({ error: data.error.message }, { status: 502 })
+    if (result.error) {
+      console.error('[contact] Resend rejected the email:', result.error)
+      return respond(
+        502,
+        'The email service refused the message. Email me directly instead.'
+      )
     }
 
-    return json({ data: data.data })
+    return respond(200)
   } catch (error: unknown) {
-    console.error(error)
-    return json({ error: getErrorMessage(error) }, { status: 500 })
+    console.error('[contact]', error)
+    return respond(500, getErrorMessage(error))
   }
 }

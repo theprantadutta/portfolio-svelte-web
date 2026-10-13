@@ -5,10 +5,9 @@ services:
     restart: always
     build:
       context: .
-      # Build-time only. Compose substitutes these from `.env` in this directory
-      # (use `docker compose --env-file .env.local ...` to source them
-      # elsewhere). PUBLIC_* is baked into the client bundle and the prerendered
-      # HTML, so changing it requires `docker compose build`, not a restart.
+      # Build-time only. Compose substitutes these from `.env` in this directory.
+      # PUBLIC_* is baked into the client bundle and the prerendered HTML, so
+      # changing it requires `docker compose build`, not a restart.
       #
       # STRAPI_API_KEY is a build arg because every page is prerendered from
       # Strapi during the build. It is NOT needed at runtime.
@@ -18,6 +17,9 @@ services:
         STRAPI_API_KEY: ${STRAPI_API_KEY:?set it in .env}
         # Optional: fresh GitHub data at build time (see Dockerfile).
         GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+    # All configuration lives in `.env`. `.env.local` is still read if one
+    # exists, only so a box that predates the single file keeps working until
+    # its secrets are merged into `.env`.
     env_file:
       - path: .env
         required: false

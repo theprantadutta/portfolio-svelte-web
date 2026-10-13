@@ -17,6 +17,13 @@ services:
         STRAPI_API_KEY: ${STRAPI_API_KEY:?set it in .env}
         # Optional: fresh GitHub data at build time (see Dockerfile).
         GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      # Prerendering reads Strapi at portfolio.pranta.dev. Through Cloudflare,
+      # requests from this server's own IP get a bot challenge (403 "Just a
+      # moment...", even with a valid token), so the build resolves the CMS
+      # host straight to Traefik on this machine. TLS still verifies: Traefik
+      # serves the Let's Encrypt *.pranta.dev certificate.
+      extra_hosts:
+        - 'portfolio.pranta.dev:host-gateway'
     # All configuration lives in `.env`. `.env.local` is still read if one
     # exists, only so a box that predates the single file keeps working until
     # its secrets are merged into `.env`.

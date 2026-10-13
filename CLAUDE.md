@@ -115,6 +115,14 @@ The build never sees `STRAPI_INTERNAL_URL` (the Docker builder is not on the
 blog reactions endpoint does talk to Strapi, and compose sets
 `STRAPI_INTERNAL_URL` so those calls stay on the Docker network.
 
+On the VPS the public URL must not go through Cloudflare: Cloudflare answers
+requests from the server's own IP with a bot challenge, a 403 HTML page
+(`cf-mitigated: challenge`) that looks exactly like Strapi refusing the token.
+`compose.yml` therefore maps `portfolio.pranta.dev` to `host-gateway` for the
+build, so prerendering reaches Traefik on the same machine directly. If a
+build fails with `Strapi request failed – 403`, check for that header before
+suspecting the key.
+
 #### dev.to (`src/lib/devto.ts`)
 
 Isomorphic on purpose — it runs at build time for prerendering and in the

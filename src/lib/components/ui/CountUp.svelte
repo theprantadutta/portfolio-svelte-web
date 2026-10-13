@@ -1,7 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
-  import { easeOut, isBelowFold, prefersReducedMotion } from '$lib/motion'
+  import {
+    easeOut,
+    isBelowFold,
+    prefersReducedMotion,
+  } from '#lib/motion/index.js'
 
   interface Props {
     value: number

@@ -1,10 +1,10 @@
 import { error } from '@sveltejs/kit'
 
-import { getAllArticles, getArticleBySlug } from '$lib/devto'
-import { shortHash } from '$lib/hash'
-import { emptyReactionCounts } from '$lib/reactions'
-import { countWords, processArticleHtml } from '$lib/server/article-html'
-import { getAllReactionCounts } from '$lib/server/strapi'
+import { getAllArticles, getArticleBySlug } from '#lib/devto.js'
+import { shortHash } from '#lib/hash.js'
+import { emptyReactionCounts } from '#lib/reactions.js'
+import { countWords, processArticleHtml } from '#lib/server/article-html.js'
+import { getAllReactionCounts } from '#lib/server/strapi.js'
 import type { EntryGenerator, PageServerLoad } from './$types'
 
 /**

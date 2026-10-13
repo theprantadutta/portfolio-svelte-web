@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
 
-  import WordReveal from '$components/ui/WordReveal.svelte'
+  import WordReveal from '#components/ui/WordReveal.svelte'
 
   interface Props {
     /** The shell command above the title, e.g. "$ ls ~/projects --sort=impact" */

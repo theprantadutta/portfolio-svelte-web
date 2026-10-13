@@ -1,5 +1,5 @@
-import { toPostSummary } from '$components/blog/posts'
-import { getAllArticles } from '$lib/devto'
+import { toPostSummary } from '#components/blog/posts.js'
+import { getAllArticles } from '#lib/devto.js'
 import type { PageServerLoad } from './$types'
 
 // Baked at build time so the list paints instantly with no request. The page

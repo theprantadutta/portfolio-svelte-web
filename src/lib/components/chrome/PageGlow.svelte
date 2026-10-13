@@ -23,8 +23,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
-  import { finePointer, prefersReducedMotion } from '$lib/motion'
-  import { ambient } from '$lib/motion/ambient'
+  import { finePointer, prefersReducedMotion } from '#lib/motion/index.js'
+  import { ambient } from '#lib/motion/ambient.js'
 
   let { glows }: { glows: Glow[] } = $props()
 

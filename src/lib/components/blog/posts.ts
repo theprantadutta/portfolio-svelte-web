@@ -1,5 +1,5 @@
-import { shortHash } from '$lib/hash'
-import type { DevToArticle } from '$lib/types/blog-types'
+import { shortHash } from '#lib/hash.js'
+import type { DevToArticle } from '#lib/types/blog-types.js'
 
 /**
  * What the blog list renders for each post: the slice of a dev.to article

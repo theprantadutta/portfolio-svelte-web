@@ -4,7 +4,7 @@ import satori from 'satori'
 import geistMono from '@fontsource/geist-mono/files/geist-mono-latin-400-normal.woff?inline'
 import geistBold from '@fontsource/geist/files/geist-latin-700-normal.woff?inline'
 import geistRegular from '@fontsource/geist/files/geist-latin-400-normal.woff?inline'
-import avatar from '$lib/assets/avatar-og.png?inline'
+import avatar from '#lib/assets/avatar-og.png?inline'
 
 /**
  * Open Graph cards in the site's own visual language (CLAUDE_CODE_PROMPT

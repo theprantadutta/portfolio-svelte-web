@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Phone from '$components/projects/Phone.svelte'
-  import { tilt } from '$lib/motion/pointer'
-  import { languageColor, type ProjectSummary } from '$lib/projects'
+  import Phone from '#components/projects/Phone.svelte'
+  import { tilt } from '#lib/motion/pointer.js'
+  import { languageColor, type ProjectSummary } from '#lib/projects.js'
 
   let { project }: { project: ProjectSummary } = $props()
 

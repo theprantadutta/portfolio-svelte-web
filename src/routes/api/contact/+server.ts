@@ -1,12 +1,15 @@
-import { json, redirect } from '@sveltejs/kit'
+import { redirect } from '@sveltejs/kit'
 import { Resend } from 'resend'
-
-import { env } from '$env/dynamic/private'
-import { isContactLabel, mergeConflict, type ContactInput } from '$lib/contact'
-import { profile } from '$lib/data/profile'
-import { contactFormEmail } from '$lib/server/contact-email'
-import { clientAddress, createRateLimiter } from '$lib/server/rate-limit'
-import { getErrorMessage } from '$lib/utils'
+import { RESEND_API_KEY } from '$app/env/private'
+import {
+  isContactLabel,
+  mergeConflict,
+  type ContactInput,
+} from '#lib/contact.js'
+import { profile } from '#lib/data/profile.js'
+import { contactFormEmail } from '#lib/server/contact-email.js'
+import { clientAddress, createRateLimiter } from '#lib/server/rate-limit.js'
+import { getErrorMessage } from '#lib/utils.js'
 import type { RequestHandler } from './$types'
 
 // Runtime, not prerendered: RESEND_API_KEY has to stay on the server.
@@ -28,8 +31,8 @@ export const POST: RequestHandler = async (event) => {
   const isJson = request.headers
     .get('content-type')
     ?.includes('application/json')
-
   let raw: Record<string, unknown>
+
   try {
     if (isJson) {
       raw = (await request.json()) as Record<string, unknown>
@@ -38,11 +41,13 @@ export const POST: RequestHandler = async (event) => {
       raw = { ...Object.fromEntries(form), labels: form.getAll('labels') }
     }
   } catch {
-    return json({ error: 'Could not read the form.' }, { status: 400 })
+    return Response.json({ error: 'Could not read the form.' }, { status: 400 })
   }
 
   const respond = (status: number, error?: string) => {
-    if (isJson) return json(error ? { error } : { ok: true }, { status })
+    if (isJson)
+      return Response.json(error ? { error } : { ok: true }, { status })
+
     redirect(303, error ? '/contact?error=1' : '/contact/merged')
   }
 
@@ -53,7 +58,7 @@ export const POST: RequestHandler = async (event) => {
   const limit = limiter(clientAddress(event))
   if (!limit.ok) {
     if (!isJson) return respond(429, 'rate limited')
-    return json(
+    return Response.json(
       {
         error: `Too many pull requests. Try again in ${Math.ceil(limit.retryAfter / 60)} min.`,
       },
@@ -72,10 +77,12 @@ export const POST: RequestHandler = async (event) => {
   }
 
   const conflict = mergeConflict(input)
+
   if (conflict) return respond(400, `conflicts: ${conflict}`)
 
-  if (!env.RESEND_API_KEY) {
+  if (!RESEND_API_KEY) {
     console.error('[contact] RESEND_API_KEY is not set')
+
     return respond(
       503,
       'The inbox is offline right now. Email me directly instead.'
@@ -85,7 +92,7 @@ export const POST: RequestHandler = async (event) => {
   const { html, text: plain } = contactFormEmail(input)
 
   try {
-    const result = await new Resend(env.RESEND_API_KEY).emails.send({
+    const result = await new Resend(RESEND_API_KEY).emails.send({
       from: 'Portfolio PR <onboarding@resend.dev>',
       to: profile.email,
       subject: `PR: ${input.title}`,

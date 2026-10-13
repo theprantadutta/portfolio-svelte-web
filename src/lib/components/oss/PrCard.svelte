@@ -3,10 +3,10 @@
   import { cubicOut } from 'svelte/easing'
   import { slide } from 'svelte/transition'
 
-  import CountUp from '$components/ui/CountUp.svelte'
-  import { isBelowFold, prefersReducedMotion } from '$lib/motion'
-  import { inview } from '$lib/motion/inview'
-  import { spotlight } from '$lib/motion/pointer'
+  import CountUp from '#components/ui/CountUp.svelte'
+  import { isBelowFold, prefersReducedMotion } from '#lib/motion/index.js'
+  import { inview } from '#lib/motion/inview.js'
+  import { spotlight } from '#lib/motion/pointer.js'
 
   interface Props {
     pr: {

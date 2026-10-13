@@ -1,5 +1,5 @@
 import { getContext, setContext } from 'svelte'
-import { browser } from '$app/environment'
+import { browser } from '$app/env'
 import { prefersReducedMotion } from 'svelte/motion'
 
 type Theme = 'light' | 'dark'

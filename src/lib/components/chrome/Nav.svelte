@@ -4,12 +4,12 @@
   import { Spring } from 'svelte/motion'
   import { page } from '$app/state'
 
-  import ThemeToggle from '$components/chrome/ThemeToggle.svelte'
-  import Avatar from '$components/ui/Avatar.svelte'
-  import { ui } from '$lib/context/ui.svelte'
-  import { SPRING_UI } from '$lib/motion'
-  import { scramble } from '$lib/motion/scramble'
-  import { SITE_ROUTES, postFileName, routeFor } from '$lib/site-nav'
+  import ThemeToggle from '#components/chrome/ThemeToggle.svelte'
+  import Avatar from '#components/ui/Avatar.svelte'
+  import { ui } from '#lib/context/ui.svelte.js'
+  import { SPRING_UI } from '#lib/motion/index.js'
+  import { scramble } from '#lib/motion/scramble.js'
+  import { SITE_ROUTES, postFileName, routeFor } from '#lib/site-nav.js'
 
   const active = $derived(routeFor(page.url.pathname))
   const isHome = $derived(page.url.pathname === '/')

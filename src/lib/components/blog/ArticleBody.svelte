@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { replaceState } from '$app/navigation'
+  import { goto } from '$app/navigation'
   import { page } from '$app/state'
-
-  import { copyText, toast } from '$lib/toast.svelte'
+  import { copyText, toast } from '#lib/toast.svelte.js'
 
   interface Props {
     /** Post-processed on the server by processArticleHtml. */
@@ -11,7 +10,6 @@
   }
 
   let { html, element = $bindable() }: Props = $props()
-
   const resetTimers = new WeakMap<HTMLElement, ReturnType<typeof setTimeout>>()
 
   /**
@@ -22,8 +20,8 @@
    */
   const onclick = async (event: MouseEvent) => {
     const target = event.target as HTMLElement
-
     const copy = target.closest<HTMLElement>('[data-copy]')
+
     if (copy) {
       const code =
         copy.closest('figure')?.querySelector('pre')?.textContent ?? ''
@@ -46,8 +44,10 @@
     const anchor = target.closest<HTMLAnchorElement>('a.heading-anchor')
     if (anchor) {
       event.preventDefault()
+
       const url = new URL(anchor.href)
-      replaceState(url, page.state)
+
+      goto(url, { shallow: true, replace: true, state: page.state })
       document
         .getElementById(url.hash.slice(1))
         ?.scrollIntoView({ block: 'start' })
@@ -58,6 +58,7 @@
 
 <!-- Clicks are delegated to the buttons and links inside, which are keyboard-operable themselves. -->
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+
 <div class="article-body" bind:this={element} {onclick}>
   <span id="intro" class="intro-marker"></span>
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- the author's own dev.to article, sanitised by dev.to and reshaped on the server -->

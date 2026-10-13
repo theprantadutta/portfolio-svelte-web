@@ -1,9 +1,9 @@
-import { commits } from '$lib/data/commits'
-import { allPullRequests } from '$lib/data/open-source'
-import { getAllArticles } from '$lib/devto'
-import { shortHash } from '$lib/hash'
-import { getGitHubSnapshot } from '$lib/server/github'
-import { getAllProjects } from '$lib/server/strapi'
+import { commits } from '#lib/data/commits.js'
+import { allPullRequests } from '#lib/data/open-source.js'
+import { getAllArticles } from '#lib/devto.js'
+import { shortHash } from '#lib/hash.js'
+import { getGitHubSnapshot } from '#lib/server/github.js'
+import { getAllProjects } from '#lib/server/strapi.js'
 import type { PageServerLoad } from './$types'
 
 // Runs once at build time (the whole route tree is prerendered), so these

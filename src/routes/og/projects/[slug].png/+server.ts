@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit'
 
-import { projectKind } from '$lib/projects'
-import { renderOgCard } from '$lib/server/og'
-import { getAllProjects, getAllProjectSlugs } from '$lib/server/strapi'
+import { projectKind } from '#lib/projects.js'
+import { renderOgCard } from '#lib/server/og.js'
+import { getAllProjects, getAllProjectSlugs } from '#lib/server/strapi.js'
 import type { EntryGenerator, RequestHandler } from './$types'
 
 // A share card for every project page, prerendered alongside it.

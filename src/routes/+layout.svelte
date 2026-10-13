@@ -3,21 +3,22 @@
   import { onMount } from 'svelte'
   import { afterNavigate, onNavigate } from '$app/navigation'
   import { page } from '$app/state'
-
   import '../app.css'
+
   // Imported for their built URLs so the preload hints below can name the
   // fingerprinted files.
   import geistUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url'
+
   import geistMonoUrl from '@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url'
-  import Nav from '$components/chrome/Nav.svelte'
-  import NavProgress from '$components/chrome/NavProgress.svelte'
-  import Toaster from '$components/chrome/Toaster.svelte'
-  import StructuredData from '$components/StructuredData.svelte'
-  import { setThemeState } from '$lib/context/theme.svelte'
-  import { ui } from '$lib/context/ui.svelte'
-  import { prefersReducedMotion } from '$lib/motion'
-  import { siteIndex } from '$lib/site-index.svelte'
-  import { startSmoothScroll } from '$lib/smooth-scroll'
+  import Nav from '#components/chrome/Nav.svelte'
+  import NavProgress from '#components/chrome/NavProgress.svelte'
+  import Toaster from '#components/chrome/Toaster.svelte'
+  import StructuredData from '#components/StructuredData.svelte'
+  import { setThemeState } from '#lib/context/theme.svelte.js'
+  import { ui } from '#lib/context/ui.svelte.js'
+  import { prefersReducedMotion } from '#lib/motion/index.js'
+  import { siteIndex } from '#lib/site-index.svelte.js'
+  import { startSmoothScroll } from '#lib/smooth-scroll.js'
 
   let { children }: { children: Snippet } = $props()
 
@@ -29,14 +30,15 @@
    * fetched when the page goes idle (or the moment one is opened first), so
    * opening still feels instant.
    */
-  type Lazy = typeof import('$components/chrome/CommandPalette.svelte').default
+  type Lazy = typeof import('#components/chrome/CommandPalette.svelte').default
+
   let CommandPalette = $state<Lazy | null>(null)
   let MobileMenu = $state<Lazy | null>(null)
 
   const loadOverlays = () =>
     Promise.all([
-      import('$components/chrome/CommandPalette.svelte'),
-      import('$components/chrome/MobileMenu.svelte'),
+      import('#components/chrome/CommandPalette.svelte'),
+      import('#components/chrome/MobileMenu.svelte'),
     ]).then(([palette, menu]) => {
       CommandPalette = palette.default
       MobileMenu = menu.default
@@ -48,6 +50,7 @@
 
   onMount(() => {
     let stop = () => {}
+
     startSmoothScroll().then((cleanup) => (stop = cleanup))
 
     // Warm the overlays and the search index once the page is idle, so the
@@ -71,6 +74,7 @@
    * changes and skip it.
    */
   onNavigate((navigation) => {
+    if (navigation.shallow && navigation.type === 'goto') return
     if (!document.startViewTransition || prefersReducedMotion.current) return
     if (navigation.from?.url.pathname === navigation.to?.url.pathname) return
 
@@ -82,7 +86,9 @@
     })
   })
 
-  afterNavigate(() => {
+  afterNavigate(({ shallow, type }) => {
+    if (shallow && type === 'goto') return
+
     ui.closeMenu()
     ui.closePalette()
   })
@@ -160,9 +166,14 @@
   <main id="main" tabindex="-1">
     {@render children()}
   </main>
+  {#if MobileMenu}
+    <MobileMenu />
+  {/if}
 
-  {#if MobileMenu}<MobileMenu />{/if}
-  {#if CommandPalette}<CommandPalette />{/if}
+  {#if CommandPalette}
+    <CommandPalette />
+  {/if}
+
   <Toaster />
 </div>
 

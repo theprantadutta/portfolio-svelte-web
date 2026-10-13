@@ -1,12 +1,12 @@
-import { getStrapiMedia } from '$lib/constants/urls'
-import { shortHash } from '$lib/hash'
+import { getStrapiMedia } from '#lib/constants/urls.js'
+import { shortHash } from '#lib/hash.js'
 import type {
   ChangelogType,
   IStrapiImageData,
   ImpactStat,
   PlatformType,
   ProjectDataAttributes,
-} from '$lib/types/types'
+} from '#lib/types/types.js'
 
 /**
  * Turns CMS projects into what the redesign renders. Everything here is

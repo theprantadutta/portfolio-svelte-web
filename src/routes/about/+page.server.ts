@@ -1,9 +1,9 @@
-import { allPullRequests } from '$lib/data/open-source'
-import { releases } from '$lib/data/profile'
-import { LANGUAGE_WINDOW_MONTHS } from '$lib/github'
-import { isPublicApp, languageColor } from '$lib/projects'
-import { getGitHubSnapshot } from '$lib/server/github'
-import { getAllProjects } from '$lib/server/strapi'
+import { allPullRequests } from '#lib/data/open-source.js'
+import { releases } from '#lib/data/profile.js'
+import { LANGUAGE_WINDOW_MONTHS } from '#lib/github.js'
+import { isPublicApp, languageColor } from '#lib/projects.js'
+import { getGitHubSnapshot } from '#lib/server/github.js'
+import { getAllProjects } from '#lib/server/strapi.js'
 import type { PageServerLoad } from './$types'
 
 const TOP_LANGUAGES = 5

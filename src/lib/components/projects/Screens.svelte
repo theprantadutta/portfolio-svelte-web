@@ -3,7 +3,7 @@
   import ChevronRight from '@lucide/svelte/icons/chevron-right'
   import X from '@lucide/svelte/icons/x'
 
-  import type { ImageRef } from '$lib/projects'
+  import type { ImageRef } from '#lib/projects.js'
 
   interface Props {
     title: string

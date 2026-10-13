@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
-  import { isBelowFold } from '$lib/motion'
-  import { inview } from '$lib/motion/inview'
+  import { isBelowFold } from '#lib/motion/index.js'
+  import { inview } from '#lib/motion/inview.js'
 
   interface Language {
     name: string

@@ -1,5 +1,5 @@
-import { toProjectSummary } from '$lib/projects'
-import { getAllProjects } from '$lib/server/strapi'
+import { toProjectSummary } from '#lib/projects.js'
+import { getAllProjects } from '#lib/server/strapi.js'
 import type { PageServerLoad } from './$types'
 
 /**

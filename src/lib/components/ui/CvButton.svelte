@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { CV_DOWNLOAD_FILENAME, CV_PATH } from '$lib/constants/selectors'
-  import { prefersReducedMotion } from '$lib/motion'
+  import { CV_DOWNLOAD_FILENAME, CV_PATH } from '#lib/constants/selectors.js'
+  import { prefersReducedMotion } from '#lib/motion/index.js'
 
   let { label = 'cv.pdf' }: { label?: string } = $props()
 

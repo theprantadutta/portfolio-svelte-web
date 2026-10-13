@@ -3,18 +3,18 @@
   import { cubicOut } from 'svelte/easing'
   import { fade, slide } from 'svelte/transition'
 
-  import MergedCard from '$components/contact/MergedCard.svelte'
-  import { confetti } from '$lib/confetti'
+  import MergedCard from '#components/contact/MergedCard.svelte'
+  import { confetti } from '#lib/confetti.js'
   import {
     CONTACT_LABELS,
     DEFAULT_LABELS,
     LIMITS,
     mergeConflict,
     type ContactLabel,
-  } from '$lib/contact'
-  import { profile } from '$lib/data/profile'
-  import { prefersReducedMotion } from '$lib/motion'
-  import { toast } from '$lib/toast.svelte'
+  } from '#lib/contact.js'
+  import { profile } from '#lib/data/profile.js'
+  import { prefersReducedMotion } from '#lib/motion/index.js'
+  import { toast } from '#lib/toast.svelte.js'
 
   let name = $state('')
   let email = $state('')

@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit'
 
-import { getStrapiMedia } from '$lib/constants/urls'
-import { projectChangelog, toProjectSummary } from '$lib/projects'
-import { getAllProjectSlugs, getProjectBySlug } from '$lib/server/strapi'
+import { getStrapiMedia } from '#lib/constants/urls.js'
+import { projectChangelog, toProjectSummary } from '#lib/projects.js'
+import { getAllProjectSlugs, getProjectBySlug } from '#lib/server/strapi.js'
 import type { EntryGenerator, PageServerLoad } from './$types'
 
 /**

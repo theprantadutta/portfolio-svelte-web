@@ -1,10 +1,8 @@
-import { json } from '@sveltejs/kit'
-
-import { allPullRequests } from '$lib/data/open-source'
-import { getAllArticles } from '$lib/devto'
-import { projectKind } from '$lib/projects'
-import { getAllProjects } from '$lib/server/strapi'
-import type { SiteIndex } from '$lib/site-index.svelte'
+import { allPullRequests } from '#lib/data/open-source.js'
+import { getAllArticles } from '#lib/devto.js'
+import { projectKind } from '#lib/projects.js'
+import { getAllProjects } from '#lib/server/strapi.js'
+import type { SiteIndex } from '#lib/site-index.svelte.js'
 import type { RequestHandler } from './$types'
 
 // Written out as a static file at build time from the same sources as the
@@ -45,7 +43,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
     },
   }
 
-  return json(index, {
+  return Response.json(index, {
     headers: { 'Cache-Control': 'public, max-age=3600' },
   })
 }

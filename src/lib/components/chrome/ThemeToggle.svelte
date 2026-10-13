@@ -2,7 +2,7 @@
   import Moon from '@lucide/svelte/icons/moon'
   import Sun from '@lucide/svelte/icons/sun'
 
-  import { getThemeState } from '$lib/context/theme.svelte'
+  import { getThemeState } from '#lib/context/theme.svelte.js'
 
   interface Props {
     class?: string

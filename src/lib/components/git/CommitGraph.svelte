@@ -1,5 +1,5 @@
 <script lang="ts" module>
-  import type { Commit, Lane } from '$lib/data/commits'
+  import type { Commit, Lane } from '#lib/data/commits.js'
 
   export interface GraphCommit extends Commit {
     hash: string
@@ -23,9 +23,9 @@
   import { cubicOut } from 'svelte/easing'
   import { slide } from 'svelte/transition'
 
-  import { LANES } from '$lib/data/commits'
-  import { isBelowFold, prefersReducedMotion } from '$lib/motion'
-  import { inview } from '$lib/motion/inview'
+  import { LANES } from '#lib/data/commits.js'
+  import { isBelowFold, prefersReducedMotion } from '#lib/motion/index.js'
+  import { inview } from '#lib/motion/inview.js'
 
   interface Props {
     commits: GraphCommit[]

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import PageGlow from '$components/chrome/PageGlow.svelte'
-  import BranchTimeline from '$components/skills/BranchTimeline.svelte'
-  import SkillGroupCard from '$components/skills/SkillGroupCard.svelte'
-  import PageHeader from '$components/ui/PageHeader.svelte'
-  import { SITE_URL } from '$lib/site'
+  import PageGlow from '#components/chrome/PageGlow.svelte'
+  import BranchTimeline from '#components/skills/BranchTimeline.svelte'
+  import SkillGroupCard from '#components/skills/SkillGroupCard.svelte'
+  import PageHeader from '#components/ui/PageHeader.svelte'
+  import { SITE_URL } from '#lib/site.js'
   import type { PageData } from './$types'
 
   let { data }: { data: PageData } = $props()

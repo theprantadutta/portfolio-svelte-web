@@ -1,10 +1,8 @@
-import { json } from '@sveltejs/kit'
-
-import { env } from '$env/dynamic/private'
-import { getAllArticles } from '$lib/devto'
-import { isReactionEmoji, REACTION_SLUG } from '$lib/reactions'
-import { clientAddress, createRateLimiter } from '$lib/server/rate-limit'
-import { getReactionCounts, react } from '$lib/server/strapi'
+import { STRAPI_REACTIONS_TOKEN } from '$app/env/private'
+import { getAllArticles } from '#lib/devto.js'
+import { isReactionEmoji, REACTION_SLUG } from '#lib/reactions.js'
+import { clientAddress, createRateLimiter } from '#lib/server/rate-limit.js'
+import { getReactionCounts, react } from '#lib/server/strapi.js'
 import type { RequestHandler } from './$types'
 
 // Runtime: reactions change after the build. Counts live in the CMS's
@@ -14,15 +12,14 @@ import type { RequestHandler } from './$types'
 export const prerender = false
 
 const noStore = { 'Cache-Control': 'no-store' }
-
 const limit = createRateLimiter({ limit: 30, windowMs: 60_000 })
 
 const tokenOrError = () => {
-  const token = env.STRAPI_REACTIONS_TOKEN
+  const token = STRAPI_REACTIONS_TOKEN
   return token
     ? { token }
     : {
-        error: json(
+        error: Response.json(
           {
             error:
               'Reactions are not configured (STRAPI_REACTIONS_TOKEN is unset).',
@@ -48,18 +45,22 @@ const isKnownPost = async (slug: string) => {
 
 export const GET: RequestHandler = async ({ params }) => {
   if (!REACTION_SLUG.test(params.slug)) {
-    return json({ error: 'Unknown post' }, { status: 404, headers: noStore })
+    return Response.json(
+      { error: 'Unknown post' },
+      { status: 404, headers: noStore }
+    )
   }
 
   const auth = tokenOrError()
+
   if (auth.error) return auth.error
 
   try {
     const counts = await getReactionCounts(params.slug, auth.token)
-    return json({ counts }, { headers: noStore })
+    return Response.json({ counts }, { headers: noStore })
   } catch (error) {
     console.error('[reactions] reading counts failed:', error)
-    return json(
+    return Response.json(
       { error: 'Reactions are unavailable' },
       { status: 502, headers: noStore }
     )
@@ -69,19 +70,23 @@ export const GET: RequestHandler = async ({ params }) => {
 export const POST: RequestHandler = async (event) => {
   const { params, request } = event
   if (!REACTION_SLUG.test(params.slug)) {
-    return json({ error: 'Unknown post' }, { status: 404, headers: noStore })
+    return Response.json(
+      { error: 'Unknown post' },
+      { status: 404, headers: noStore }
+    )
   }
 
   const body = (await request.json().catch(() => null)) as {
     emoji?: unknown
     delta?: unknown
   } | null
+
   if (
     !body ||
     !isReactionEmoji(body.emoji) ||
     (body.delta !== 1 && body.delta !== -1)
   ) {
-    return json(
+    return Response.json(
       {
         error:
           'Expected { emoji: heart | fire | rocket | eyes, delta: 1 | -1 }',
@@ -92,7 +97,7 @@ export const POST: RequestHandler = async (event) => {
 
   const verdict = limit(clientAddress(event))
   if (!verdict.ok) {
-    return json(
+    return Response.json(
       { error: 'Too many reactions. Try again shortly.' },
       {
         status: 429,
@@ -102,18 +107,22 @@ export const POST: RequestHandler = async (event) => {
   }
 
   const auth = tokenOrError()
+
   if (auth.error) return auth.error
 
   if (!(await isKnownPost(params.slug))) {
-    return json({ error: 'Unknown post' }, { status: 404, headers: noStore })
+    return Response.json(
+      { error: 'Unknown post' },
+      { status: 404, headers: noStore }
+    )
   }
 
   try {
     const counts = await react(params.slug, body.emoji, body.delta, auth.token)
-    return json({ counts }, { headers: noStore })
+    return Response.json({ counts }, { headers: noStore })
   } catch (error) {
     console.error('[reactions] saving a reaction failed:', error)
-    return json(
+    return Response.json(
       { error: 'Reactions are unavailable' },
       { status: 502, headers: noStore }
     )

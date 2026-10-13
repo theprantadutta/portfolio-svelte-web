@@ -1,4 +1,4 @@
-import { SITE_URL } from '$lib/site'
+import { SITE_URL } from '#lib/site.js'
 import type { RequestHandler } from './$types'
 
 // A route rather than a file in static/ so the Sitemap line is built from the

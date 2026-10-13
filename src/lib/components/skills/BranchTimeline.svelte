@@ -18,8 +18,8 @@
   import { cubicOut } from 'svelte/easing'
   import { slide } from 'svelte/transition'
 
-  import { isBelowFold, prefersReducedMotion } from '$lib/motion'
-  import { inview } from '$lib/motion/inview'
+  import { isBelowFold, prefersReducedMotion } from '#lib/motion/index.js'
+  import { inview } from '#lib/motion/inview.js'
 
   let { entries }: { entries: TimelineEntry[] } = $props()
 

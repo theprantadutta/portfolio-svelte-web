@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MergedCard from '$components/contact/MergedCard.svelte'
+  import MergedCard from '#components/contact/MergedCard.svelte'
 </script>
 
 <!--

@@ -3,8 +3,8 @@
     CHANGELOG_COLORS,
     CHANGELOG_INK,
     type ChangelogRow,
-  } from '$lib/projects'
-  import { reveal } from '$lib/motion/reveal'
+  } from '#lib/projects.js'
+  import { reveal } from '#lib/motion/reveal.js'
 
   let { rows }: { rows: ChangelogRow[] } = $props()
 </script>

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { profile, socials } from '$lib/data/profile'
-  import { SITE_URL } from '$lib/site'
+  import { profile, socials } from '#lib/data/profile.js'
+  import { SITE_URL } from '#lib/site.js'
 
   const structuredData = {
     '@context': 'https://schema.org',

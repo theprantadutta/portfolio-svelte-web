@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { profile } from '$lib/data/profile'
+  import { profile } from '#lib/data/profile.js'
 
   interface Props {
     /** The visitor's PR title; absent on the no-JavaScript confirmation page. */

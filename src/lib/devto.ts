@@ -1,5 +1,5 @@
-import { createMemo } from '$lib/memo'
-import type { DevToArticle, DevToArticleDetail } from '$lib/types/blog-types'
+import { createMemo } from '#lib/memo.js'
+import type { DevToArticle, DevToArticleDetail } from '#lib/types/blog-types.js'
 
 const DEVTO_API_BASE = 'https://dev.to/api'
 const DEVTO_USERNAME = 'pranta'

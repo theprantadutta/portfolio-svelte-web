@@ -1,11 +1,11 @@
 <script lang="ts">
-  import LanguagesCard from '$components/about/LanguagesCard.svelte'
-  import PageGlow from '$components/chrome/PageGlow.svelte'
-  import Avatar from '$components/ui/Avatar.svelte'
-  import RelativeTime from '$components/ui/RelativeTime.svelte'
-  import { profile, readme } from '$lib/data/profile'
-  import { SITE_URL } from '$lib/site'
-  import { copyText } from '$lib/toast.svelte'
+  import LanguagesCard from '#components/about/LanguagesCard.svelte'
+  import PageGlow from '#components/chrome/PageGlow.svelte'
+  import Avatar from '#components/ui/Avatar.svelte'
+  import RelativeTime from '#components/ui/RelativeTime.svelte'
+  import { profile, readme } from '#lib/data/profile.js'
+  import { SITE_URL } from '#lib/site.js'
+  import { copyText } from '#lib/toast.svelte.js'
   import type { PageData } from './$types'
 
   let { data }: { data: PageData } = $props()

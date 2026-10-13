@@ -1,4 +1,4 @@
-import type { ContactInput } from '$lib/contact'
+import type { ContactInput } from '#lib/contact.js'
 
 const escapeHtml = (value: string) =>
   value

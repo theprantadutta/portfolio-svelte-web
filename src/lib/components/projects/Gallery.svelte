@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Phone from '$components/projects/Phone.svelte'
-  import type { ImageRef } from '$lib/projects'
+  import Phone from '#components/projects/Phone.svelte'
+  import type { ImageRef } from '#lib/projects.js'
 
   interface Props {
     slug: string

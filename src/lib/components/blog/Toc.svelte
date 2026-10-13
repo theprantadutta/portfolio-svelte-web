@@ -2,7 +2,7 @@
   import { tick } from 'svelte'
   import { Spring } from 'svelte/motion'
 
-  import { prefersReducedMotion, SPRING_UI } from '$lib/motion'
+  import { prefersReducedMotion, SPRING_UI } from '#lib/motion/index.js'
   import type { TocEntry } from './posts'
 
   interface Props {

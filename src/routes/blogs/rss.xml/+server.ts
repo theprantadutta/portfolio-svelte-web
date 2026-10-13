@@ -1,5 +1,5 @@
-import { getAllArticles } from '$lib/devto'
-import { SITE_URL } from '$lib/site'
+import { getAllArticles } from '#lib/devto.js'
+import { SITE_URL } from '#lib/site.js'
 import type { RequestHandler } from './$types'
 
 // Written out as a static file at build time from the same article list as

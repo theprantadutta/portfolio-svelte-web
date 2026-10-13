@@ -1,4 +1,4 @@
-import { prefersReducedMotion } from '$lib/motion'
+import { prefersReducedMotion } from '#lib/motion/index.js'
 
 const COLORS = ['--green', '--blue', '--purple', '--orange', '--red']
 

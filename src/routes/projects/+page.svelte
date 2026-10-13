@@ -2,26 +2,24 @@
   import { onMount } from 'svelte'
   import { flip } from 'svelte/animate'
   import { cubicOut } from 'svelte/easing'
-  import { replaceState } from '$app/navigation'
+  import { goto } from '$app/navigation'
   import { page } from '$app/state'
-
-  import PageGlow from '$components/chrome/PageGlow.svelte'
-  import FilterPills from '$components/projects/FilterPills.svelte'
-  import PinnedProject from '$components/projects/PinnedProject.svelte'
-  import ProjectCard from '$components/projects/ProjectCard.svelte'
-  import PageHeader from '$components/ui/PageHeader.svelte'
-  import { prefersReducedMotion } from '$lib/motion'
-  import { reveal } from '$lib/motion/reveal'
+  import PageGlow from '#components/chrome/PageGlow.svelte'
+  import FilterPills from '#components/projects/FilterPills.svelte'
+  import PinnedProject from '#components/projects/PinnedProject.svelte'
+  import ProjectCard from '#components/projects/ProjectCard.svelte'
+  import PageHeader from '#components/ui/PageHeader.svelte'
+  import { prefersReducedMotion } from '#lib/motion/index.js'
+  import { reveal } from '#lib/motion/reveal.js'
   import {
     PROJECT_FILTERS,
     type ProjectFilter,
     type ProjectSummary,
-  } from '$lib/projects'
-  import { SITE_URL } from '$lib/site'
+  } from '#lib/projects.js'
+  import { SITE_URL } from '#lib/site.js'
   import type { PageData } from './$types'
 
   let { data }: { data: PageData } = $props()
-
   let filter = $state<ProjectFilter>('All')
 
   // `?type=` is read in the browser only: page.url.searchParams throws during
@@ -31,12 +29,12 @@
     const match = PROJECT_FILTERS.find(
       (f) => f.toLowerCase() === type?.toLowerCase()
     )
+
     if (match) filter = match
   })
 
   const matches = (project: ProjectSummary, f: ProjectFilter) =>
     f === 'All' || project.categories.includes(f)
-
   const counts = $derived(
     Object.fromEntries(
       PROJECT_FILTERS.map((f) => [
@@ -45,7 +43,6 @@
       ])
     ) as Record<ProjectFilter, number>
   )
-
   const pinned = $derived(
     data.projects.find((p) => p.isFeatured) ?? data.projects[0]
   )
@@ -56,11 +53,11 @@
 
   const choose = (next: ProjectFilter) => {
     filter = next
-    const url = new URL(page.url)
+    const url = new URL(page.url.href)
     if (next === 'All') url.searchParams.delete('type')
     else url.searchParams.set('type', next.toLowerCase())
     // Shallow: the address bar follows the filter without a navigation.
-    replaceState(url, page.state)
+    goto(url, { shallow: true, replace: true, state: page.state })
   }
 
   const reduced = () => prefersReducedMotion.current

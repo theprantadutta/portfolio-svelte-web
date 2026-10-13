@@ -3,26 +3,24 @@
   import { onMount } from 'svelte'
   import { flip } from 'svelte/animate'
   import { cubicOut } from 'svelte/easing'
-  import { replaceState } from '$app/navigation'
+  import { goto } from '$app/navigation'
   import { page } from '$app/state'
-
-  import FeaturedPost from '$components/blog/FeaturedPost.svelte'
-  import PostCard from '$components/blog/PostCard.svelte'
+  import FeaturedPost from '#components/blog/FeaturedPost.svelte'
+  import PostCard from '#components/blog/PostCard.svelte'
   import {
     matchesQuery,
     toPostSummary,
     type PostSummary,
-  } from '$components/blog/posts'
-  import PageGlow from '$components/chrome/PageGlow.svelte'
-  import PageHeader from '$components/ui/PageHeader.svelte'
-  import { getAllArticles } from '$lib/devto'
-  import { prefersReducedMotion } from '$lib/motion'
-  import { reveal } from '$lib/motion/reveal'
-  import { SITE_URL } from '$lib/site'
+  } from '#components/blog/posts.js'
+  import PageGlow from '#components/chrome/PageGlow.svelte'
+  import PageHeader from '#components/ui/PageHeader.svelte'
+  import { getAllArticles } from '#lib/devto.js'
+  import { prefersReducedMotion } from '#lib/motion/index.js'
+  import { reveal } from '#lib/motion/reveal.js'
+  import { SITE_URL } from '#lib/site.js'
   import type { PageData } from './$types'
 
   let { data }: { data: PageData } = $props()
-
   const title = 'Blog | Pranta Dutta'
   const description =
     'Notes from shipping: Flutter, mobile development, game monetisation, AI-assisted engineering and the occasional rant, by Pranta Dutta.'
@@ -66,6 +64,7 @@
   // The page is one static file, so the query is read in the browser after
   // mount: `page.url.searchParams` throws while prerendering.
   let query = $state('')
+
   let input = $state<HTMLInputElement>()
 
   onMount(() => {
@@ -73,27 +72,34 @@
   })
 
   const trimmed = $derived(query.trim())
+
   const results = $derived(
     trimmed ? posts.filter((post) => matchesQuery(post, trimmed)) : []
   )
 
   let syncTimer: ReturnType<typeof setTimeout> | undefined
+
   const onInput = (event: Event) => {
     query = (event.currentTarget as HTMLInputElement).value
     clearTimeout(syncTimer)
+
     syncTimer = setTimeout(() => {
       const url = new URL(window.location.href)
+
       if (query.trim()) url.searchParams.set('q', query.trim())
       else url.searchParams.delete('q')
-      replaceState(url, page.state)
+
+      goto(url, { shallow: true, replace: true, state: page.state })
     }, 150)
   }
 
   const clear = () => {
     query = ''
+
     const url = new URL(window.location.href)
+
     url.searchParams.delete('q')
-    replaceState(url, page.state)
+    goto(url, { shallow: true, replace: true, state: page.state })
   }
 
   const isTyping = (target: EventTarget | null) =>
@@ -107,6 +113,7 @@
     if (event.key !== '/' || event.metaKey || event.ctrlKey || event.altKey)
       return
     if (isTyping(event.target)) return
+
     event.preventDefault()
     input?.focus()
   }

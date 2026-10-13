@@ -1,8 +1,8 @@
 <script lang="ts">
   import { flip } from 'svelte/animate'
 
-  import { prefersReducedMotion } from '$lib/motion'
-  import { toast } from '$lib/toast.svelte'
+  import { prefersReducedMotion } from '#lib/motion/index.js'
+  import { toast } from '#lib/toast.svelte.js'
 
   const slide = (_node: Element) => ({
     duration: prefersReducedMotion.current ? 0 : 240,

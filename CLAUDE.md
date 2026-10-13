@@ -2,15 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Pending: ask Pranta before starting other work
-
-- **SvelteKit 3 upgrade.** SvelteKit 3.0.1 shipped on 2026-10-06 (3.0.0 on
-  2026-10-01) alongside `@sveltejs/adapter-node` 6 and `@sveltejs/enhanced-img`
-  1.0. The app is still on 2.x. On 2026-10-13 Pranta chose to keep the "Commit
-  Log" redesign on 2.x and do the major upgrade afterwards, on its own branch.
-  Once the redesign has merged, ask whether to start the upgrade, and remove
-  this note when it is done.
-
 ## Common Development Commands
 
 ```bash
@@ -35,7 +26,7 @@ is Bun's own bundler and will not invoke the package script.
 
 ## Project Architecture
 
-A SvelteKit 2 / Svelte 5 portfolio site. Ported from Next.js 16 (the previous
+A SvelteKit 3 / Svelte 5 portfolio site. Ported from Next.js 16 (the previous
 implementation is retired and no longer checked out locally — it is archived at
 https://github.com/theprantadutta/portfolio-nextjs-web if a behaviour ever needs
 checking against the original), then redesigned in October 2026 as **"Commit
@@ -73,7 +64,7 @@ Blog reactions and the heatmap are the only things that change without one.
 ### Key Directories
 
 - `src/routes/` — pages, the API endpoints, and the prerendered feeds/cards
-- `src/lib/components/` (aliased `$components`), grouped by area: `chrome/`
+- `src/lib/components/` (imported as `#components/…`), grouped by area: `chrome/`
   (nav, mobile menu, ⌘K palette, toasts, page glows), `git/` (commit graph,
   heatmap), `ui/` (page header, word reveal, count-up, avatar), and one folder
   per page area (`projects/`, `blog/`, `about/`, `skills/`, `oss/`,
@@ -101,8 +92,8 @@ Blog reactions and the heatmap are the only things that change without one.
 - **Site index** (`site-index.svelte.ts`): `/search.json` (every project and
   post, plus counts), loaded at idle and shared by the palette and the menu.
 - **URL state**: `?type=` (projects filter), `?tab=` (project page tab) and
-  `?q=` (blog search) are written with shallow `replaceState` and read only
-  in the browser (see "Query strings on prerendered pages").
+  `?q=` (blog search) are written with a shallow `goto` and read only in the
+  browser (see "Query strings on prerendered pages").
 
 ### Data Layer
 
@@ -111,11 +102,11 @@ Blog reactions and the heatmap are the only things that change without one.
 Inherited from the Next app. Do not collapse them:
 
 - `STRAPI_URL` — browser-facing, from `PUBLIC_STRAPI_{DEV,PROD}_API_URL` via
-  `$env/static/public`. Baked into the client bundle **and the prerendered
+  `$app/env/public` (declared static). Baked into the client bundle **and the prerendered
   HTML** (it builds every Strapi image URL), so it **must** be publicly
   reachable.
 - `STRAPI_SERVER_URL` / `STRAPI_API_URL` — server-only, from
-  `STRAPI_INTERNAL_URL` via `$env/dynamic/private`, falling back to
+  `STRAPI_INTERNAL_URL` via `$app/env/private`, falling back to
   `STRAPI_URL`. Lives under `src/lib/server/`, which makes "never reaches the
   browser" a build-time guarantee rather than a convention.
 
@@ -367,31 +358,47 @@ Two things about this route are load-bearing:
 the browser against data baked into the page, so each page stays one static
 file. `page.url.searchParams` **throws during prerendering** — a static file
 cannot depend on a query string — so the value is read in `onMount` (or behind
-`browser`) and written back with shallow `replaceState`, never `goto`.
+`browser`) and written back with `goto(url, { shallow: true, replace: true,
+state: page.state })`. Without `shallow` it would be a real navigation that
+re-runs the page.
+
+Shallow `goto` calls fire navigation hooks in SvelteKit 3 (the deprecated
+`replaceState` did not). The layout's `onNavigate`/`afterNavigate` and
+`NavProgress` check `shallow` so a filter click does not start a view
+transition, close the overlays or flash the progress bar. Keep those checks.
+`page.url` is read-only: copy it with `new URL(page.url.href)` before editing
+its search params.
 
 ## Environment Variables
 
-See `.env.example`. Local development reads `.env`.
+See `.env.example`. Local development reads `.env`. Every variable is declared
+in `src/env.ts` (`defineEnvVars`) and imported from `$app/env/public` or
+`$app/env/private`; add new ones there first. The private ones default to the
+empty string, which every reader treats as "not configured".
 
-| Variable                     | Scope                 | Notes                                                                                                       |
-| ---------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `PUBLIC_STRAPI_PROD_API_URL` | build time            | Public Strapi URL, baked into the bundle and the prerendered HTML. Needs a rebuild.                         |
-| `PUBLIC_STRAPI_DEV_API_URL`  | build time            | Public Strapi URL for development.                                                                          |
-| `STRAPI_API_KEY`             | **build time only**   | Bearer token. Every page is prerendered from Strapi, so the build needs it; the running container does not. |
-| `GITHUB_TOKEN`               | build time + runtime  | Optional. Fresh GitHub data in the build; keeps the heatmap live at runtime. Falls back to the snapshot.    |
-| `RESEND_API_KEY`             | runtime               | Contact form delivery.                                                                                      |
-| `STRAPI_REACTIONS_TOKEN`     | runtime               | Strapi "Custom" token with only Post-reaction find + react. Blog reactions 503 without it.                  |
-| `ORIGIN`                     | runtime, **required** | See below. Without it the contact form 403s in production.                                                  |
-| `STRAPI_INTERNAL_URL`        | runtime, server-only  | Set in compose so runtime reaction calls stay on the Docker network.                                        |
+| Variable                     | Scope                | Notes                                                                                                       |
+| ---------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `PUBLIC_STRAPI_PROD_API_URL` | build time           | Public Strapi URL, baked into the bundle and the prerendered HTML. Needs a rebuild.                         |
+| `PUBLIC_STRAPI_DEV_API_URL`  | build time           | Public Strapi URL for development.                                                                          |
+| `STRAPI_API_KEY`             | **build time only**  | Bearer token. Every page is prerendered from Strapi, so the build needs it; the running container does not. |
+| `GITHUB_TOKEN`               | build time + runtime | Optional. Fresh GitHub data in the build; keeps the heatmap live at runtime. Falls back to the snapshot.    |
+| `RESEND_API_KEY`             | runtime              | Contact form delivery.                                                                                      |
+| `STRAPI_REACTIONS_TOKEN`     | runtime              | Strapi "Custom" token with only Post-reaction find + react. Blog reactions 503 without it.                  |
+| `STRAPI_INTERNAL_URL`        | runtime, server-only | Set in compose so runtime reaction calls stay on the Docker network.                                        |
 
-### `ORIGIN` is required in production
+### The public origin is `paths.origin`, not `ORIGIN`
 
-`adapter-node` compares the `Origin` header against the site's own origin on
-form POSTs, as CSRF protection. Behind Traefik it cannot infer the public URL,
-so without `ORIGIN=https://pranta.dev` every contact-form submission is
-rejected with `Cross-site POST form submissions are forbidden` (403). It is set
-in `compose.yml`. `vite dev` and `vite preview` handle this themselves, so the
-failure only shows up in the container.
+SvelteKit compares the `Origin` header of form POSTs against the site's own
+origin, as CSRF protection. Behind Traefik the server cannot infer the public
+URL, so `vite.config.ts` sets `paths.origin` to `SITE_URL`. Without it, the
+contact form posted with JavaScript off would be rejected with a 403. The
+JavaScript path posts JSON, which the check ignores.
+
+SvelteKit 3 removed adapter-node's `ORIGIN` environment variable, so do not
+add it back to `compose.yml` expecting it to do anything. Because the origin is
+fixed at build time, a no-JS form post to `vite preview` on localhost is also
+rejected as cross-site; test that path with an `Origin: https://pranta.dev`
+header. `paths.origin` is also the `url.origin` prerendering sees.
 
 ## Deployment (self-hosted VPS + Traefik)
 
@@ -443,6 +450,16 @@ its archive the two will collide and only one can be up at a time.
 ## Development Notes
 
 - **Bun** as package manager (`bun.lock`)
+- SvelteKit 3: the config is the `sveltekit({...})` call in `vite.config.ts`
+  (there is no `svelte.config.js`), and `tsconfig.json` extends the generated
+  `$app/tsconfig`
+- Imports use the subpath imports in `package.json`: `#lib/…` for `src/lib`
+  and `#components/…` for `src/lib/components`, always with the file
+  extension (`#lib/site.js`, `#lib/context/ui.svelte.js`,
+  `#components/ui/Avatar.svelte`). There is no `$lib`, and kit's `alias`
+  option is deprecated
+- Endpoints answer with `Response.json(...)`; kit's `json()`/`text()` helpers
+  are deprecated
 - Svelte 5 **runes** throughout — `$state`, `$derived`, `$props`, `$effect`.
   No `export let`, no stores except where a class field is genuinely awkward
 - Node.js >=24 required (`engines`)
@@ -459,7 +476,7 @@ its archive the two will collide and only one can be up at a time.
   for client-side routing automatically, so there is never a reason to call
   `goto()` from an `onclick` on a link — that produces markup no keyboard user
   or crawler can use. Filters, tabs and search are buttons and inputs, not
-  links, so they update the query string with shallow `replaceState`.
+  links, so they update the query string with a shallow `goto`.
 
 ### Keeping a component out of the prerendered HTML is a last resort
 

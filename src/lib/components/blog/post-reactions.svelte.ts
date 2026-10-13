@@ -3,8 +3,8 @@ import {
   REACTIONS,
   type ReactionCounts,
   type ReactionEmoji,
-} from '$lib/reactions'
-import { toast } from '$lib/toast.svelte'
+} from '#lib/reactions.js'
+import { toast } from '#lib/toast.svelte.js'
 
 const storageKey = (slug: string) => `reactions:${slug}`
 

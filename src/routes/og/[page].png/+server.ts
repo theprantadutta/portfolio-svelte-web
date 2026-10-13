@@ -1,10 +1,10 @@
 import { error } from '@sveltejs/kit'
 
-import { allPullRequests } from '$lib/data/open-source'
-import { home, profile } from '$lib/data/profile'
-import { getAllArticles } from '$lib/devto'
-import { renderOgCard, type OgCard } from '$lib/server/og'
-import { getAllProjects } from '$lib/server/strapi'
+import { allPullRequests } from '#lib/data/open-source.js'
+import { home, profile } from '#lib/data/profile.js'
+import { getAllArticles } from '#lib/devto.js'
+import { renderOgCard, type OgCard } from '#lib/server/og.js'
+import { getAllProjects } from '#lib/server/strapi.js'
 import type { EntryGenerator, RequestHandler } from './$types'
 
 // One share card per top-level page, written out as PNGs at build time.

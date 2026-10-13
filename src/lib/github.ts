@@ -3,7 +3,7 @@
  * languages bar.
  *
  * Pure functions over the GraphQL API that take the token as an argument, so
- * the same code runs in three places: the build (via `$lib/server/github`),
+ * the same code runs in three places: the build (via `#lib/server/github.js`),
  * the runtime `/api/github/activity` endpoint, and
  * `scripts/refresh-github-snapshot.ts`, which rewrites the committed fallback
  * in `src/lib/data/github.snapshot.json`.

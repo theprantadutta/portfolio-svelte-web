@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { spotlight } from '$lib/motion/pointer'
-  import { languageColor, type ProjectSummary } from '$lib/projects'
+  import { spotlight } from '#lib/motion/pointer.js'
+  import { languageColor, type ProjectSummary } from '#lib/projects.js'
 
   let { project }: { project: ProjectSummary } = $props()
 

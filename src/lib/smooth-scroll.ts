@@ -1,6 +1,6 @@
 import type Lenis from 'lenis'
 
-import { finePointer, prefersReducedMotion } from '$lib/motion'
+import { finePointer, prefersReducedMotion } from '#lib/motion/index.js'
 
 /**
  * Lenis smooth scrolling for desktop pointers (MOTION §5): `lerp: 0.1`, smooth

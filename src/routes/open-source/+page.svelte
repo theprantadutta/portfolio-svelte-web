@@ -1,10 +1,10 @@
 <script lang="ts">
-  import PageGlow from '$components/chrome/PageGlow.svelte'
-  import PrCard from '$components/oss/PrCard.svelte'
-  import CountUp from '$components/ui/CountUp.svelte'
-  import PageHeader from '$components/ui/PageHeader.svelte'
-  import { ambient } from '$lib/motion/ambient'
-  import { SITE_URL } from '$lib/site'
+  import PageGlow from '#components/chrome/PageGlow.svelte'
+  import PrCard from '#components/oss/PrCard.svelte'
+  import CountUp from '#components/ui/CountUp.svelte'
+  import PageHeader from '#components/ui/PageHeader.svelte'
+  import { ambient } from '#lib/motion/ambient.js'
+  import { SITE_URL } from '#lib/site.js'
   import type { PageData } from './$types'
 
   let { data }: { data: PageData } = $props()

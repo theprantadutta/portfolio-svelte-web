@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ImageRef } from '$lib/projects'
+  import type { ImageRef } from '#lib/projects.js'
 
   interface Props {
     image: ImageRef

@@ -1,6 +1,6 @@
 # portfolio-svelte-web
 
-Personal portfolio site for [pranta.dev](https://pranta.dev) — SvelteKit 2,
+Personal portfolio site for [pranta.dev](https://pranta.dev) — SvelteKit 3,
 Svelte 5, Tailwind CSS v4, content from a self-hosted Strapi CMS and dev.to.
 
 The design is **"Commit Log"** (October 2026): the career rendered as a git
@@ -128,9 +128,10 @@ docker compose build
 docker compose up -d --remove-orphans
 ```
 
-`ORIGIN=https://pranta.dev` must be set in the container or the contact form
-returns 403 — `adapter-node` uses it for CSRF checks and cannot infer it behind
-a proxy. It is already in `compose.yml`.
+The public origin is `paths.origin` in `vite.config.ts`, fixed at build time.
+SvelteKit's CSRF check compares form posts against it, and behind a proxy the
+server cannot infer it. SvelteKit 3 no longer reads an `ORIGIN` environment
+variable.
 
 This is the only app serving `pranta.dev`. The retired Next project declared
 the same Traefik router names and hostnames, so redeploying it from its archive

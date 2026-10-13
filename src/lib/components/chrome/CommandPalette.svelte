@@ -4,14 +4,14 @@
   import { Spring } from 'svelte/motion'
   import { goto } from '$app/navigation'
 
-  import { getThemeState } from '$lib/context/theme.svelte'
-  import { ui } from '$lib/context/ui.svelte'
-  import { profile } from '$lib/data/profile'
-  import { prefersReducedMotion, SPRING_UI } from '$lib/motion'
-  import { siteIndex } from '$lib/site-index.svelte'
-  import { SITE_ROUTES } from '$lib/site-nav'
-  import { lockScroll, unlockScroll } from '$lib/smooth-scroll'
-  import { copyText } from '$lib/toast.svelte'
+  import { getThemeState } from '#lib/context/theme.svelte.js'
+  import { ui } from '#lib/context/ui.svelte.js'
+  import { profile } from '#lib/data/profile.js'
+  import { prefersReducedMotion, SPRING_UI } from '#lib/motion/index.js'
+  import { siteIndex } from '#lib/site-index.svelte.js'
+  import { SITE_ROUTES } from '#lib/site-nav.js'
+  import { lockScroll, unlockScroll } from '#lib/smooth-scroll.js'
+  import { copyText } from '#lib/toast.svelte.js'
 
   const theme = getThemeState()
 

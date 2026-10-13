@@ -2,7 +2,7 @@
   // Cropped from the original illustration (profile_studio_gibli.png) the way
   // the design frames it. The widths cover every size it renders at (28px in
   // a post byline up to 96px in the README) at 1x and 2x.
-  import avatar from '$lib/assets/avatar.png?w=192;96;64;32&enhanced'
+  import avatar from '#lib/assets/avatar.png?w=192;96;64;32&enhanced'
 
   interface Props {
     size: number

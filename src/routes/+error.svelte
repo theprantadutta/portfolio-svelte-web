@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PageGlow from '$components/chrome/PageGlow.svelte'
+  import PageGlow from '#components/chrome/PageGlow.svelte'
   import { page } from '$app/state'
 
   const notFound = $derived(page.status === 404)

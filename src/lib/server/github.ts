@@ -1,15 +1,14 @@
-import { env } from '$env/dynamic/private'
-import { pullRequestUrls } from '$lib/data/open-source'
-import fallback from '$lib/data/github.snapshot.json'
+import { GITHUB_TOKEN } from '$app/env/private'
+import { pullRequestUrls } from '#lib/data/open-source.js'
+import fallback from '#lib/data/github.snapshot.json'
 import {
   fetchActivity,
   fetchSnapshot,
   type Activity,
   type GitHubSnapshot,
-} from '$lib/github'
+} from '#lib/github.js'
 
 const committed = fallback as GitHubSnapshot
-
 let buildSnapshot: Promise<GitHubSnapshot> | undefined
 
 /**
@@ -24,7 +23,8 @@ let buildSnapshot: Promise<GitHubSnapshot> | undefined
  */
 export const getGitHubSnapshot = () =>
   (buildSnapshot ??= (async () => {
-    const token = env.GITHUB_TOKEN
+    const token = GITHUB_TOKEN
+
     if (!token) {
       console.warn(
         '[github] GITHUB_TOKEN is not set, so the committed snapshot is used.'
@@ -41,12 +41,12 @@ export const getGitHubSnapshot = () =>
       }
     } catch (error) {
       console.warn('[github] Falling back to the committed snapshot:', error)
+
       return committed
     }
   })())
 
 const DAY = 24 * 60 * 60 * 1000
-
 let liveActivity: { at: number; value: Promise<Activity> } | undefined
 
 /**
@@ -58,7 +58,8 @@ let liveActivity: { at: number; value: Promise<Activity> } | undefined
  * as unavailable and the page answers by keeping what it has.
  */
 export const getLiveActivity = (): Promise<Activity> | null => {
-  const token = env.GITHUB_TOKEN
+  const token = GITHUB_TOKEN
+
   if (!token) return null
 
   if (!liveActivity || Date.now() - liveActivity.at > DAY) {

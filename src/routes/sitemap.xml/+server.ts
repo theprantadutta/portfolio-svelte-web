@@ -1,6 +1,6 @@
-import { getAllArticles } from '$lib/devto'
-import { getAllProjectSlugs } from '$lib/server/strapi'
-import { SITE_URL } from '$lib/site'
+import { getAllArticles } from '#lib/devto.js'
+import { getAllProjectSlugs } from '#lib/server/strapi.js'
+import { SITE_URL } from '#lib/site.js'
 import type { RequestHandler } from './$types'
 
 // Written out as a static file at build time, from the same two sources that

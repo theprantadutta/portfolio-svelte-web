@@ -1,30 +1,29 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { replaceState } from '$app/navigation'
+  import { goto } from '$app/navigation'
   import { page } from '$app/state'
-
-  import PageGlow from '$components/chrome/PageGlow.svelte'
-  import Changelog from '$components/projects/Changelog.svelte'
-  import Gallery from '$components/projects/Gallery.svelte'
-  import Screens from '$components/projects/Screens.svelte'
-  import SegmentedTabs from '$components/projects/SegmentedTabs.svelte'
-  import StrapiBlocks from '$components/StrapiBlocks.svelte'
-  import WordReveal from '$components/ui/WordReveal.svelte'
-  import { languageColor } from '$lib/projects'
-  import { SITE_URL } from '$lib/site'
+  import PageGlow from '#components/chrome/PageGlow.svelte'
+  import Changelog from '#components/projects/Changelog.svelte'
+  import Gallery from '#components/projects/Gallery.svelte'
+  import Screens from '#components/projects/Screens.svelte'
+  import SegmentedTabs from '#components/projects/SegmentedTabs.svelte'
+  import StrapiBlocks from '#components/StrapiBlocks.svelte'
+  import WordReveal from '#components/ui/WordReveal.svelte'
+  import { languageColor } from '#lib/projects.js'
+  import { SITE_URL } from '#lib/site.js'
   import type {
     DeveloperRole,
     FeatureFlag,
     PlatformType,
-  } from '$lib/types/types'
+  } from '#lib/types/types.js'
   import type { PageData } from './$types'
 
   let { data }: { data: PageData } = $props()
-
   const project = $derived(data.project)
   const detail = $derived(data.detail)
 
   type Tab = 'overview' | 'screens' | 'stack' | 'changelog'
+
   const TAB_IDS: Tab[] = ['overview', 'screens', 'stack', 'changelog']
 
   const tabs = $derived([
@@ -42,21 +41,26 @@
   // `?tab=` only exists in the browser; prerendering cannot read it.
   onMount(() => {
     const wanted = new URL(location.href).searchParams.get('tab') as Tab | null
+
     if (wanted && TAB_IDS.includes(wanted)) tab = wanted
   })
 
   // A new project (client-side navigation between projects) starts on overview.
   $effect(() => {
     void project.slug
+
     if (!new URL(location.href).searchParams.get('tab')) tab = 'overview'
   })
 
   const choose = (next: Tab) => {
     tab = next
-    const url = new URL(page.url)
+
+    const url = new URL(page.url.href)
+
     if (next === 'overview') url.searchParams.delete('tab')
     else url.searchParams.set('tab', next)
-    replaceState(url, page.state)
+
+    goto(url, { shallow: true, replace: true, state: page.state })
   }
 
   const STATUS = {
@@ -116,7 +120,9 @@
   const span = $derived.by(() => {
     const start = month(detail.startDate)
     const validEnd = detail.endDate && detail.endDate >= detail.startDate
+
     if (project.status !== 'live') return `${start} — now`
+
     return validEnd ? `${start} — ${month(detail.endDate)}` : start
   })
 

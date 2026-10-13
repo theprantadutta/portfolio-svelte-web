@@ -1,14 +1,14 @@
 <script lang="ts">
   import Copy from '@lucide/svelte/icons/copy'
 
-  import PageGlow from '$components/chrome/PageGlow.svelte'
-  import PullRequestForm from '$components/contact/PullRequestForm.svelte'
-  import PageHeader from '$components/ui/PageHeader.svelte'
-  import { profile, socials } from '$lib/data/profile'
-  import { reveal } from '$lib/motion/reveal'
-  import { spotlight } from '$lib/motion/pointer'
-  import { SITE_URL } from '$lib/site'
-  import { copyText } from '$lib/toast.svelte'
+  import PageGlow from '#components/chrome/PageGlow.svelte'
+  import PullRequestForm from '#components/contact/PullRequestForm.svelte'
+  import PageHeader from '#components/ui/PageHeader.svelte'
+  import { profile, socials } from '#lib/data/profile.js'
+  import { reveal } from '#lib/motion/reveal.js'
+  import { spotlight } from '#lib/motion/pointer.js'
+  import { SITE_URL } from '#lib/site.js'
+  import { copyText } from '#lib/toast.svelte.js'
 
   const title = 'Contact | Pranta Dutta'
   const description =

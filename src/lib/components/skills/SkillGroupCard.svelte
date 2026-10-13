@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SkillTone } from '$lib/data/skills'
+  import type { SkillTone } from '#lib/data/skills.js'
 
   interface Props {
     name: string

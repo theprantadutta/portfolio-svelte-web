@@ -1,15 +1,15 @@
-import { env } from '$env/dynamic/private'
-import { STRAPI_URL } from '$lib/constants/urls'
-import { createMemo } from '$lib/memo'
+import { STRAPI_INTERNAL_URL, STRAPI_API_KEY } from '$app/env/private'
+import { STRAPI_URL } from '#lib/constants/urls.js'
+import { createMemo } from '#lib/memo.js'
 import {
   emptyReactionCounts,
   type ReactionCounts,
   type ReactionEmoji,
-} from '$lib/reactions'
+} from '#lib/reactions.js'
 import type {
   IStrapiApiResponse,
   ProjectDataAttributes,
-} from '$lib/types/types'
+} from '#lib/types/types.js'
 
 /**
  * Server-only Strapi origin used for data fetching.
@@ -18,7 +18,7 @@ import type {
  * `STRAPI_INTERNAL_URL` can point straight at the Strapi container
  * (http://portfolio-strapi-cms:1337) and skip the public roundtrip + TLS.
  *
- * `$env/dynamic/private` is read at runtime and is only importable from server
+ * `$app/env/private` is read at runtime and is only importable from server
  * modules, which is what keeps the internal hostname out of the browser bundle.
  * Living under `src/lib/server/` makes that a build-time guarantee: SvelteKit
  * fails the build if a client module ever imports this file.
@@ -27,10 +27,12 @@ import type {
  * the variable is unset there and this falls back to the public URL — the same
  * arrangement the Next build used.
  */
-export const STRAPI_SERVER_URL = env.STRAPI_INTERNAL_URL || STRAPI_URL
+export const STRAPI_SERVER_URL = STRAPI_INTERNAL_URL || STRAPI_URL
+
 export const STRAPI_API_URL = `${STRAPI_SERVER_URL}/api`
 
 type SearchParamValue = string | number | boolean | null | undefined
+
 type SearchParams =
   Record<string, SearchParamValue | SearchParamValue[]> | URLSearchParams
 
@@ -83,6 +85,7 @@ const buildSearchParams = (params?: SearchParams) => {
   })
 
   const queryString = searchParams.toString()
+
   return queryString ? `?${queryString}` : ''
 }
 
@@ -91,7 +94,7 @@ const strapiFetch = async <T>(
   {
     searchParams,
     fetch: fetchFn = globalThis.fetch,
-    token = env.STRAPI_API_KEY,
+    token = STRAPI_API_KEY,
     method = 'GET',
     body,
   }: StrapiFetchOptions = {}
@@ -227,6 +230,7 @@ export const getAllProjectSlugs = async (
   options?: StrapiFetchOptions
 ): Promise<ProjectSlugEntry[]> => {
   const response = await getAllProjects(options)
+
   return response.data
     .filter((project) => project.slug)
     .map(({ slug, updatedAt }) => ({ slug, updatedAt }))
@@ -343,6 +347,7 @@ export const getReactionCounts = async (
       },
     }
   )
+
   return (
     sumReactions(response.data, new Map()).get(slug) ?? emptyReactionCounts()
   )

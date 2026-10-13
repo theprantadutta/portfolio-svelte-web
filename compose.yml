@@ -29,11 +29,8 @@ services:
       NODE_ENV: production
       PORT: 3000
       HOST: 0.0.0.0
-      # REQUIRED. adapter-node compares this against the Origin header on form
-      # POSTs as CSRF protection. Behind a reverse proxy it cannot infer the
-      # public URL, so without this every contact-form submission is rejected
-      # with "Cross-site POST form submissions are forbidden".
-      ORIGIN: https://pranta.dev
+      # No ORIGIN: SvelteKit 3 ignores it. The public origin the CSRF check
+      # needs is `paths.origin` in vite.config.ts, fixed at build time.
       # Runtime calls to Strapi (blog reactions) go straight to the CMS
       # container over the shared proxy network instead of out through
       # Cloudflare and back. Build-time prerendering never sees this.

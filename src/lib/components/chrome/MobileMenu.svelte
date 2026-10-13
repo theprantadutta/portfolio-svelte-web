@@ -4,14 +4,14 @@
   import { cubicInOut } from 'svelte/easing'
   import { page } from '$app/state'
 
-  import ThemeToggle from '$components/chrome/ThemeToggle.svelte'
-  import Avatar from '$components/ui/Avatar.svelte'
-  import { ui } from '$lib/context/ui.svelte'
-  import { profile, socials } from '$lib/data/profile'
-  import { prefersReducedMotion } from '$lib/motion'
-  import { siteIndex } from '$lib/site-index.svelte'
-  import { SITE_ROUTES, routeFor, type RouteId } from '$lib/site-nav'
-  import { lockScroll, unlockScroll } from '$lib/smooth-scroll'
+  import ThemeToggle from '#components/chrome/ThemeToggle.svelte'
+  import Avatar from '#components/ui/Avatar.svelte'
+  import { ui } from '#lib/context/ui.svelte.js'
+  import { profile, socials } from '#lib/data/profile.js'
+  import { prefersReducedMotion } from '#lib/motion/index.js'
+  import { siteIndex } from '#lib/site-index.svelte.js'
+  import { SITE_ROUTES, routeFor, type RouteId } from '#lib/site-nav.js'
+  import { lockScroll, unlockScroll } from '#lib/smooth-scroll.js'
 
   const active = $derived(routeFor(page.url.pathname))
 

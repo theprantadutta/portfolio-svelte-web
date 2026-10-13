@@ -1,5 +1,5 @@
-import { allPullRequests } from '$lib/data/open-source'
-import { getGitHubSnapshot } from '$lib/server/github'
+import { allPullRequests } from '#lib/data/open-source.js'
+import { getGitHubSnapshot } from '#lib/server/github.js'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async () => {

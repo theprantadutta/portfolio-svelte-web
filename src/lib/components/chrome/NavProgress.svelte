@@ -2,19 +2,20 @@
   import { Tween } from 'svelte/motion'
   import { navigating } from '$app/state'
 
-  import { easeOut } from '$lib/motion'
+  import { easeOut } from '#lib/motion/index.js'
 
   /**
    * The terminal-style loading bar on link clicks (MOTION §3): it creeps to
    * 80% while the next page loads, then completes and fades. Pages are
    * prerendered, so most navigations finish before the 120ms grace period
-   * and the bar never appears at all.
+   * and the bar never appears at all. Shallow navigations (filters, tabs,
+   * search) only rewrite the query string, so they never show it.
    */
   const progress = new Tween(0, { easing: easeOut })
   let visible = $state(false)
 
   $effect(() => {
-    if (!navigating.to) return
+    if (!navigating.to || navigating.shallow) return
 
     const show = setTimeout(() => {
       visible = true

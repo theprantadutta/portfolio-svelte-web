@@ -2,7 +2,7 @@
   import { onMount, tick } from 'svelte'
   import { Spring } from 'svelte/motion'
 
-  import { SPRING_UI } from '$lib/motion'
+  import { SPRING_UI } from '#lib/motion/index.js'
 
   interface Props {
     options: readonly T[]

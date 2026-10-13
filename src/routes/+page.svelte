@@ -1,11 +1,11 @@
 <script lang="ts">
-  import PageGlow from '$components/chrome/PageGlow.svelte'
-  import CommitGraph from '$components/git/CommitGraph.svelte'
-  import Heatmap from '$components/git/Heatmap.svelte'
-  import CvButton from '$components/ui/CvButton.svelte'
-  import WordReveal from '$components/ui/WordReveal.svelte'
-  import { heroStats, home, profile } from '$lib/data/profile'
-  import { SITE_URL } from '$lib/site'
+  import PageGlow from '#components/chrome/PageGlow.svelte'
+  import CommitGraph from '#components/git/CommitGraph.svelte'
+  import Heatmap from '#components/git/Heatmap.svelte'
+  import CvButton from '#components/ui/CvButton.svelte'
+  import WordReveal from '#components/ui/WordReveal.svelte'
+  import { heroStats, home, profile } from '#lib/data/profile.js'
+  import { SITE_URL } from '#lib/site.js'
   import type { PageData } from './$types'
 
   let { data }: { data: PageData } = $props()

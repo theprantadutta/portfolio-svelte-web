@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { prefersReducedMotion } from '$lib/motion'
-  import { REACTIONS, type ReactionEmoji } from '$lib/reactions'
-  import { copyText } from '$lib/toast.svelte'
+  import { prefersReducedMotion } from '#lib/motion/index.js'
+  import { REACTIONS, type ReactionEmoji } from '#lib/reactions.js'
+  import { copyText } from '#lib/toast.svelte.js'
   import type { PostReactions } from './post-reactions.svelte'
 
   interface Props {

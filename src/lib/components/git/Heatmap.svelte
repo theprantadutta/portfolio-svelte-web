@@ -1,15 +1,15 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
-  import CountUp from '$components/ui/CountUp.svelte'
+  import CountUp from '#components/ui/CountUp.svelte'
   import {
     ACTIVITY_WEEKS,
     type Activity,
     type ContributionDay,
-  } from '$lib/github'
-  import { isBelowFold } from '$lib/motion'
-  import { ambient } from '$lib/motion/ambient'
-  import { inview } from '$lib/motion/inview'
+  } from '#lib/github.js'
+  import { isBelowFold } from '#lib/motion/index.js'
+  import { ambient } from '#lib/motion/ambient.js'
+  import { inview } from '#lib/motion/inview.js'
 
   interface Props {
     activity: Activity

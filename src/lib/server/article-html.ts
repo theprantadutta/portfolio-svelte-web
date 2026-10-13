@@ -1,4 +1,4 @@
-import type { TocEntry } from '$components/blog/posts'
+import type { TocEntry } from '#components/blog/posts.js'
 
 /**
  * Reshapes dev.to's rendered article HTML for the post page.

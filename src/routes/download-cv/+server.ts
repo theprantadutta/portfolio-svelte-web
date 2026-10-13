@@ -4,9 +4,9 @@ import { createHash } from 'node:crypto'
 // module, rather than a hashed file on disk. That matters: the bytes travel
 // with the server chunk, so serving them needs no filesystem path that could
 // differ between `vite preview` and the Docker image.
-import cvDataUrl from '$lib/assets/cv.pdf?inline'
+import cvDataUrl from '#lib/assets/cv.pdf?inline'
 
-import { CV_DOWNLOAD_FILENAME } from '$lib/constants/selectors'
+import { CV_DOWNLOAD_FILENAME } from '#lib/constants/selectors.js'
 import type { RequestHandler } from './$types'
 
 /**

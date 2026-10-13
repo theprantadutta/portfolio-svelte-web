@@ -1,4 +1,4 @@
-import { CV_PATH, SERVICES_LINK } from '$lib/constants/selectors'
+import { CV_PATH, SERVICES_LINK } from '#lib/constants/selectors.js'
 
 /**
  * Who Pranta is and how to reach him: the copy that appears across several

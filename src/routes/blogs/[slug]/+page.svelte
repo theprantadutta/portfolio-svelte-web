@@ -1,13 +1,13 @@
 <script lang="ts">
-  import ArticleBody from '$components/blog/ArticleBody.svelte'
-  import { postDate } from '$components/blog/posts'
-  import Reactions from '$components/blog/Reactions.svelte'
-  import { PostReactions } from '$components/blog/post-reactions.svelte'
-  import ReadingProgress from '$components/blog/ReadingProgress.svelte'
-  import Toc from '$components/blog/Toc.svelte'
-  import DevToImage from '$components/DevToImage.svelte'
-  import Avatar from '$components/ui/Avatar.svelte'
-  import { SITE_URL } from '$lib/site'
+  import ArticleBody from '#components/blog/ArticleBody.svelte'
+  import { postDate } from '#components/blog/posts.js'
+  import Reactions from '#components/blog/Reactions.svelte'
+  import { PostReactions } from '#components/blog/post-reactions.svelte.js'
+  import ReadingProgress from '#components/blog/ReadingProgress.svelte'
+  import Toc from '#components/blog/Toc.svelte'
+  import DevToImage from '#components/DevToImage.svelte'
+  import Avatar from '#components/ui/Avatar.svelte'
+  import { SITE_URL } from '#lib/site.js'
   import type { PageData } from './$types'
 
   let { data }: { data: PageData } = $props()

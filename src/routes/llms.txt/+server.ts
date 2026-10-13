@@ -1,8 +1,11 @@
-import { allPullRequests, openSourceContributions } from '$lib/data/open-source'
-import { profile } from '$lib/data/profile'
-import { getMostLikedArticles } from '$lib/devto'
-import { getAllProjects } from '$lib/server/strapi'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '$lib/site'
+import {
+  allPullRequests,
+  openSourceContributions,
+} from '#lib/data/open-source.js'
+import { profile } from '#lib/data/profile.js'
+import { getMostLikedArticles } from '#lib/devto.js'
+import { getAllProjects } from '#lib/server/strapi.js'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '#lib/site.js'
 import type { RequestHandler } from './$types'
 
 /**

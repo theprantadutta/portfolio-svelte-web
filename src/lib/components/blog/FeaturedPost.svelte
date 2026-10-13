@@ -1,6 +1,6 @@
 <script lang="ts">
-  import DevToImage from '$components/DevToImage.svelte'
-  import { spotlight } from '$lib/motion/pointer'
+  import DevToImage from '#components/DevToImage.svelte'
+  import { spotlight } from '#lib/motion/pointer.js'
   import { postDate, type PostSummary } from './posts'
 
   let { post }: { post: PostSummary } = $props()

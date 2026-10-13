@@ -3,7 +3,9 @@ import svelte from 'eslint-plugin-svelte'
 import prettier from 'eslint-config-prettier'
 import globals from 'globals'
 import ts from 'typescript-eslint'
-import svelteConfig from './svelte.config.js'
+import { loadConfig } from '@sveltejs/load-config'
+
+const svelteConfig = (await loadConfig('./', { traverse: false }))?.config
 
 export default ts.config(
   js.configs.recommended,
@@ -21,7 +23,7 @@ export default ts.config(
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
-      // `resolve()` exists to prefix links with `kit.paths.base`. This app is
+      // `resolve()` exists to prefix links with `paths.base`. This app is
       // served from the domain root with no base path, so wrapping every href
       // would add noise and a runtime call for an empty string.
       'svelte/no-navigation-without-resolve': 'off',

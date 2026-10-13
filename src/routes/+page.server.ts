@@ -1,22 +1,33 @@
-import { getMostLikedArticles } from '$lib/devto'
-import { getAllFeaturedProjects } from '$lib/server/strapi'
+import { commits } from '$lib/data/commits'
+import { allPullRequests } from '$lib/data/open-source'
+import { getAllArticles } from '$lib/devto'
+import { shortHash } from '$lib/hash'
+import { getGitHubSnapshot } from '$lib/server/github'
+import { getAllProjects } from '$lib/server/strapi'
 import type { PageServerLoad } from './$types'
 
 // Runs once at build time (the whole route tree is prerendered), so these
 // upstream requests happen during `vite build` and never on a page view.
-//
-// Projects is the only Strapi collection left. Experience and skills are local
-// data under src/lib/data/, imported directly by the components that render
-// them — a CMS bought nothing for either, since prerendering means a rebuild is
-// needed to publish a change regardless.
 export const load: PageServerLoad = async ({ fetch }) => {
-  const [projects, popularBlogs] = await Promise.all([
-    getAllFeaturedProjects({ fetch }),
-    getMostLikedArticles(3, fetch),
+  const [projects, articles, github] = await Promise.all([
+    getAllProjects({ fetch }),
+    getAllArticles(fetch),
+    getGitHubSnapshot(),
   ])
 
+  const fill = (text: string) =>
+    text
+      .replace('{posts}', String(articles.length))
+      .replace('{prs}', String(allPullRequests().length))
+
   return {
-    projects: projects.data,
-    popularBlogs,
+    projectCount: projects.data.length,
+    activity: github.activity,
+    commits: commits.map((commit) => ({
+      ...commit,
+      message: fill(commit.message),
+      detail: fill(commit.detail),
+      hash: shortHash(`${commit.type} ${commit.message}`),
+    })),
   }
 }

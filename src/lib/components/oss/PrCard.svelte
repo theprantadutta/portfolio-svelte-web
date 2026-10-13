@@ -1,55 +1,23 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { cubicOut } from 'svelte/easing'
-  import { slide } from 'svelte/transition'
 
+  import { diffBlocks, type PullRequestView } from '#components/oss/pr.js'
   import CountUp from '#components/ui/CountUp.svelte'
-  import { isBelowFold, prefersReducedMotion } from '#lib/motion/index.js'
+  import { isBelowFold } from '#lib/motion/index.js'
   import { inview } from '#lib/motion/inview.js'
   import { spotlight } from '#lib/motion/pointer.js'
 
   interface Props {
-    pr: {
-      number: number
-      title: string
-      description: string
-      url: string
-      resolves: { number: number; repo: string; url: string }[]
-      repo: string
-      shippedIn: string | null
-      additions: number | null
-      deletions: number | null
-      mergedAt: string | null
-    }
+    pr: PullRequestView
     /** Position in the grid, for the entrance stagger. */
     index: number
+    /** Opens the page's detail dialog on this pull request. */
+    onselect: (pr: PullRequestView) => void
   }
 
-  let { pr, index }: Props = $props()
+  let { pr, index, onselect }: Props = $props()
 
-  let open = $state(false)
-
-  const BLOCKS = 5
-
-  /** GitHub's diffstat: five squares split green/red by the share of each. */
-  const blocks = $derived.by(() => {
-    const add = pr.additions ?? 0
-    const del = pr.deletions ?? 0
-    if (add + del === 0) return Array<'none'>(BLOCKS).fill('none')
-    const green = Math.round((BLOCKS * add) / (add + del))
-    return Array.from({ length: BLOCKS }, (_, i) => (i < green ? 'add' : 'del'))
-  })
-
-  const merged = $derived(
-    pr.mergedAt
-      ? new Date(pr.mergedAt).toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-          timeZone: 'UTC',
-        })
-      : null
-  )
+  const blocks = $derived(diffBlocks(pr))
 
   // The squares fill one by one and the badge pulses once, with the page if
   // the card is on screen at load, otherwise the first time it scrolls in.
@@ -60,10 +28,11 @@
   })
 </script>
 
+<!-- A summary only: the whole card opens the details in a dialog, so a
+     card never grows and drags its row with it. -->
 <article
   bind:this={card}
   class="card lift spotlight pr"
-  class:open
   data-phase={phase}
   style:--spot="var(--purple)"
   style:--n={index}
@@ -73,9 +42,9 @@
   <button
     type="button"
     class="summary"
-    aria-expanded={open}
-    aria-controls="pr-{pr.number}"
-    onclick={() => (open = !open)}
+    aria-haspopup="dialog"
+    aria-label="{pr.title}, {pr.repo} pull request {pr.number}: show details"
+    onclick={() => onselect(pr)}
   >
     <span class="top">
       <span class="repo">{pr.repo}</span>
@@ -94,38 +63,6 @@
       </span>
     </span>
   </button>
-
-  {#if open}
-    <div
-      class="more"
-      id="pr-{pr.number}"
-      transition:slide={{
-        duration: prefersReducedMotion.current ? 0 : 320,
-        easing: cubicOut,
-      }}
-    >
-      <p>{pr.description}</p>
-      <ul class="facts">
-        <li>
-          #{pr.number}{#if merged}&nbsp;· merged {merged}{/if}
-        </li>
-        {#each pr.resolves as issue (issue.url)}
-          <li>
-            resolves
-            <a href={issue.url} target="_blank" rel="noopener noreferrer"
-              >{issue.repo === pr.repo ? '' : issue.repo}#{issue.number}</a
-            >
-          </li>
-        {/each}
-        {#if pr.shippedIn}
-          <li>shipped in {pr.shippedIn}</li>
-        {/if}
-      </ul>
-      <a class="view" href={pr.url} target="_blank" rel="noopener noreferrer">
-        view on GitHub <span class="ne">↗</span>
-      </a>
-    </div>
-  {/if}
 </article>
 
 <style>
@@ -266,54 +203,5 @@
       animation: none !important;
       scale: none !important;
     }
-  }
-
-  .more {
-    padding: 0 20px 20px;
-    font-size: 14.5px;
-    line-height: 1.55;
-    color: var(--ink-2);
-  }
-
-  .more p {
-    margin: 0 0 12px;
-    padding-top: 14px;
-    border-top: 1px solid var(--divider);
-  }
-
-  .facts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 14px;
-    margin: 0 0 12px;
-    padding: 0;
-    list-style: none;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--ink-3);
-  }
-
-  .facts a,
-  .view {
-    color: var(--blue-ink);
-  }
-
-  .facts a:hover,
-  .view:hover {
-    text-decoration: underline;
-  }
-
-  .view {
-    font-family: var(--font-mono);
-    font-size: 13px;
-  }
-
-  .ne {
-    display: inline-block;
-    transition: transform var(--dur-2) var(--ease-out);
-  }
-
-  .view:hover .ne {
-    transform: translate(2px, -2px);
   }
 </style>

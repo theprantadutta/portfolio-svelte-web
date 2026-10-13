@@ -1,6 +1,7 @@
 <script lang="ts">
   import PageGlow from '#components/chrome/PageGlow.svelte'
   import PrCard from '#components/oss/PrCard.svelte'
+  import PrDialog from '#components/oss/PrDialog.svelte'
   import RepoCard from '#components/oss/RepoCard.svelte'
   import CountUp from '#components/ui/CountUp.svelte'
   import PageHeader from '#components/ui/PageHeader.svelte'
@@ -9,6 +10,9 @@
   import type { PageData } from './$types'
 
   let { data }: { data: PageData } = $props()
+
+  /** The one detail dialog every pull request card opens. */
+  let prDialog = $state<PrDialog>()
 
   /** The post that tells the story behind the Flutter SDK contributions. */
   const STORY =
@@ -108,12 +112,14 @@
     <ul class="grid">
       {#each data.pullRequests as pr, i (pr.url)}
         <li class="enter" style:--d="{420 + Math.min(i, 8) * 50}ms">
-          <PrCard {pr} index={i} />
+          <PrCard {pr} index={i} onselect={(next) => prDialog?.show(next)} />
         </li>
       {/each}
     </ul>
   </section>
 </div>
+
+<PrDialog bind:this={prDialog} />
 
 <style>
   .page {

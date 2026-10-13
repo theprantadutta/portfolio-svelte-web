@@ -55,67 +55,72 @@
         {screenshots.length === 1 ? 'screenshot' : 'screenshots'}
         <span class="hint">· click one to open it</span>
       </p>
-      {#if !(atStart && atEnd)}
-        <div class="arrows">
-          <button
-            type="button"
-            class="arrow"
-            onclick={() => page(-1)}
-            disabled={atStart}
-            aria-label="Scroll screenshots left"
-          >
-            <ChevronLeft size={18} strokeWidth={1.75} />
-          </button>
-          <button
-            type="button"
-            class="arrow"
-            onclick={() => page(1)}
-            disabled={atEnd}
-            aria-label="Scroll screenshots right"
-          >
-            <ChevronRight size={18} strokeWidth={1.75} />
-          </button>
-        </div>
-      {/if}
     </div>
 
-    <ol
-      class="track"
-      class:fade-start={!atStart}
-      class:fade-end={!atEnd}
-      bind:this={track}
-      onscroll={measure}
-    >
-      {#each screenshots as shot, i (shot.url)}
-        <li class="item">
-          <button
-            type="button"
-            class="shot"
-            style:aspect-ratio="{shot.width} / {shot.height}"
-            onclick={() => viewer?.open(i)}
-            aria-label="Open screenshot {i +
-              1} of {screenshots.length}{shot.caption
-              ? `: ${shot.caption}`
-              : ''}"
-          >
-            <img
-              src={shot.url}
-              srcset={shot.srcset}
-              sizes="(max-width: 767px) 60vw, 260px"
-              alt=""
-              width={shot.width}
-              height={shot.height}
-              loading={i < 4 ? 'eager' : 'lazy'}
-              decoding="async"
-            />
-          </button>
-          <p class="label">
-            <span class="no tabular">{pad(i + 1)}</span>
-            {#if shot.caption}<span class="caption">{shot.caption}</span>{/if}
-          </p>
-        </li>
-      {/each}
-    </ol>
+    <div class="rail">
+      <ol
+        class="track"
+        class:fade-start={!atStart}
+        class:fade-end={!atEnd}
+        bind:this={track}
+        onscroll={measure}
+      >
+        {#each screenshots as shot, i (shot.url)}
+          <li class="item">
+            <button
+              type="button"
+              class="shot"
+              style:aspect-ratio="{shot.width} / {shot.height}"
+              onclick={() => viewer?.open(i)}
+              aria-label="Open screenshot {i +
+                1} of {screenshots.length}{shot.caption
+                ? `: ${shot.caption}`
+                : ''}"
+            >
+              <img
+                src={shot.url}
+                srcset={shot.srcset}
+                sizes="(max-width: 767px) 60vw, 260px"
+                alt=""
+                width={shot.width}
+                height={shot.height}
+                loading={i < 4 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+            </button>
+            <p class="label">
+              <span class="no tabular">{pad(i + 1)}</span>
+              {#if shot.caption}<span class="caption">{shot.caption}</span>{/if}
+            </p>
+          </li>
+        {/each}
+      </ol>
+
+      <!-- Floating arrows over the faded edges: each one only while there is
+         more to see on its side. -->
+      <button
+        type="button"
+        class="edge prev"
+        class:shown={!atStart}
+        onclick={() => page(-1)}
+        tabindex={atStart ? -1 : 0}
+        aria-hidden={atStart}
+        aria-label="Scroll screenshots left"
+      >
+        <ChevronLeft size={22} strokeWidth={2} />
+      </button>
+      <button
+        type="button"
+        class="edge next"
+        class:shown={!atEnd}
+        onclick={() => page(1)}
+        tabindex={atEnd ? -1 : 0}
+        aria-hidden={atEnd}
+        aria-label="Scroll screenshots right"
+      >
+        <ChevronRight size={22} strokeWidth={2} />
+      </button>
+    </div>
   </section>
 
   <ScreenshotViewer bind:this={viewer} {title} {screenshots} />
@@ -172,32 +177,76 @@
     color: var(--ink-4);
   }
 
-  .arrows {
-    display: flex;
-    gap: 8px;
+  .rail {
+    position: relative;
   }
 
-  .arrow {
+  /* Frosted round buttons floating over the strip's faded edges, centred
+     on the screenshots (the track's top padding plus half a shot). */
+  .edge {
+    position: absolute;
+    top: calc(4px + var(--h) / 2);
+    z-index: 1;
     display: grid;
     place-items: center;
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     border-radius: 999px;
     border: 1px solid var(--border-strong);
-    background: var(--surface);
+    background: color-mix(in oklch, var(--surface) 78%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    backdrop-filter: blur(12px) saturate(1.4);
     color: var(--ink);
+    box-shadow:
+      0 12px 30px -12px rgb(0 0 0 / 0.35),
+      0 1px 0 rgb(255 255 255 / 0.4) inset;
+    opacity: 0;
+    pointer-events: none;
+    translate: 0 -50%;
+    scale: 0.85;
     transition:
+      opacity var(--dur-2) var(--ease-out),
+      scale var(--dur-2) var(--ease-out),
       border-color var(--dur-1) linear,
-      opacity var(--dur-1) linear;
+      background-color var(--dur-1) linear;
   }
 
-  .arrow:hover:not(:disabled) {
-    border-color: var(--ink);
+  .edge.shown {
+    opacity: 1;
+    pointer-events: auto;
+    scale: 1;
   }
 
-  .arrow:disabled {
-    opacity: 0.35;
-    cursor: default;
+  .prev {
+    left: 10px;
+  }
+
+  .next {
+    right: 10px;
+  }
+
+  .edge :global(svg) {
+    transition: translate var(--dur-2) var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .edge.shown:hover {
+      scale: 1.08;
+      border-color: var(--ink);
+      background: var(--surface);
+    }
+
+    .prev:hover :global(svg) {
+      translate: -2px 0;
+    }
+
+    .next:hover :global(svg) {
+      translate: 2px 0;
+    }
+  }
+
+  .edge.shown:active {
+    scale: 0.94;
   }
 
   /* One strip at a shared height; each shot's width comes from its own
@@ -327,7 +376,7 @@
     }
 
     .hint,
-    .arrows {
+    .edge {
       display: none;
     }
 

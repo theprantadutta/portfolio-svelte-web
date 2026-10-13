@@ -65,6 +65,15 @@ export default defineConfig({
     // a handful of requests for bytes that are already gzip/brotli'd.
     assetsInlineLimit: 2048,
     cssMinify: 'lightningcss',
+    rolldownOptions: {
+      output: {
+        // Vite drops `/*!` license comments when it minifies. Keep them: the
+        // Font Awesome brand icons (CC BY 4.0) and the MIT libraries ask for
+        // their notices to ship with the code, and they cost a few hundred
+        // bytes.
+        comments: { legal: true },
+      },
+    },
   },
 
   server: {

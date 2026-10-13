@@ -1,6 +1,7 @@
 <script lang="ts">
   import PageGlow from '#components/chrome/PageGlow.svelte'
   import PrCard from '#components/oss/PrCard.svelte'
+  import RepoCard from '#components/oss/RepoCard.svelte'
   import CountUp from '#components/ui/CountUp.svelte'
   import PageHeader from '#components/ui/PageHeader.svelte'
   import { ambient } from '#lib/motion/ambient.js'
@@ -80,18 +81,38 @@
         Code shipped inside the Flutter SDK, used by every Flutter app.
       </h2>
     </div>
-    <a class="btn story" href={STORY}
+    <a class="btn btn-primary story" href={STORY}
       >read the story <span class="arrow">→</span></a
     >
   </section>
 
-  <ul class="grid">
-    {#each data.pullRequests as pr, i (pr.url)}
-      <li class="enter" style:--d="{400 + Math.min(i, 8) * 50}ms">
-        <PrCard {pr} index={i} />
-      </li>
-    {/each}
-  </ul>
+  <section class="section" aria-labelledby="repos-title">
+    <h2 id="repos-title" class="section-title enter" style:--d="340ms">
+      <span aria-hidden="true">$ </span>gh repo list --contributed
+      <span class="section-count">{data.repositories.length}</span>
+    </h2>
+    <ul class="repos">
+      {#each data.repositories as repo, i (repo.repo)}
+        <li class="enter" style:--d="{360 + i * 40}ms">
+          <RepoCard {repo} />
+        </li>
+      {/each}
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="prs-title">
+    <h2 id="prs-title" class="section-title enter" style:--d="400ms">
+      <span aria-hidden="true">$ </span>gh pr list --state merged
+      <span class="section-count">{count}</span>
+    </h2>
+    <ul class="grid">
+      {#each data.pullRequests as pr, i (pr.url)}
+        <li class="enter" style:--d="{420 + Math.min(i, 8) * 50}ms">
+          <PrCard {pr} index={i} />
+        </li>
+      {/each}
+    </ul>
+  </section>
 </div>
 
 <style>
@@ -135,7 +156,7 @@
     color: var(--ink-3);
   }
 
-  /* The banner stays dark in both themes, like the Impact card. */
+  /* The featured banner follows the theme: a raised card with a purple glow. */
   .banner {
     position: relative;
     display: grid;
@@ -145,12 +166,9 @@
     padding: 26px 30px;
     border-radius: 20px;
     overflow: hidden;
-    background: #15171c;
-    color: #fff;
-  }
-
-  :global([data-theme='dark']) .banner {
     border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink);
   }
 
   .banner-glow {
@@ -160,13 +178,19 @@
     right: -100px;
     top: -100px;
     border-radius: 50%;
+    background: radial-gradient(ellipse, var(--glow-purple), transparent 65%);
+    animation: drift2 12s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* The theme's dark glow is tuned for whole pages; a card this size needs
+     the stronger one it had before. */
+  :global([data-theme='dark']) .banner-glow {
     background: radial-gradient(
       ellipse,
       oklch(0.62 0.15 300 / 0.6),
       transparent 65%
     );
-    animation: drift2 12s ease-in-out infinite;
-    pointer-events: none;
   }
 
   .banner-text {
@@ -177,7 +201,7 @@
     margin: 0;
     font-family: var(--font-mono);
     font-size: 12px;
-    color: #b9b9b2;
+    color: var(--ink-2);
   }
 
   .banner h2 {
@@ -192,8 +216,6 @@
   .story {
     position: relative;
     padding: 12px 18px;
-    background: #fff;
-    color: #15171c;
   }
 
   @media (hover: hover) {
@@ -204,6 +226,49 @@
     .story:hover .arrow {
       transform: translateX(3px);
     }
+  }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+
+  .section-count {
+    padding: 1px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    font-size: 11px;
+    color: var(--ink-2);
+  }
+
+  .repos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .repos li {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .repos li > :global(.repo) {
+    flex: 1;
   }
 
   .grid {
@@ -225,7 +290,8 @@
   }
 
   @media (max-width: 1023px) {
-    .grid {
+    .grid,
+    .repos {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
@@ -233,6 +299,24 @@
   @media (max-width: 767px) {
     .page {
       gap: 18px;
+    }
+
+    /* Phones: the repositories become one swipeable row, edge to edge. */
+    .repos {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(250px, 80%);
+      gap: 10px;
+      margin-inline: calc(var(--gutter) * -1);
+      padding: 4px var(--gutter);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+
+    .repos li {
+      scroll-snap-align: start;
     }
 
     .totals {

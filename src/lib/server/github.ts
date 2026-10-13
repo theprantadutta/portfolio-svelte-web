@@ -1,5 +1,5 @@
 import { GITHUB_TOKEN } from '$app/env/private'
-import { pullRequestUrls } from '#lib/data/open-source.js'
+import { contributedRepos, pullRequestUrls } from '#lib/data/open-source.js'
 import fallback from '#lib/data/github.snapshot.json'
 import {
   fetchActivity,
@@ -33,11 +33,17 @@ export const getGitHubSnapshot = () =>
     }
 
     try {
-      const live = await fetchSnapshot(token, pullRequestUrls())
+      const live = await fetchSnapshot(
+        token,
+        pullRequestUrls(),
+        contributedRepos()
+      )
       return {
         ...live,
-        // A PR GitHub could not resolve keeps its last known numbers.
+        // A PR or repository GitHub could not resolve keeps its last known
+        // numbers.
         pullRequests: { ...committed.pullRequests, ...live.pullRequests },
+        repositories: { ...committed.repositories, ...live.repositories },
       }
     } catch (error) {
       console.warn('[github] Falling back to the committed snapshot:', error)

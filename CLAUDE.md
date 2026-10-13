@@ -156,8 +156,11 @@ derived from fields the CMS already had, in `src/lib/projects.ts`.
 
 #### GitHub (`src/lib/github.ts` + `src/lib/server/github.ts`)
 
-The heatmap, the PR diff sizes on /open-source and the languages bar on /about
-come from the GitHub GraphQL API with `GITHUB_TOKEN`, once per build. Without
+The heatmap, the PR diff sizes and repository cards (stars, primary language,
+org avatar) on /open-source and the languages bar on /about come from the
+GitHub GraphQL API with `GITHUB_TOKEN`, once per build. Adding a contribution
+to `src/lib/data/open-source.ts` is enough for its repository to get a card;
+refresh the snapshot afterwards so token-less builds have its numbers too. Without
 a token, or if GitHub fails, the build uses the committed snapshot in
 `src/lib/data/github.snapshot.json` instead of failing. Refresh it with
 `GITHUB_TOKEN=$(gh auth token) bun scripts/refresh-github-snapshot.ts`.
@@ -207,6 +210,22 @@ at 16px with a 1.75 stroke, only where an icon reads better than text (theme,
 search, menu, copy, chevrons). Arrows and the git glyphs (→ ↗ ↓ ⇄ ✓ ●) are text
 in the mono font, as the design has them. The old generated react-icons set and
 its script are gone.
+
+Brand marks (GitHub, LinkedIn, X, Google Play, Apple) come from Font Awesome
+Free's brand set (`src/lib/brand-icons.ts`, rendered by
+`#components/ui/BrandIcon.svelte` in `currentColor`). Lucide no longer ships
+brand logos, and Simple Icons dropped LinkedIn's. The icons are CC BY 4.0, so
+the attribution must ship with the code: `brand-icons.ts` carries a `/*!`
+comment (a plain module, because the Svelte compiler drops comments), and
+`vite.config.ts` sets `comments: { legal: true }` because Vite strips legal
+comments when it minifies. Never use a glyph like `` for a brand: it only
+renders on Apple devices.
+
+Inline cards and sheets follow the theme, even where the handoff drew them
+dark: the mobile menu, the open-source banner, the Impact card and the
+availability card all use the tokens. Pranta asked for this on 2026-10-13. The
+exceptions are overlays that float over content (toasts, the blog reaction
+bar, the screenshot lightbox).
 
 ### Styling
 

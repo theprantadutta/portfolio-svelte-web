@@ -336,3 +336,7 @@ export const allPullRequests = () =>
 
 /** The URLs the GitHub snapshot looks up diff sizes for. */
 export const pullRequestUrls = () => allPullRequests().map((pr) => pr.url)
+
+/** The repositories the GitHub snapshot looks up stars and avatars for. */
+export const contributedRepos = () =>
+  openSourceContributions.map((contribution) => contribution.repo)

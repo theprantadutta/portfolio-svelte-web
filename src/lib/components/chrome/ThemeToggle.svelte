@@ -6,11 +6,11 @@
 
   interface Props {
     class?: string
-    /** For the dark mobile menu sheet, which keeps its own colours. */
-    onDark?: boolean
+    /** Fills its grid cell at the mobile menu's 44px tap-target size. */
+    block?: boolean
   }
 
-  let { class: className = '', onDark = false }: Props = $props()
+  let { class: className = '', block = false }: Props = $props()
 
   const theme = getThemeState()
 
@@ -31,7 +31,7 @@
 <button
   type="button"
   class="toggle {className}"
-  class:on-dark={onDark}
+  class:block
   onclick={toggle}
   aria-label="Toggle dark mode"
   title="Toggle theme"
@@ -59,14 +59,12 @@
     border-color: var(--ink);
   }
 
-  .toggle.on-dark {
+  .toggle.block {
     width: 100%;
     height: 100%;
     min-height: 44px;
-    border: 0;
+    border-color: var(--border);
     border-radius: 12px;
-    background: #1f2127;
-    color: #ecedf0;
   }
 
   .icons {

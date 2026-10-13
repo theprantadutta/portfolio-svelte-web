@@ -41,6 +41,15 @@ export interface PullRequestStats {
   mergedAt: string | null
 }
 
+/** A repository on /open-source with merged pull requests from Pranta. */
+export interface RepositoryStats {
+  stars: number
+  /** GitHub's primary language and its official colour */
+  language: { name: string; color: string | null } | null
+  /** The owning org's (or user's) avatar, 80px */
+  avatarUrl: string
+}
+
 export interface LanguageShare {
   name: string
   /** Public, non-fork repositories with this primary language */
@@ -58,6 +67,8 @@ export interface GitHubSnapshot {
   activity: Activity
   /** Keyed by the pull request's html URL */
   pullRequests: Record<string, PullRequestStats>
+  /** Keyed by `owner/name`, as written in src/lib/data/open-source.ts */
+  repositories: Record<string, RepositoryStats>
   languages: LanguageShare[]
 }
 
@@ -224,6 +235,49 @@ export const fetchPullRequestStats = async (
   return stats
 }
 
+/** Stars, language and owner avatar for each listed repository, in one request. */
+export const fetchRepositoryStats = async (
+  token: string,
+  repos: string[],
+  fetchFn: Fetcher = globalThis.fetch
+): Promise<Record<string, RepositoryStats>> => {
+  if (repos.length === 0) return {}
+
+  const query = `query {${repos
+    .map((slug, i) => {
+      const [owner, name] = slug.split('/')
+      return `r${i}: repository(owner: ${JSON.stringify(owner)}, name: ${JSON.stringify(name)}) {
+          stargazerCount
+          primaryLanguage { name color }
+          owner { avatarUrl(size: 80) }
+        }`
+    })
+    .join('\n')}}`
+
+  const data = await graphql<
+    Record<
+      string,
+      {
+        stargazerCount: number
+        primaryLanguage: { name: string; color: string | null } | null
+        owner: { avatarUrl: string }
+      } | null
+    >
+  >(token, query, {}, fetchFn)
+
+  const stats: Record<string, RepositoryStats> = {}
+  repos.forEach((slug, i) => {
+    const found = data[`r${i}`]
+    if (!found) return
+    stats[slug] = {
+      stars: found.stargazerCount,
+      language: found.primaryLanguage,
+      avatarUrl: found.owner.avatarUrl,
+    }
+  })
+  return stats
+}
+
 /**
  * Public, non-fork repositories counted by primary language, largest first.
  *
@@ -302,12 +356,14 @@ export const fetchLanguages = async (
 export const fetchSnapshot = async (
   token: string,
   pullRequestUrls: string[],
+  repos: string[],
   fetchFn: Fetcher = globalThis.fetch
 ): Promise<GitHubSnapshot> => {
-  const [activity, pullRequests, languages] = await Promise.all([
+  const [activity, pullRequests, repositories, languages] = await Promise.all([
     fetchActivity(token, fetchFn),
     fetchPullRequestStats(token, pullRequestUrls, fetchFn),
+    fetchRepositoryStats(token, repos, fetchFn),
     fetchLanguages(token, fetchFn),
   ])
-  return { activity, pullRequests, languages }
+  return { activity, pullRequests, repositories, languages }
 }

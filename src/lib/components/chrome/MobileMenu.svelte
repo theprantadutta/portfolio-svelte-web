@@ -171,7 +171,7 @@
             {social.id}
           </a>
         {/each}
-        <ThemeToggle onDark />
+        <ThemeToggle block />
       </div>
     </div>
   </div>
@@ -183,8 +183,8 @@
     inset: 0;
     z-index: 60;
     overflow: hidden;
-    background: #15171c;
-    color: #ecedf0;
+    background: var(--bg);
+    color: var(--ink);
   }
 
   .glow {
@@ -198,11 +198,7 @@
     height: 420px;
     left: -140px;
     bottom: -160px;
-    background: radial-gradient(
-      circle,
-      oklch(0.6 0.15 150 / 0.5),
-      transparent 65%
-    );
+    background: radial-gradient(circle, var(--glow-green), transparent 65%);
     animation: drift 12s ease-in-out infinite;
   }
 
@@ -211,11 +207,7 @@
     height: 380px;
     right: -160px;
     top: 120px;
-    background: radial-gradient(
-      circle,
-      oklch(0.6 0.15 300 / 0.4),
-      transparent 65%
-    );
+    background: radial-gradient(circle, var(--glow-purple), transparent 65%);
     animation: drift2 14s ease-in-out infinite;
   }
 
@@ -252,8 +244,8 @@
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: #ecedf0;
-    color: #15171c;
+    background: var(--ink);
+    color: var(--on-ink);
   }
 
   /* ☰ morphs into ✕: the outer lines rotate in, the middle one fades. */
@@ -314,11 +306,11 @@
     min-height: 46px;
     padding: 13px 14px;
     border-radius: 12px;
-    background: #1f2127;
-    border: 1px solid #2a2c33;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
     font-family: var(--font-mono);
     font-size: 13px;
-    color: #8b8e97;
+    color: var(--ink-3);
     text-align: left;
   }
 
@@ -326,7 +318,8 @@
     margin-left: auto;
     padding: 1px 6px;
     border-radius: 4px;
-    background: #2a2c33;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
   }
 
   .routes {
@@ -348,18 +341,18 @@
     align-items: center;
     gap: 10px;
     padding: 13px 4px;
-    border-bottom: 1px solid #22242a;
-    color: #8b8e97;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-3);
   }
 
   .route[aria-current='page'] {
-    color: #ecedf0;
+    color: var(--ink);
   }
 
   .no {
     font-family: var(--font-mono);
     font-size: 12px;
-    color: #5d6068;
+    color: var(--ink-4);
     /* The numbers type in, two characters at a time. */
     animation: type-in 240ms steps(2, end) calc(200ms + var(--i) * 45ms) both;
   }
@@ -383,7 +376,7 @@
   .meta {
     font-family: var(--font-mono);
     font-size: 11px;
-    color: #8b8e97;
+    color: var(--ink-3);
   }
 
   .footer {
@@ -401,7 +394,8 @@
     min-height: 44px;
     padding: 13px 4px;
     border-radius: 12px;
-    background: #1f2127;
+    border: 1px solid var(--border);
+    background: var(--surface);
   }
 
   @media (min-width: 1024px) {

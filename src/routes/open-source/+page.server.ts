@@ -1,9 +1,13 @@
-import { allPullRequests } from '#lib/data/open-source.js'
+import {
+  allPullRequests,
+  openSourceContributions,
+} from '#lib/data/open-source.js'
 import { getGitHubSnapshot } from '#lib/server/github.js'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async () => {
-  const { pullRequests: stats } = await getGitHubSnapshot()
+  const { pullRequests: stats, repositories: repoStats } =
+    await getGitHubSnapshot()
 
   const pullRequests = allPullRequests()
     .map((pr) => {
@@ -25,15 +29,33 @@ export const load: PageServerLoad = async () => {
     // Newest merge first; anything GitHub could not date goes last.
     .sort((a, b) => (b.mergedAt ?? '').localeCompare(a.mergedAt ?? ''))
 
+  // Every repository with merged work, most contributions first, then the
+  // most-starred. Stars and avatars come from GitHub at build time.
+  const repositories = openSourceContributions
+    .map((contribution) => {
+      const github = repoStats[contribution.repo]
+      return {
+        repo: contribution.repo,
+        name: contribution.name,
+        url: contribution.repoUrl,
+        merged: contribution.pullRequests.length,
+        stars: github?.stars ?? null,
+        language: github?.language ?? null,
+        avatarUrl: github?.avatarUrl ?? null,
+      }
+    })
+    .sort((a, b) => b.merged - a.merged || (b.stars ?? 0) - (a.stars ?? 0))
+
   const sum = (pick: (pr: (typeof pullRequests)[number]) => number | null) =>
     pullRequests.reduce((total, pr) => total + (pick(pr) ?? 0), 0)
 
   return {
     pullRequests,
+    repositories,
     totals: {
       additions: sum((pr) => pr.additions),
       deletions: sum((pr) => pr.deletions),
-      repos: new Set(pullRequests.map((pr) => pr.repo)).size,
+      repos: repositories.length,
     },
   }
 }

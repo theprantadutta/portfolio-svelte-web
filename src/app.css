@@ -111,8 +111,6 @@
   --orange-ink: oklch(0.55 0.15 50);
   --red-ink: oklch(0.55 0.15 25);
   --status-ink: #3e7a58;
-  /* The one CTA that is green rather than ink: "Create pull request". */
-  --cta-green: oklch(0.55 0.15 150);
 
   --glow-green: oklch(0.85 0.1 150 / 0.5);
   --glow-blue: oklch(0.85 0.1 230 / 0.45);
@@ -211,7 +209,6 @@
   --orange-ink: oklch(0.78 0.13 50);
   --red-ink: oklch(0.72 0.14 25);
   --status-ink: oklch(0.78 0.13 150);
-  --cta-green: oklch(0.55 0.15 150);
 
   --glow-green: oklch(0.6 0.15 150 / 0.35);
   --glow-purple: oklch(0.6 0.15 300 / 0.3);

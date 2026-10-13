@@ -235,11 +235,16 @@
 
       <div class="footer">
         <span class="note">{profile.responseTime}</span>
-        <button class="submit" type="submit" disabled={status === 'submitting'}>
+        <button
+          class="btn btn-primary submit"
+          type="submit"
+          disabled={status === 'submitting'}
+        >
           {#if status === 'submitting'}
             <span class="spinner" aria-hidden="true">{FRAMES[frame]}</span> pushing…
           {:else}
-            Create pull request
+            <span class="pr" aria-hidden="true">⇄</span> create pull request
+            <span class="arrow" aria-hidden="true">→</span>
           {/if}
         </button>
       </div>
@@ -424,29 +429,10 @@
     color: var(--ink-4);
   }
 
+  /* The site's primary mono button (.btn-primary), with the ⇄ pull-request
+     glyph the merged card uses. */
   .submit {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 46px;
-    padding: 13px 20px;
-    border-radius: 10px;
-    background: var(--cta-green);
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    transition:
-      transform var(--dur-2) var(--ease-out),
-      filter var(--dur-1) linear;
-  }
-
-  .submit:hover {
-    filter: brightness(1.06);
-  }
-
-  .submit:active {
-    transform: scale(0.97);
+    min-width: 230px;
   }
 
   .submit:disabled {

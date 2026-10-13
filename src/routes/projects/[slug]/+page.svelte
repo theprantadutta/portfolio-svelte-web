@@ -8,6 +8,8 @@
   import Screens from '#components/projects/Screens.svelte'
   import SegmentedTabs from '#components/projects/SegmentedTabs.svelte'
   import StrapiBlocks from '#components/StrapiBlocks.svelte'
+  import BrandIcon from '#components/ui/BrandIcon.svelte'
+  import type { BrandName } from '#lib/brand-icons.js'
   import WordReveal from '#components/ui/WordReveal.svelte'
   import { languageColor } from '#lib/projects.js'
   import { SITE_URL } from '#lib/site.js'
@@ -130,20 +132,20 @@
     [
       detail.googlePlayLink && {
         label: 'Google Play',
-        glyph: '▶',
+        icon: 'google-play',
         href: detail.googlePlayLink,
       },
       detail.appStoreLink && {
         label: 'App Store',
-        glyph: '',
+        icon: 'apple',
         href: detail.appStoreLink,
       },
       detail.githubLink && {
         label: 'source',
-        glyph: '⌥',
+        icon: 'github',
         href: detail.githubLink,
       },
-    ].filter(Boolean) as { label: string; glyph: string; href: string }[]
+    ].filter(Boolean) as { label: string; icon: BrandName; href: string }[]
   )
 
   const status = $derived(STATUS[project.status])
@@ -291,7 +293,8 @@
             {#each links as link (link.href)}
               <li>
                 <a href={link.href} target="_blank" rel="noopener noreferrer">
-                  <span class="glyph" aria-hidden="true">{link.glyph}</span
+                  <span class="glyph" aria-hidden="true"
+                    ><BrandIcon name={link.icon} size={14} /></span
                   >{link.label}
                   <span class="ne" aria-hidden="true">↗</span>
                 </a>
@@ -433,9 +436,10 @@
   }
 
   .glyph {
+    display: inline-grid;
+    place-items: center;
     width: 14px;
     color: var(--ink-3);
-    text-align: center;
   }
 
   .ne {
@@ -454,13 +458,14 @@
     gap: 14px;
     padding: 22px;
     border-radius: 18px;
-    background: #15171c;
-    color: #fff;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink);
   }
 
   :global([data-theme='dark']) .impact {
-    background: #1b1d22;
-    border: 1px solid var(--border-strong);
+    background: var(--surface-muted);
+    border-color: var(--border-strong);
   }
 
   .impact-glow {
@@ -470,6 +475,12 @@
     width: 260px;
     height: 260px;
     border-radius: 50%;
+    background: radial-gradient(circle, var(--glow-green), transparent 65%);
+  }
+
+  /* The theme's dark glow is tuned for whole pages; a card this size needs
+     the stronger one. */
+  :global([data-theme='dark']) .impact-glow {
     background: radial-gradient(
       circle,
       oklch(0.62 0.15 150 / 0.6),
@@ -483,7 +494,7 @@
     font-family: var(--font-mono);
     font-size: 12px;
     font-weight: 400;
-    color: #9a9a94;
+    color: var(--ink-3);
   }
 
   .impact dl {
@@ -507,12 +518,12 @@
   }
 
   .impact dd.good {
-    color: oklch(0.8 0.15 150);
+    color: var(--green-ink);
   }
 
   .impact dt {
     font-size: 12px;
-    color: #9a9a94;
+    color: var(--ink-3);
   }
 
   .chips {

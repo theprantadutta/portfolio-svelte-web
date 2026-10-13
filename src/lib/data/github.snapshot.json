@@ -1,6 +1,6 @@
 {
   "activity": {
-    "total": 1470,
+    "total": 1486,
     "weeks": [
       [
         {
@@ -940,12 +940,12 @@
         },
         {
           "date": "2026-10-13",
-          "count": 0,
-          "level": 0
+          "count": 16,
+          "level": 2
         }
       ]
     ],
-    "fetchedAt": "2026-10-13T04:56:17.975Z"
+    "fetchedAt": "2026-10-13T12:55:55.179Z"
   },
   "pullRequests": {
     "https://github.com/flutter/flutter/pull/188941": {
@@ -1022,6 +1022,56 @@
       "additions": 8,
       "deletions": 8,
       "mergedAt": "2026-08-12T18:43:45Z"
+    }
+  },
+  "repositories": {
+    "flutter/flutter": {
+      "stars": 180036,
+      "language": {
+        "name": "Dart",
+        "color": "#00B4AB"
+      },
+      "avatarUrl": "https://avatars.githubusercontent.com/u/14101776?s=80&v=4"
+    },
+    "flutter/devtools": {
+      "stars": 1733,
+      "language": {
+        "name": "Dart",
+        "color": "#00B4AB"
+      },
+      "avatarUrl": "https://avatars.githubusercontent.com/u/14101776?s=80&v=4"
+    },
+    "flutter/packages": {
+      "stars": 5320,
+      "language": {
+        "name": "Dart",
+        "color": "#00B4AB"
+      },
+      "avatarUrl": "https://avatars.githubusercontent.com/u/14101776?s=80&v=4"
+    },
+    "supabase/supabase-flutter": {
+      "stars": 1037,
+      "language": {
+        "name": "Dart",
+        "color": "#00B4AB"
+      },
+      "avatarUrl": "https://avatars.githubusercontent.com/u/54469796?s=80&v=4"
+    },
+    "getsentry/sentry-dart": {
+      "stars": 873,
+      "language": {
+        "name": "Dart",
+        "color": "#00B4AB"
+      },
+      "avatarUrl": "https://avatars.githubusercontent.com/u/1396951?s=80&v=4"
+    },
+    "react/react-native-website": {
+      "stars": 2166,
+      "language": {
+        "name": "MDX",
+        "color": "#fcb32c"
+      },
+      "avatarUrl": "https://avatars.githubusercontent.com/u/102812?s=80&v=4"
     }
   },
   "languages": [

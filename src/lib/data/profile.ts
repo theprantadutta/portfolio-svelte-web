@@ -38,8 +38,6 @@ export const profile = {
 export interface Social {
   id: 'github' | 'linkedin' | 'x' | 'email'
   name: string
-  /** The two-letter glyph in the dark icon square on /contact */
-  glyph: string
   handle: string
   url: string
 }
@@ -48,28 +46,24 @@ export const socials: Social[] = [
   {
     id: 'github',
     name: 'GitHub',
-    glyph: 'gh',
     handle: '@theprantadutta',
     url: 'https://github.com/theprantadutta',
   },
   {
     id: 'linkedin',
     name: 'LinkedIn',
-    glyph: 'in',
     handle: '/in/theprantadutta',
     url: 'https://www.linkedin.com/in/theprantadutta/',
   },
   {
     id: 'x',
     name: 'X',
-    glyph: 'X',
     handle: '@theprantadutta',
     url: 'https://x.com/theprantadutta',
   },
   {
     id: 'email',
     name: 'Email',
-    glyph: '@',
     handle: profile.email,
     url: `mailto:${profile.email}`,
   },

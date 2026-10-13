@@ -4,6 +4,7 @@
   import PageGlow from '#components/chrome/PageGlow.svelte'
   import PullRequestForm from '#components/contact/PullRequestForm.svelte'
   import PageHeader from '#components/ui/PageHeader.svelte'
+  import BrandIcon from '#components/ui/BrandIcon.svelte'
   import { profile, socials } from '#lib/data/profile.js'
   import { reveal } from '#lib/motion/reveal.js'
   import { spotlight } from '#lib/motion/pointer.js'
@@ -64,7 +65,9 @@
             onclick={() => copyText(profile.email, 'email copied')}
             aria-label="Copy email address {profile.email}"
           >
-            <span class="glyph" aria-hidden="true">{social.glyph}</span>
+            <span class="glyph" aria-hidden="true"
+              ><BrandIcon name={social.id} /></span
+            >
             <span class="who">
               <span class="name">{social.name}</span>
               <span class="handle">{social.handle}</span>
@@ -81,7 +84,9 @@
             target="_blank"
             rel="noopener noreferrer me"
           >
-            <span class="glyph" aria-hidden="true">{social.glyph}</span>
+            <span class="glyph" aria-hidden="true"
+              ><BrandIcon name={social.id} /></span
+            >
             <span class="who">
               <span class="name">{social.name}</span>
               <span class="handle">{social.handle}</span>
@@ -159,8 +164,6 @@
     border-radius: 10px;
     background: var(--ink);
     color: var(--on-ink);
-    font-family: var(--font-mono);
-    font-size: 13px;
   }
 
   .who {
@@ -198,16 +201,11 @@
     gap: 12px;
     padding: 18px;
     border-radius: 16px;
-    background: #15171c;
-    color: #fff;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-muted);
+    color: var(--ink);
     font-size: 14px;
     line-height: 1.4;
-  }
-
-  :global([data-theme='dark']) .available {
-    background: var(--surface-muted);
-    border: 1px solid var(--border-strong);
-    color: var(--ink);
   }
 
   .available .live-dot {

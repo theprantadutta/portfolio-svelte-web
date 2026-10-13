@@ -39,7 +39,11 @@
   const tone = $derived(STATUS_TONE[project.status])
 </script>
 
-<article class="pinned card" aria-labelledby="pinned-title">
+<article
+  class="pinned card"
+  class:framed={Boolean(project.featureGraphic)}
+  aria-labelledby="pinned-title"
+>
   <div class="body">
     <div class="pills">
       <span
@@ -103,34 +107,37 @@
     </div>
   </div>
 
-  <div class="panel" use:tilt>
-    {#if project.featureGraphic}
-      <!-- The Play Store feature graphic, when the project has one. -->
-      <div class="lean flat">
-        <img
-          class="graphic"
-          src={project.featureGraphic.url}
-          srcset={project.featureGraphic.srcset}
-          sizes="(max-width: 767px) 92vw, 380px"
-          alt="{project.title} feature graphic"
-          width={project.featureGraphic.width}
-          height={project.featureGraphic.height}
-          fetchpriority="high"
-          style:view-transition-name="project-shot-{project.slug}"
-        />
-      </div>
-    {:else if shot}
-      <div class="lean">
-        <Phone
-          image={shot}
-          alt="{project.title} screenshot"
-          width={220}
-          transitionName="project-shot-{project.slug}"
-          priority
-        />
-      </div>
-    {/if}
-  </div>
+  {#if project.featureGraphic}
+    <!-- The Play Store feature graphic, framed on the plain card at its own
+         1024 × 500 shape: never cropped, nothing painted behind it. -->
+    <div class="frame">
+      <img
+        class="graphic"
+        src={project.featureGraphic.url}
+        srcset={project.featureGraphic.srcset}
+        sizes="(max-width: 1023px) 92vw, 620px"
+        alt="{project.title} feature graphic"
+        width={project.featureGraphic.width}
+        height={project.featureGraphic.height}
+        fetchpriority="high"
+        style:view-transition-name="project-shot-{project.slug}"
+      />
+    </div>
+  {:else}
+    <div class="panel" use:tilt>
+      {#if shot}
+        <div class="lean">
+          <Phone
+            image={shot}
+            alt="{project.title} screenshot"
+            width={220}
+            transitionName="project-shot-{project.slug}"
+            priority
+          />
+        </div>
+      {/if}
+    </div>
+  {/if}
 </article>
 
 <style>
@@ -265,25 +272,55 @@
     transition: transform 450ms var(--ease-out);
   }
 
-  .lean.flat {
-    top: 50%;
-    width: calc(100% - 48px);
-    translate: -50% -50%;
-    transform-origin: 50% 50%;
+  /* Framed showcase: the feature graphic on the left of a plain card, at
+     its own shape, with the text beside it. */
+  .pinned.framed {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .frame {
+    order: -1;
+    padding: 26px 0 26px 26px;
   }
 
   .graphic {
     display: block;
     width: 100%;
+    height: auto;
     aspect-ratio: 1024 / 500;
     object-fit: cover;
-    border-radius: 14px;
-    box-shadow: 0 24px 50px -24px rgb(0 0 0 / 0.45);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow:
+      0 28px 56px -32px rgb(0 0 0 / 0.55),
+      0 2px 8px -2px rgb(0 0 0 / 0.12);
+    transition:
+      translate var(--dur-3) var(--ease-out),
+      box-shadow var(--dur-3) var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .pinned.framed:hover .graphic {
+      translate: 0 -4px;
+      box-shadow:
+        0 36px 64px -32px rgb(0 0 0 / 0.6),
+        0 2px 8px -2px rgb(0 0 0 / 0.12);
+    }
   }
 
   @media (max-width: 1023px) {
     .pinned {
       grid-template-columns: minmax(0, 1fr) 320px;
+    }
+
+    /* Tablets and phones: the graphic stacks on top at full width. */
+    .pinned.framed {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .frame {
+      padding: 22px 22px 0;
     }
   }
 
@@ -303,13 +340,12 @@
       top: 18px;
     }
 
-    .lean.flat {
-      top: 50%;
-      width: calc(100% - 32px);
+    .frame {
+      padding: 14px 14px 0;
     }
 
     .graphic {
-      border-radius: 10px;
+      border-radius: 12px;
     }
 
     .panel :global(.phone) {

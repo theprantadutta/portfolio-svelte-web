@@ -1,6 +1,10 @@
 import { error } from '@sveltejs/kit'
 
 import { getAllArticles, getArticleBySlug } from '$lib/devto'
+import { shortHash } from '$lib/hash'
+import { emptyReactionCounts } from '$lib/reactions'
+import { countWords, processArticleHtml } from '$lib/server/article-html'
+import { getAllReactionCounts } from '$lib/server/strapi'
 import type { EntryGenerator, PageServerLoad } from './$types'
 
 /**
@@ -32,5 +36,39 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     error(404, 'Blog post not found')
   }
 
-  return { article }
+  // Reaction counts are a garnish: the page refreshes them after paint, and a
+  // post rendered on demand at runtime has no build-time CMS key at all. So a
+  // failure here renders zeros instead of failing the page.
+  let reactions = emptyReactionCounts()
+  try {
+    reactions =
+      (await getAllReactionCounts({ fetch })).get(article.slug) ?? reactions
+  } catch (reason) {
+    console.warn(
+      `[blog] reaction counts unavailable for ${article.slug}:`,
+      reason
+    )
+  }
+
+  const { html, toc } = processArticleHtml(article.body_html)
+
+  return {
+    post: {
+      slug: article.slug,
+      title: article.title,
+      description: article.description,
+      url: article.url,
+      hash: shortHash(article.slug),
+      publishedAt: article.published_at,
+      editedAt: article.edited_at ?? article.published_at,
+      minutes: article.reading_time_minutes,
+      words: countWords(article.body_markdown ?? ''),
+      tags: article.tag_list,
+      cover: article.cover_image,
+      socialImage: article.social_image,
+    },
+    html,
+    toc,
+    reactions,
+  }
 }

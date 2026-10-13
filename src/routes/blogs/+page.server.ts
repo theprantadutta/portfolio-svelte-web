@@ -1,3 +1,4 @@
+import { toPostSummary } from '$components/blog/posts'
 import { getAllArticles } from '$lib/devto'
 import type { PageServerLoad } from './$types'
 
@@ -5,5 +6,5 @@ import type { PageServerLoad } from './$types'
 // then revalidates against dev.to in the browser — see +page.svelte.
 export const load: PageServerLoad = async ({ fetch }) => {
   const articles = await getAllArticles(fetch)
-  return { articles }
+  return { posts: articles.map(toPostSummary) }
 }

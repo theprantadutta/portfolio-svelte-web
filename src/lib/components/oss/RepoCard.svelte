@@ -7,6 +7,7 @@
       repo: string
       /** Friendly project name, e.g. "Flutter Framework" */
       name: string
+      /** The contribution: the one merged PR, or the list of all of them */
       url: string
       /** Merged pull requests listed on the page for this repository */
       merged: number
@@ -36,6 +37,9 @@
   href={repo.url}
   target="_blank"
   rel="noopener noreferrer"
+  title={repo.merged === 1
+    ? `The merged pull request in ${repo.repo}`
+    : `All ${repo.merged} merged pull requests in ${repo.repo}`}
   style:--spot="var(--purple)"
   use:spotlight
 >

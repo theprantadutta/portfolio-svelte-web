@@ -2,6 +2,7 @@ import {
   allPullRequests,
   openSourceContributions,
 } from '#lib/data/open-source.js'
+import { GITHUB_LOGIN } from '#lib/github.js'
 import { getGitHubSnapshot } from '#lib/server/github.js'
 import type { PageServerLoad } from './$types'
 
@@ -30,15 +31,25 @@ export const load: PageServerLoad = async () => {
     .sort((a, b) => (b.mergedAt ?? '').localeCompare(a.mergedAt ?? ''))
 
   // Every repository with merged work, most contributions first, then the
-  // most-starred. Stars and avatars come from GitHub at build time.
+  // most-starred. Stars and avatars come from GitHub at build time. A card
+  // links to the contribution itself, not the repo's front page: the one PR
+  // when there is one, otherwise GitHub's list of Pranta's merged PRs there.
   const repositories = openSourceContributions
     .map((contribution) => {
       const github = repoStats[contribution.repo]
+      const [onlyPr] = contribution.pullRequests
+      const merged = contribution.pullRequests.length
+      const search = new URLSearchParams({
+        q: `is:pr is:merged author:${GITHUB_LOGIN}`,
+      })
       return {
         repo: contribution.repo,
         name: contribution.name,
-        url: contribution.repoUrl,
-        merged: contribution.pullRequests.length,
+        url:
+          merged === 1
+            ? onlyPr.url
+            : `https://github.com/${contribution.repo}/pulls?${search}`,
+        merged,
         stars: github?.stars ?? null,
         language: github?.language ?? null,
         avatarUrl: github?.avatarUrl ?? null,

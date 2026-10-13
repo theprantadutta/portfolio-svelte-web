@@ -163,12 +163,34 @@ const media = (html: string) =>
     .replace(/<table\b/g, '<div class="table-wrap"><table')
     .replace(/<\/table>/g, '</table></div>')
 
+/**
+ * Every link that leaves the site (GitHub, docs, other dev.to posts) opens in
+ * a new tab, like every other external link on the site. In-page `#` links
+ * and links back to pranta.dev stay in the tab.
+ */
+const externalLinks = (html: string) =>
+  html.replace(/<a\b([^>]*)>/g, (tag, attributes: string) => {
+    const href = /\bhref="([^"]*)"/.exec(attributes)?.[1] ?? ''
+    const external =
+      /^(https?:)?\/\//i.test(href) &&
+      !/^(https?:)?\/\/(www\.)?pranta\.dev\b/i.test(href)
+    if (!external || /\btarget=/.test(attributes)) return tag
+    // Keep whatever rel dev.to set (e.g. nofollow) and add the new-tab pair.
+    const existing = /\brel="([^"]*)"/.exec(attributes)?.[1].split(/\s+/) ?? []
+    const rel = [...new Set([...existing, 'noopener', 'noreferrer'])]
+      .filter(Boolean)
+      .join(' ')
+    const rest = attributes.replace(/\s*\brel="[^"]*"/, '')
+    return `<a${rest} target="_blank" rel="${rel}">`
+  })
+
 export const processArticleHtml = (bodyHtml: string): ProcessedArticle => {
   const toc: TocEntry[] = []
   let html = removeDivs(bodyHtml, 'highlight__panel')
   html = codeBlocks(html)
   html = headings(html, toc)
   html = media(html)
+  html = externalLinks(html)
   return { html, toc }
 }
 

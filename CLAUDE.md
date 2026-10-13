@@ -530,6 +530,17 @@ its archive the two will collide and only one can be up at a time.
   `goto()` from an `onclick` on a link — that produces markup no keyboard user
   or crawler can use. Filters, tabs and search are buttons and inputs, not
   links, so they update the query string with a shallow `goto`.
+- **Every link that leaves the site opens in a new tab**
+  (`target="_blank" rel="noopener noreferrer"`), Pranta's rule. That includes
+  dev.to articles' own links, which `externalLinks` in
+  `src/lib/server/article-html.ts` rewrites, and the Strapi rich-text
+  renderer. Links back to pranta.dev, `/…` paths, `#` anchors and `mailto:`
+  stay in the tab. To check, scan `build/prerendered/**/*.html` after a build
+  for `<a href="http…">` without `target="_blank"`; on 2026-10-13 that was 0
+  of 292.
+- On /open-source a repository card links to the contribution, not the
+  repo's front page: the PR itself when there is one, otherwise GitHub's
+  list of Pranta's merged PRs in that repo.
 
 ### Keeping a component out of the prerendered HTML is a last resort
 

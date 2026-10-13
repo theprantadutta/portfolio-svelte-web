@@ -16,6 +16,8 @@ ARG BUN_VERSION=1
 FROM oven/bun:${BUN_VERSION} AS deps
 WORKDIR /app
 COPY package.json bun.lock .npmrc ./
+# bun applies patches/ during install (package.json patchedDependencies).
+COPY patches ./patches
 RUN bun install --frozen-lockfile
 
 # ============================================
@@ -57,6 +59,8 @@ RUN bun run build
 FROM oven/bun:${BUN_VERSION} AS prod-deps
 WORKDIR /app
 COPY package.json bun.lock .npmrc ./
+# bun applies patches/ during install (package.json patchedDependencies).
+COPY patches ./patches
 RUN bun install --frozen-lockfile --production
 
 # ============================================

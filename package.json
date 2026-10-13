@@ -66,5 +66,8 @@
   "imports": {
     "#lib/*": "./src/lib/*",
     "#components/*": "./src/lib/components/*"
+  },
+  "patchedDependencies": {
+    "@sveltejs/kit@3.0.1": "patches/@sveltejs%2Fkit@3.0.1.patch"
   }
 }

@@ -468,6 +468,16 @@ its archive the two will collide and only one can be up at a time.
   option is deprecated
 - Endpoints answer with `Response.json(...)`; kit's `json()`/`text()` helpers
   are deprecated
+- **`patches/@sveltejs%2Fkit@3.0.1.patch` is temporary.** SvelteKit 3.0.1 with
+  adapter-node 6 serves prerendered pages with no `Content-Type` at all,
+  because `.html` never reaches the build's MIME table
+  (sveltejs/kit#17380). The patch backports the upstream fix (#17381), and
+  `bun install` applies it through `patchedDependencies`. When kit is upgraded
+  past 3.0.1, delete the patch, the `patchedDependencies` entry and the two
+  `COPY patches` lines in the Dockerfile, then check that
+  `curl -sI http://localhost:3000/` on `node build/index.js` still says
+  `text/html`. `vite preview` uses a different static server and never
+  showed the bug
 - Svelte 5 **runes** throughout — `$state`, `$derived`, `$props`, `$effect`.
   No `export let`, no stores except where a class field is genuinely awkward
 - Node.js >=24 required (`engines`)

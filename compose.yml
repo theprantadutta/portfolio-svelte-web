@@ -16,6 +16,8 @@ services:
         PUBLIC_STRAPI_PROD_API_URL: ${PUBLIC_STRAPI_PROD_API_URL:?set it in .env}
         PUBLIC_STRAPI_DEV_API_URL: ${PUBLIC_STRAPI_DEV_API_URL:-http://localhost:1337}
         STRAPI_API_KEY: ${STRAPI_API_KEY:?set it in .env}
+        # Optional: fresh GitHub data at build time (see Dockerfile).
+        GITHUB_TOKEN: ${GITHUB_TOKEN:-}
     env_file:
       - path: .env
         required: false
@@ -30,6 +32,10 @@ services:
       # public URL, so without this every contact-form submission is rejected
       # with "Cross-site POST form submissions are forbidden".
       ORIGIN: https://pranta.dev
+      # Runtime calls to Strapi (blog reactions) go straight to the CMS
+      # container over the shared proxy network instead of out through
+      # Cloudflare and back. Build-time prerendering never sees this.
+      STRAPI_INTERNAL_URL: http://portfolio-strapi-cms:1337
     networks:
       - proxy
     labels:

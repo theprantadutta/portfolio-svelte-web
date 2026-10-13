@@ -40,6 +40,12 @@ ENV PUBLIC_STRAPI_DEV_API_URL=${PUBLIC_STRAPI_DEV_API_URL}
 ARG STRAPI_API_KEY
 ENV STRAPI_API_KEY=${STRAPI_API_KEY}
 
+# Optional. With it, the build bakes in fresh GitHub data (the heatmap, PR diff
+# sizes, the languages bar); without it, the committed snapshot in
+# src/lib/data/github.snapshot.json is used and the build still succeeds.
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
+
 ENV NODE_ENV=production
 RUN bun run build
 

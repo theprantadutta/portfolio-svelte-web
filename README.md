@@ -3,8 +3,16 @@
 Personal portfolio site for [pranta.dev](https://pranta.dev) — SvelteKit 2,
 Svelte 5, Tailwind CSS v4, content from a self-hosted Strapi CMS and dev.to.
 
-A port of the [Next.js 16 implementation](https://github.com/theprantadutta/portfolio-nextjs-web)
-it replaced. The design is unchanged; the rendering model is not.
+The design is **"Commit Log"** (October 2026): the career rendered as a git
+repository. Home is a branching commit graph plus a live GitHub activity
+heatmap, /about is a README, projects are repos, /open-source is merged pull
+requests and /contact is "Open a pull request". Geist and Geist Mono, light
+first with a full dark theme, and motion throughout (view-transition route
+changes, a ⌘K palette, scroll reveals) that respects `prefers-reduced-motion`.
+Copy still waiting on confirmation is tracked in `TODO_CONTENT.md`.
+
+The codebase began as a port of the [Next.js 16 implementation](https://github.com/theprantadutta/portfolio-nextjs-web);
+the section below records why, measured before the redesign.
 
 ## Why the port
 
@@ -58,6 +66,7 @@ Beyond the framework, three things account for most of the win:
 ```bash
 bun install
 cp .env.example .env    # fill in STRAPI_API_KEY and RESEND_API_KEY
+                        # GITHUB_TOKEN is optional (falls back to a snapshot)
 bun dev                 # http://localhost:5173
 ```
 

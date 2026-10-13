@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Pending: ask Pranta before starting other work
+
+- **SvelteKit 3 upgrade.** SvelteKit 3.0.1 shipped on 2026-10-06 (3.0.0 on
+  2026-10-01) alongside `@sveltejs/adapter-node` 6 and `@sveltejs/enhanced-img`
+  1.0. The app is still on 2.x. On 2026-10-13 Pranta chose to keep the "Commit
+  Log" redesign on 2.x and do the major upgrade afterwards, on its own branch.
+  Once the redesign has merged, ask whether to start the upgrade, and remove
+  this note when it is done.
+
 ## Common Development Commands
 
 ```bash
@@ -29,51 +38,71 @@ is Bun's own bundler and will not invoke the package script.
 A SvelteKit 2 / Svelte 5 portfolio site. Ported from Next.js 16 (the previous
 implementation is retired and no longer checked out locally — it is archived at
 https://github.com/theprantadutta/portfolio-nextjs-web if a behaviour ever needs
-checking against the original); the visual design is unchanged, the rendering
-model is not.
+checking against the original), then redesigned in October 2026 as **"Commit
+Log"**: the career rendered as a git repository. Home is a commit graph plus a
+GitHub heatmap, /about is a README, projects are repos, /open-source is merged
+PRs, /contact is "Open a pull request". The design handoff (screens, tokens,
+motion spec) lives outside the repo; `TODO_CONTENT.md` lists the copy still
+waiting on Pranta.
 
 ### The core decision: everything is prerendered
 
 `src/routes/+layout.ts` sets `prerender = true` for the whole route tree. The
-build writes one static HTML file per route into `build/prerendered/` — 86 of
-them — and the Node server streams them straight off disk. Nothing renders at
-request time.
+build writes one static file per route into `build/prerendered/` (pages,
+`/search.json`, `/blogs/rss.xml`, the sitemap and every `/og/*.png` share
+card) and the Node server streams them straight off disk.
 
-Two deliberate exceptions:
+The exceptions, all deliberate:
 
-- **`POST /api/contact`** (`src/routes/api/contact/+server.ts`) is
-  `prerender = false`. It exists only because `RESEND_API_KEY` must stay on the
-  server. This is the sole reason the app uses `adapter-node` rather than
-  `adapter-static`.
-- **`/blogs/[slug]`** is `prerender = 'auto'` — the direct equivalent of Next's
-  `dynamicParams = true`. Every article that existed at build time is a static
-  file; an article published _since_ the last deploy falls through to the Node
-  server and renders once on demand. Without this, the client-side refresh on
-  `/blogs` (below) would surface fresh articles as links to a 404.
+- **`POST /api/contact`**: `RESEND_API_KEY` must stay on the server. This is
+  why the app uses `adapter-node` rather than `adapter-static`.
+- **`/api/reactions/[slug]`** (GET/POST): blog reaction counts, read and
+  written live through Strapi with `STRAPI_REACTIONS_TOKEN`.
+- **`/api/github/activity`**: the heatmap's live refresh, fetched from GitHub
+  at most once a day and held in memory.
+- **`/download-cv`**: see "The CV lives behind a permanent URL".
+- **`/blogs/[slug]`** is `prerender = 'auto'` — the direct equivalent of
+  Next's `dynamicParams = true`. Every article that existed at build time is a
+  static file; an article published _since_ the last deploy falls through to
+  the Node server and renders once on demand. Without this, the client-side
+  refresh on `/blogs` (below) would surface fresh articles as links to a 404.
 
 Consequence: **Strapi content changes require a rebuild.** There is no ISR.
+Blog reactions and the heatmap are the only things that change without one.
 
 ### Key Directories
 
-- `src/routes/` — pages and the one API endpoint
-- `src/lib/components/` — all UI components (aliased `$components`)
-- `src/lib/icons/` — generated icon components (aliased `$icons`), see below
+- `src/routes/` — pages, the API endpoints, and the prerendered feeds/cards
+- `src/lib/components/` (aliased `$components`), grouped by area: `chrome/`
+  (nav, mobile menu, ⌘K palette, toasts, page glows), `git/` (commit graph,
+  heatmap), `ui/` (page header, word reveal, count-up, avatar), and one folder
+  per page area (`projects/`, `blog/`, `about/`, `skills/`, `oss/`,
+  `contact/`)
+- `src/lib/motion/` — the motion system's JavaScript half (see "Motion")
+- `src/lib/data/` — typed site content: profile, commits, skills, experience,
+  open source, and the committed GitHub snapshot
 - `src/lib/server/` — server-only modules; SvelteKit fails the build if a
   client module imports from here
-- `src/lib/context/` — runes-based context state (`.svelte.ts` files)
-- `src/lib/data/`, `src/lib/types/`, `src/lib/constants/`
+- `src/lib/context/` — runes-based state (`.svelte.ts` files)
+- `src/lib/types/`, `src/lib/constants/`
 
 ### State Management
 
-- **Active section** (`context/active-section.svelte.ts`) — tracks which
-  section is in view for nav highlighting. `timeOfLastClick` suppresses the
-  observer for 1s after a nav click so scrolling past intermediate sections
-  can't steal the highlight.
-- **Theme** (`context/theme.svelte.ts`) — dark/light with localStorage
-  persistence. The class on `<html>` is applied _before first paint_ by the
-  inline script in `app.html`; the class only stays in sync with it.
-- Both are plain classes with `$state` fields, published via
-  `setContext`/`getContext`.
+- **Theme** (`context/theme.svelte.ts`): light/dark as `data-theme` on
+  `<html>`, persisted to localStorage, defaulting to the OS preference. The
+  attribute is set _before first paint_ by the inline script in `app.html`;
+  the class only reads it back. Toggling uses a view transition that reveals
+  the new theme in a circle from the button (`html[data-vt="theme"]` in
+  app.css), falling back to a 200ms colour fade.
+- **Overlays** (`context/ui.svelte.ts`): which of the mobile menu and the
+  command palette is open. A module singleton because the keyboard shortcuts
+  (⌘K/Ctrl+K anywhere, `/` outside /blogs), the nav and the overlays live in
+  different branches of the layout. Only ever written in the browser.
+- **Site index** (`site-index.svelte.ts`): `/search.json` (every project and
+  post, plus counts), loaded at idle and shared by the palette and the menu.
+- **URL state**: `?type=` (projects filter), `?tab=` (project page tab) and
+  `?q=` (blog search) are written with shallow `replaceState` and read only
+  in the browser (see "Query strings on prerendered pages").
 
 ### Data Layer
 
@@ -90,11 +119,10 @@ Inherited from the Next app. Do not collapse them:
   `STRAPI_URL`. Lives under `src/lib/server/`, which makes "never reaches the
   browser" a build-time guarantee rather than a convention.
 
-**Caveat inherited from the port:** now that every page is prerendered, nothing
-reads Strapi at runtime, and the Docker builder is not attached to the `proxy`
-network — so `STRAPI_INTERNAL_URL` is currently **inert**. It is kept because it
-costs nothing and takes effect the moment a build runs with network access to
-the Strapi container.
+The build never sees `STRAPI_INTERNAL_URL` (the Docker builder is not on the
+`proxy` network), so prerendering always uses the public URL. At runtime the
+blog reactions endpoint does talk to Strapi, and compose sets
+`STRAPI_INTERNAL_URL` so those calls stay on the Docker network.
 
 #### dev.to (`src/lib/devto.ts`)
 
@@ -106,6 +134,47 @@ fetches ~65 articles; the single-request browser path never engages it.
 `getArticleBySlug` returns `null` **only** on a confirmed 404 and throws on
 anything else. That distinction is load-bearing: returning `null` on a transient
 429 would bake a live article as a permanent 404 page.
+
+#### Build-time dedupe (`src/lib/memo.ts`)
+
+Prerendering runs every page's load in one process, and most pages need the
+same lists. `getAllProjects`, `getAllReactionCounts` and (server-side only)
+`getAllArticles` share one promise per key for ten minutes, so a build makes
+each request once instead of once per page. Before this, dev.to's rate limiter
+made that minutes of waiting.
+
+Strapi's REST API pages at 25 by default; every list asks for 100
+(`PAGE_SIZE`). Without it the 26th project would silently vanish.
+
+#### Redesign fields in Strapi
+
+Projects gained optional `metric`, `impactStats` and `changelog` (CMS
+branch `redesign/commit-log`). A CMS that predates them answers 400 to a query
+naming them, so `getAllProjects` retries without them and logs a warning
+(`withRedesignFields`). Deploy the CMS first and that warning goes away.
+Everything else about a project (kind, language, categories, status) is
+derived from fields the CMS already had, in `src/lib/projects.ts`.
+
+#### GitHub (`src/lib/github.ts` + `src/lib/server/github.ts`)
+
+The heatmap, the PR diff sizes on /open-source and the languages bar on /about
+come from the GitHub GraphQL API with `GITHUB_TOKEN`, once per build. Without
+a token, or if GitHub fails, the build uses the committed snapshot in
+`src/lib/data/github.snapshot.json` instead of failing. Refresh it with
+`GITHUB_TOKEN=$(gh auth token) bun scripts/refresh-github-snapshot.ts`.
+
+Languages are counted **per repository by primary language** (public, non-fork,
+pushed in the last 24 months), not by bytes: bytes are dominated by generated
+Flutter runners (C++, CMake) and vendored bundles.
+
+#### Blog reactions
+
+Counts live in Strapi's `post-reaction` collection (one row per post and
+emoji). The build reads them all once with the read-only key; the post page
+then refreshes from `/api/reactions/[slug]`, which writes through the custom
+`POST /api/post-reactions/react` action using `STRAPI_REACTIONS_TOKEN`
+(rate-limited per address). Which reactions a visitor toggled lives in their
+localStorage.
 
 #### Stale-while-revalidate on /blogs
 
@@ -119,125 +188,128 @@ is what makes publish-to-live work without a rebuild.
 There is no `next/image` and no runtime image proxy. Three separate strategies:
 
 - **Local photos** — `<enhanced:img>` (`@sveltejs/enhanced-img`) transcodes at
-  build time into AVIF/WebP/JPEG with a srcset. The 2.6 MB source PNG in
-  `src/lib/assets/` ships as a 3.6 KB AVIF at 1x. Local images must live in
-  `src/lib/assets/`, not `static/`, for this to apply.
-- **Strapi media** — `StrapiImage.svelte` builds a real `srcset` from Strapi's
-  own `formats` (thumbnail/small/medium/large), which already carry exact URLs
-  and pixel dimensions. The browser picks a variant and fetches it directly
-  from Strapi: one hop, no encoding on our server.
+  build time into AVIF/WebP with a srcset. The avatar (`Avatar.svelte`, a
+  square crop of the original illustration) is imported with explicit widths,
+  `avatar.png?w=192;96;64;32&enhanced`; `enhanced` goes last so the one
+  pattern in `src/ambient.d.ts` types every such import. Local images must
+  live in `src/lib/assets/`, not `static/`, for this to apply.
+- **Strapi media** — `toImageRef` in `src/lib/projects.ts` builds a real
+  `srcset` from Strapi's own `formats` (thumbnail/small/medium/large), which
+  already carry exact URLs and pixel dimensions. The browser picks a variant
+  and fetches it directly from Strapi: one hop, no encoding on our server.
 - **dev.to covers** — `DevToImage.svelte` rewrites the `width=`/`height=` pair
   in dev.to's own imaging-CDN URL to synthesise a srcset. Those URLs already
   carry `format=auto`, so the CDN handles AVIF/WebP negotiation.
 
 ### Icons
 
-`src/lib/icons/` is **generated, not hand-written**. The 78 icons the site uses
-were lifted out of `react-icons`' own payloads and emitted as Svelte components
-that mirror `react-icons`' `IconBase` attribute-for-attribute — same viewBox,
-same paths, same `1em` sizing, same `currentColor`. Rendering is identical to
-the site's previous React build with no runtime icon library.
-
-Regenerate rather than edit by hand. `react-icons` is deliberately **not** a
-dependency — it unpacks to ~88MB for a script that runs when an icon is added
-and never otherwise — so install it for the run and drop it again:
-
-```bash
-bun add -d react-icons
-node scripts/generate-icons.mjs     # add the icon to WANTED in the script first
-bun remove react-icons
-```
-
-The script formats its own output with the project's Prettier config, so
-regeneration is byte-for-byte stable (verified against react-icons 5.7.0) and
-a rerun shows no diff unless an icon actually changed.
+Lucide (`@lucide/svelte`), imported per icon from `@lucide/svelte/icons/<name>`
+at 16px with a 1.75 stroke, only where an icon reads better than text (theme,
+search, menu, copy, chevrons). Arrows and the git glyphs (→ ↗ ↓ ⇄ ✓ ●) are text
+in the mono font, as the design has them. The old generated react-icons set and
+its script are gone.
 
 ### Styling
 
-`src/app.css` is the Next app's `globals.css`, carried over essentially
-verbatim — Tailwind v4 `@theme`, `@utility` and `@custom-variant` are all
-portable. Only the font wiring changed: `next/font/google` became self-hosted
-`@fontsource-variable` imports, so the three families are fingerprinted assets
-in our own bundle instead of a Google Fonts fetch.
+`src/app.css` holds everything global: the Geist faces, the design tokens
+(light in `:root`, dark in `[data-theme="dark"]`), the Tailwind `@theme`
+mapping, the ambient and entrance keyframes, the motion gates and a handful of
+shared component classes (`.card`, `.btn`, `.pill`, `.chip`, `.field`,
+`.eyebrow`, `.h-page`). Components style themselves in scoped `<style>`
+blocks against those tokens. **The tokens are the only colours**: never add a
+literal colour that a token already covers.
 
 Tailwind runs as a **Vite plugin** (`@tailwindcss/vite`), not through PostCSS.
 There is no `postcss.config.js`; adding one will break `@import 'tailwindcss'`.
+Token colours are mapped with `@theme inline` so utilities follow the theme.
 
 ### Fonts: three things that must stay together
 
-`next/font` did all of this automatically and losing any of it is a measurable
-regression, so the manual equivalents are load-bearing:
+Geist and Geist Mono (`@fontsource-variable/*`). Losing any of these is a
+measurable regression:
 
 1. **Latin-only `@font-face`, declared by hand** in `app.css`. The blanket
-   `@import '@fontsource-variable/…'` pulls in every subset the family ships —
-   17 faces across three families. The variable packages have no per-subset
-   entry point, hence the hand-written rules.
-2. **`<link rel="preload">` in `+layout.svelte`** for JetBrains Mono and
-   Playfair Display, the two faces that render above the fold. Without them the
-   browser cannot discover the fonts until `app.css` has parsed, which makes a
-   three-hop critical chain (HTML → CSS → font). The URLs come from `?url`
-   imports so they track the fingerprinted filenames. `crossorigin` is required
-   even same-origin or the font is fetched twice.
-3. **`… Fallback` faces with measured metric overrides.** Each webfont is paired
-   with a local system font whose metrics are overridden to match, so the swap
-   does not reflow the page. Dropping these took CLS from 0 to 0.155.
+   `@import '@fontsource-variable/…'` declares every subset the family ships.
+2. **`<link rel="preload">` in `+layout.svelte`** for both faces (both render
+   above the fold everywhere). The URLs come from `?url` imports so they track
+   the fingerprinted filenames. `crossorigin` is required even same-origin or
+   the font is fetched twice.
+3. **`… Fallback` faces with metric overrides**, from capsize's measurements
+   of the real files (`@capsizecss/metrics` geist/geistMono against
+   arial/courierNew), so the swap does not reflow the page. If a family
+   changes, recompute them rather than guessing. An earlier guess for a
+   previous font made CLS worse, not better.
 
-The override values were **measured**, not estimated — canvas `TextMetrics` on
-the real faces. An earlier guess of `size-adjust: 132%` for JetBrains Mono was
-wildly wrong (the true figure is ~100%, since it and Courier New are both
-0.6em-advance monospace) and made the shift worse. If a family changes,
-re-measure rather than eyeball it.
+The OG cards use the static `@fontsource/geist*` woff files instead, because
+satori cannot read woff2.
 
-### `content-visibility` on home-page sections
+### Motion
 
-The home page is one long document that inlines every project card, blog card
-and open-source entry, so the browser laid out the whole thing before painting
-anything. `main[data-defer-sections] > section:not(#home)` in `app.css` defers
-style, layout and paint for offscreen sections, which cut main-thread work from
-5.6s to 3.7s under Lighthouse's 4x CPU throttle with no visual change.
+The spec is the design handoff's MOTION.md; the implementation has three layers.
 
-`contain-intrinsic-size: auto 720px` is the important half: the estimate is only
-used until a section has been rendered once, after which the browser remembers
-its real height and the scrollbar stops moving as you scroll.
+**Page-load choreography (CSS, no hydration needed).** The inline script in
+`app.html` sets `data-js` immediately and `data-ready` once both webfonts
+have loaded (capped at 900ms). Elements with `.enter`, `.enter-x`,
+`.enter-down`, `.type-on` or inside `.word` are hidden only while
+`data-js` is set and `data-ready` is not, then play their keyframes with a
+per-element `--d` delay. Without JavaScript neither attribute exists and
+everything simply renders. Elements added by client-side navigation animate on
+insertion, since `data-ready` is already set.
 
-### Scroll reveal animations
+**Entrance keyframes animate `translate`/`scale`, never `transform`.** They
+fill forwards, and a filled `transform` would permanently override hover lifts
+(`.lift`) and the nav's tuck. Keep it that way.
 
-The `reveal` utility in `app.css` is the only reveal mechanism. It is pure CSS,
-driven by `animation-timeline: view()` behind `@supports` and
-`prefers-reduced-motion`.
+**Scroll reveals (`motion/reveal.ts`).** Arm only what starts below the fold
+(`data-reveal="armed"`), reveal on first intersection with threshold 0.
+Threshold 0 matters: a ratio is measured against the target's own area, so a
+container many viewports tall could never reach it and would stay blank (the
+bug that sank the old JS reveal). The commit graph and heatmap follow the same
+rule: they play with the page load when on screen, and re-arm to play on
+scroll when they mount below the fold.
 
-Content is **visible by default** and the animation is layered on top. Do not
-reintroduce JS-gated reveals: an `IntersectionObserver` ratio is measured
-against the _target's_ area, so a container taller than 10x the viewport can
-never cross a `0.1` threshold, and long project pages rendered blank. For the
-same reason `animation-range` is length-based (`entry 0% entry 120px`), not a
-percentage.
+**Ambient loops** (glow drift, headline shimmer, heatmap sweep, pulse) are CSS
+and pause offscreen or in a background tab via the `ambient` action
+(`data-paused`). Reduced motion turns all loops off, swaps entrances for
+150ms fades, and skips count-ups, confetti, particles and smooth scrolling.
 
-Keep that length **short**. It is scroll distance, not element coverage, so a
-long range leaves an element part-way through the fade well after it has
-arrived on screen. At 300px the first experience row measured 0.76 opacity
-while sitting in the middle of the window with the pointer on it, which reads
-as a broken render rather than an animation — the white briefcase in the
-timeline badge came out grey. 120px finishes the fade while the element is
-still crossing the fold.
+The hero headline's gradient is painted per word with
+`background-attachment: fixed`: each word animates on its own layer, and a
+parent's `background-clip: text` cannot see text on a child layer.
 
-### robots.txt, sitemap.xml, llms.txt
+Route changes use view transitions (`onNavigate` in the layout): the old page
+fades over 160ms, the new one plays its entrances, and shared elements morph by
+`view-transition-name` (`project-title-*`, `project-shot-*`,
+`post-cover-*`, `post-title-*`, `nav-avatar`). Query-string changes skip it.
 
-All three are **prerendered routes**, not files in `static/`, so their contents
-are generated from the same sources that decide which pages exist:
+Smooth scrolling is Lenis on fine pointers only (`smooth-scroll.ts`). It also
+owns the scroll lock overlays use.
 
-- `sitemap.xml` is built from `getAllProjectSlugs()` and `getAllArticles()` —
-  the same two calls that drive `entries()` for the dynamic routes. It therefore
-  cannot list a page that was not prerendered, or miss one that was. A build
-  check confirms the counts match exactly (86 and 86).
-- `robots.txt` interpolates `SITE_URL` for its `Sitemap:` line, so the pointer
-  cannot drift from the sitemap's own `<loc>` values.
-- `llms.txt` follows the llmstxt.org convention. It is a young convention, not
-  a standard, and nothing depends on it.
+**Testing note:** full-page captures of sticky elements (the mobile CTA row,
+the nav) show them at the first viewport's position; that is the capture, not
+the page.
 
-The origin URL lives once in `src/lib/site.ts`. The per-route `<link
-rel="canonical">` and OpenGraph tags still hardcode `https://pranta.dev`; if the
-domain ever changes, those need updating too.
+### robots.txt, sitemap.xml, llms.txt, search.json, rss.xml, og/*.png
+
+All **prerendered routes**, not files in `static/`, so their contents come
+from the same sources that decide which pages exist:
+
+- `sitemap.xml` lists the static pages plus every project and article, from
+  the same calls that drive `entries()` for the dynamic routes.
+- `robots.txt` interpolates `SITE_URL` for its `Sitemap:` line.
+- `llms.txt` follows the llmstxt.org convention (a young convention, not a
+  standard). Its counts are computed, not typed.
+- `search.json` feeds the ⌘K palette and the mobile menu's counts.
+- `blogs/rss.xml` is the blog's RSS feed, linked from `app.html`.
+- `og/[page].png` and `og/projects/[slug].png` are share cards rendered at
+  build time with satori + resvg in the site's own style
+  (`src/lib/server/og.ts`). satori sizes boxes as content-box and has no
+  `oklch()`, which is why the card root sets `boxSizing` and the accents are
+  written as sRGB hex. `@resvg/resvg-js` is a native module, so it is a runtime
+  dependency (adapter-node cannot bundle it), even though only the build calls
+  it.
+
+The origin URL lives once in `src/lib/site.ts`.
 
 **Cloudflare note:** with no robots.txt at the origin, Cloudflare served its own
 Content Signals boilerplate — 24 lines of comments with no `User-agent`,
@@ -289,15 +361,13 @@ Two things about this route are load-bearing:
   no filesystem path, which would otherwise differ between `vite preview` and
   the Docker image.
 
-### Client-side tag filtering on /projects
+### Query strings on prerendered pages
 
-`/projects` used to read `?tags=` on the server, which is exactly what kept it
-dynamic (the Next build reported it as `ƒ server-rendered on demand`). The page
-is now a single static file listing every project, and the filter is applied in
-the browser from `page.url.searchParams`.
-
-`page.url.searchParams` **throws during prerendering** — a static file cannot
-depend on a query string — so the read is guarded by `browser`. Keep that guard.
+`/projects?type=`, `/projects/[slug]?tab=` and `/blogs?q=` are all handled in
+the browser against data baked into the page, so each page stays one static
+file. `page.url.searchParams` **throws during prerendering** — a static file
+cannot depend on a query string — so the value is read in `onMount` (or behind
+`browser`) and written back with shallow `replaceState`, never `goto`.
 
 ## Environment Variables
 
@@ -308,9 +378,11 @@ See `.env.example`. Local development reads `.env`.
 | `PUBLIC_STRAPI_PROD_API_URL` | build time            | Public Strapi URL, baked into the bundle and the prerendered HTML. Needs a rebuild.                         |
 | `PUBLIC_STRAPI_DEV_API_URL`  | build time            | Public Strapi URL for development.                                                                          |
 | `STRAPI_API_KEY`             | **build time only**   | Bearer token. Every page is prerendered from Strapi, so the build needs it; the running container does not. |
-| `RESEND_API_KEY`             | runtime               | Contact form delivery. The only secret the container needs.                                                 |
+| `GITHUB_TOKEN`               | build time + runtime  | Optional. Fresh GitHub data in the build; keeps the heatmap live at runtime. Falls back to the snapshot.    |
+| `RESEND_API_KEY`             | runtime               | Contact form delivery.                                                                                      |
+| `STRAPI_REACTIONS_TOKEN`     | runtime               | Strapi "Custom" token with only Post-reaction find + react. Blog reactions 503 without it.                  |
 | `ORIGIN`                     | runtime, **required** | See below. Without it the contact form 403s in production.                                                  |
-| `STRAPI_INTERNAL_URL`        | runtime, server-only  | Currently inert — see the Strapi note above.                                                                |
+| `STRAPI_INTERNAL_URL`        | runtime, server-only  | Set in compose so runtime reaction calls stay on the Docker network.                                        |
 
 ### `ORIGIN` is required in production
 
@@ -386,18 +458,14 @@ its archive the two will collide and only one can be up at a time.
 - Navigation uses plain `<a href>`. SvelteKit intercepts same-origin anchors
   for client-side routing automatically, so there is never a reason to call
   `goto()` from an `onclick` on a link — that produces markup no keyboard user
-  or crawler can use. `ProjectTagFilter` calls `goto()` because its controls are
-  genuinely buttons that mutate a query string, not links.
-- `SectionMarker` / `sectionInView` are deliberate: tiny sentinels that keep the
-  active-section context in sync without making whole sections interactive.
-  `Skills` applies the action to its own `<section>` because the React version
-  used a ref there rather than a sentinel.
+  or crawler can use. Filters, tabs and search are buttons and inputs, not
+  links, so they update the query string with shallow `replaceState`.
 
 ### Keeping a component out of the prerendered HTML is a last resort
 
-`ThemeSwitchLazy` is the one legitimate case: its icon depends on the stored
-theme, which only exists in the browser, so prerendering it would bake in the
-wrong icon and visibly swap after hydration. Everything else server-renders
-fine — needing `$state` is not a reason to skip SSR. Under Next this same
-mistake once wrapped a whole project page in `dynamic(..., { ssr: false })` and
-prerendered it to an empty shell.
+Nothing currently needs it. The theme toggle used to be the one exception
+(`ThemeSwitchLazy`); it now renders both icons and lets CSS pick from
+`data-theme`, so the prerendered button is right before hydration. Needing
+`$state` is not a reason to skip SSR. Under Next this same mistake once wrapped
+a whole project page in `dynamic(..., { ssr: false })` and prerendered it to an
+empty shell.

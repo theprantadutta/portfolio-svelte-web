@@ -145,7 +145,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     description:
       "Flutter's first-party plugins and packages, maintained by the core Flutter team at Google. Contributed fixes and documentation improvements to path_provider, the pigeon code generator, and the material_ui and cupertino_ui packages, reviewed and merged by their maintainers.",
     shippedIn:
-      'path_provider 2.1.6 · pigeon 27.1.2 · material_ui 1.6.0 · cupertino_ui 1.1.2',
+      'path_provider 2.1.6 · pigeon 27.1.2 · material_ui 1.6.0 · cupertino_ui 1.1.2 & 1.1.3',
     links: [
       { label: 'pub.dev', url: 'https://pub.dev/packages/path_provider' },
       {

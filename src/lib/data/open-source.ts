@@ -120,13 +120,14 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     repoUrl: 'https://github.com/flutter/devtools',
     description:
       'The official performance and debugging tool suite for Dart and Flutter, maintained by Google and bundled with the Flutter SDK.',
+    shippedIn: 'DevTools 2.61.0',
     pullRequests: [
       {
         number: 9949,
         title:
           'Fix RenderFlex overflow in the debugger controls at narrow widths',
         description:
-          'Fixed a layout overflow that had been open since 2022: the debugger controls already dropped their button labels on narrow screens, but the remaining icon-only content still did not fit below roughly 630px, a realistic width for DevTools embedded in an IDE side panel. Measured the exact threshold with a widget-test harness, then made the controls scroll horizontally so every control stays reachable, keeping the file explorer button pinned so the wide layout is unchanged. Added regression tests at five widths, each verified to fail without the fix. Approved and merged by srawlins.',
+          'Fixed a layout overflow that had been open since 2022: the debugger controls already dropped their button labels on narrow screens, but the remaining icon-only content still did not fit below roughly 630px, a realistic width for DevTools embedded in an IDE side panel. Measured the exact threshold with a widget-test harness, then made the controls scroll horizontally so every control stays reachable, keeping the file explorer button pinned so the wide layout is unchanged. Added regression tests at five widths, each verified to fail without the fix. Approved and merged by srawlins; shipped in DevTools 2.61.0.',
         url: 'https://github.com/flutter/devtools/pull/9949',
         resolves: [
           {
@@ -240,6 +241,24 @@ export const openSourceContributions: IOpenSourceContribution[] = [
             url: 'https://github.com/flutter/flutter/issues/143238',
           },
         ],
+      },
+    ],
+  },
+  {
+    name: 'Dart Test Framework',
+    repo: 'dart-lang/test',
+    repoUrl: 'https://github.com/dart-lang/test',
+    description:
+      "Dart's official testing framework, package:test, and its test_core runner, maintained by the Dart team at Google. Flutter's own test runner is built on test_core, so fixes here reach every flutter test run.",
+    stat: '13M+ monthly pub.dev downloads',
+    links: [{ label: 'pub.dev', url: 'https://pub.dev/packages/test' }],
+    pullRequests: [
+      {
+        number: 2799,
+        title: 'Fix the compact reporter crashing on a narrow terminal',
+        description:
+          "The compact reporter shortens each test's name to fit the terminal width left after its progress counters. When fewer than four columns were left, truncate computed a substring start past the end of the string and threw a RangeError, taking down the whole test run. This was the second most common Flutter tool crash in Flutter 3.47.7, almost all of it on Windows. Traced it from Flutter's crash report into test_core, where it was still unfixed, and fixed it upstream: truncation now returns as much of the ellipsis as fits, with tests that reproduce the exact RangeError from the crash reports. Reviewed by jakemac53 and natebosch, who refined the ellipsis handling before merging. Ships in the next test and test_core releases.",
+        url: 'https://github.com/dart-lang/test/pull/2799',
       },
     ],
   },

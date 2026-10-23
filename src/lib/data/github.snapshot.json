@@ -1,44 +1,7 @@
 {
   "activity": {
-    "total": 1486,
+    "total": 1625,
     "weeks": [
-      [
-        {
-          "date": "2026-04-19",
-          "count": 0,
-          "level": 0
-        },
-        {
-          "date": "2026-04-20",
-          "count": 0,
-          "level": 0
-        },
-        {
-          "date": "2026-04-21",
-          "count": 0,
-          "level": 0
-        },
-        {
-          "date": "2026-04-22",
-          "count": 0,
-          "level": 0
-        },
-        {
-          "date": "2026-04-23",
-          "count": 8,
-          "level": 1
-        },
-        {
-          "date": "2026-04-24",
-          "count": 0,
-          "level": 0
-        },
-        {
-          "date": "2026-04-25",
-          "count": 0,
-          "level": 0
-        }
-      ],
       [
         {
           "date": "2026-04-26",
@@ -940,12 +903,64 @@
         },
         {
           "date": "2026-10-13",
-          "count": 16,
+          "count": 23,
           "level": 2
+        },
+        {
+          "date": "2026-10-14",
+          "count": 0,
+          "level": 0
+        },
+        {
+          "date": "2026-10-15",
+          "count": 0,
+          "level": 0
+        },
+        {
+          "date": "2026-10-16",
+          "count": 46,
+          "level": 4
+        },
+        {
+          "date": "2026-10-17",
+          "count": 11,
+          "level": 1
+        }
+      ],
+      [
+        {
+          "date": "2026-10-18",
+          "count": 6,
+          "level": 1
+        },
+        {
+          "date": "2026-10-19",
+          "count": 18,
+          "level": 2
+        },
+        {
+          "date": "2026-10-20",
+          "count": 23,
+          "level": 2
+        },
+        {
+          "date": "2026-10-21",
+          "count": 13,
+          "level": 2
+        },
+        {
+          "date": "2026-10-22",
+          "count": 22,
+          "level": 2
+        },
+        {
+          "date": "2026-10-23",
+          "count": 1,
+          "level": 1
         }
       ]
     ],
-    "fetchedAt": "2026-10-13T12:55:55.179Z"
+    "fetchedAt": "2026-10-23T04:42:04.686Z"
   },
   "pullRequests": {
     "https://github.com/flutter/flutter/pull/188941": {
@@ -1003,6 +1018,11 @@
       "deletions": 6,
       "mergedAt": "2026-06-15T13:34:13Z"
     },
+    "https://github.com/dart-lang/test/pull/2799": {
+      "additions": 50,
+      "deletions": 3,
+      "mergedAt": "2026-10-22T20:44:26Z"
+    },
     "https://github.com/supabase/supabase-flutter/pull/1365": {
       "additions": 100,
       "deletions": 1,
@@ -1026,7 +1046,7 @@
   },
   "repositories": {
     "flutter/flutter": {
-      "stars": 180036,
+      "stars": 180338,
       "language": {
         "name": "Dart",
         "color": "#00B4AB"
@@ -1034,7 +1054,7 @@
       "avatarUrl": "https://avatars.githubusercontent.com/u/14101776?s=80&v=4"
     },
     "flutter/devtools": {
-      "stars": 1733,
+      "stars": 1734,
       "language": {
         "name": "Dart",
         "color": "#00B4AB"
@@ -1042,15 +1062,23 @@
       "avatarUrl": "https://avatars.githubusercontent.com/u/14101776?s=80&v=4"
     },
     "flutter/packages": {
-      "stars": 5320,
+      "stars": 5324,
       "language": {
         "name": "Dart",
         "color": "#00B4AB"
       },
       "avatarUrl": "https://avatars.githubusercontent.com/u/14101776?s=80&v=4"
     },
+    "dart-lang/test": {
+      "stars": 536,
+      "language": {
+        "name": "Dart",
+        "color": "#00B4AB"
+      },
+      "avatarUrl": "https://avatars.githubusercontent.com/u/1609975?s=80&v=4"
+    },
     "supabase/supabase-flutter": {
-      "stars": 1037,
+      "stars": 1039,
       "language": {
         "name": "Dart",
         "color": "#00B4AB"
@@ -1058,7 +1086,7 @@
       "avatarUrl": "https://avatars.githubusercontent.com/u/54469796?s=80&v=4"
     },
     "getsentry/sentry-dart": {
-      "stars": 873,
+      "stars": 874,
       "language": {
         "name": "Dart",
         "color": "#00B4AB"
@@ -1077,7 +1105,7 @@
   "languages": [
     {
       "name": "Dart",
-      "repos": 31
+      "repos": 32
     },
     {
       "name": "TypeScript",

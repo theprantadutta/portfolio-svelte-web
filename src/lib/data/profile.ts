@@ -93,6 +93,19 @@ export const home = {
    * CMS's order; a project without screenshots is skipped.
    */
   heroPhones: ['pinpoint', 'snake-classic', 'odyssey'],
+  /**
+   * The cards under the commit log, by project slug, in this order. Each
+   * shows the project's feature graphic (a 1024 × 500 cover in the CMS); a
+   * project without one is skipped.
+   */
+  featuredProjects: ['snake-classic', 'ai-persona', 'atlas'],
+  /** How many of the newest posts to list under the projects. */
+  latestPosts: 3,
+  /** The card under the posts. */
+  closing: {
+    command: '$ git checkout -b your-app',
+    title: 'Your app could be the next commit.',
+  },
 }
 
 /** /about, rendered as a README. */

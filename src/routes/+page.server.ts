@@ -4,7 +4,11 @@ import { allPullRequests } from '#lib/data/open-source.js'
 import { home } from '#lib/data/profile.js'
 import { getAllArticles } from '#lib/devto.js'
 import { shortHash } from '#lib/hash.js'
-import { projectScreenshots, toProjectSummary } from '#lib/projects.js'
+import {
+  liveProjectCount,
+  projectScreenshots,
+  toProjectSummary,
+} from '#lib/projects.js'
 import { getGitHubSnapshot } from '#lib/server/github.js'
 import { getAllProjects } from '#lib/server/strapi.js'
 import type { PageServerLoad } from './$types'
@@ -57,6 +61,7 @@ export const load: PageServerLoad = async ({ fetch }) => {
 
   return {
     projectCount: projects.data.length,
+    liveCount: liveProjectCount(projects.data),
     postCount: articles.length,
     heroPhones,
     featuredProjects,

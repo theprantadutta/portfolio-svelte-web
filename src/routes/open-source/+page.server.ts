@@ -21,7 +21,7 @@ export const load: PageServerLoad = async () => {
         resolves: pr.resolves ?? [],
         repo: pr.contribution.repo,
         project: pr.contribution.name,
-        shippedIn: pr.contribution.shippedIn ?? null,
+        shippedIn: pr.shippedIn ?? pr.contribution.shippedIn ?? null,
         additions: diff?.additions ?? null,
         deletions: diff?.deletions ?? null,
         mergedAt: diff?.mergedAt ?? null,

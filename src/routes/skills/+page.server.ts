@@ -84,7 +84,7 @@ export const load: PageServerLoad = async ({ fetch }) => {
             end: null,
             role: 'Open-source contributor',
             company: null,
-            summary: `${pullRequests.length} merged PRs: Flutter SDK, DevTools, Flutter packages, Supabase, Sentry, React Native docs.`,
+            summary: `${pullRequests.length} merged PRs: Flutter SDK, DevTools, Flutter packages, Dart test, Supabase, Sentry, React Native docs.`,
             highlights: [],
           },
         ]

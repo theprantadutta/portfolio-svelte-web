@@ -96,7 +96,7 @@
 
   const title = 'Projects | Pranta Dutta'
   const description = $derived(
-    `${data.projects.length} shipped projects by Pranta Dutta: Flutter apps used by 20,000+ people, .NET and Go backends, AI gateways and assistants, games and developer tools.`
+    `${data.projects.filter((p) => p.status === 'live').length} shipped projects by Pranta Dutta: Flutter apps used by 20,000+ people, .NET and Go backends, AI gateways and assistants, games and developer tools.`
   )
 </script>
 

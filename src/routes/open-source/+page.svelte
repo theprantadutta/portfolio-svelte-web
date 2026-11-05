@@ -21,7 +21,7 @@
   const count = $derived(data.pullRequests.length)
   const title = 'Open source | Pranta Dutta'
   const description = $derived(
-    `${count} merged pull requests to the Flutter framework, DevTools, Flutter packages, Supabase, Sentry and the React Native docs, reviewed and shipped by their maintainers.`
+    `${count} merged pull requests to the Flutter framework, DevTools, Flutter packages, the Dart test package, Supabase, Sentry and the React Native docs, reviewed and shipped by their maintainers.`
   )
 </script>
 

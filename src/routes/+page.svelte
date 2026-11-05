@@ -16,7 +16,7 @@
   let { data }: { data: PageData } = $props()
 
   const accent = $derived(
-    home.headlineAccent.replace('{n}', String(data.projectCount))
+    home.headlineAccent.replace('{n}', String(data.liveCount))
   )
   const status = profile.status
   const place = ` · ${profile.city}, ${profile.timezone}`

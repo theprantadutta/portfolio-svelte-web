@@ -57,7 +57,8 @@ export const GET: RequestHandler = async ({ fetch }) => {
 
 ${profile.role} based in ${profile.location}, with ${prs} merged pull requests
 across ${repos} open-source projects: the Flutter SDK, Flutter DevTools, Flutter
-packages, the React Native docs, Supabase and Sentry. Primary developer of 16+
+packages, the Dart test package, the React Native docs, Supabase and Sentry.
+Primary developer of 16+
 in-house production systems at KDS Group, used across a 20,000+ person
 workforce, plus ${onPlay} public apps on Google Play (${onAppStore} also on the
 App Store). Works in Flutter, React Native, .NET and Go, plus AI platforms and

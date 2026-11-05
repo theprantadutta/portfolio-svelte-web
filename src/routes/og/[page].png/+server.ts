@@ -3,6 +3,7 @@ import { error } from '@sveltejs/kit'
 import { allPullRequests } from '#lib/data/open-source.js'
 import { home, profile } from '#lib/data/profile.js'
 import { getAllArticles } from '#lib/devto.js'
+import { liveProjectCount } from '#lib/projects.js'
 import { renderOgCard, type OgCard } from '#lib/server/og.js'
 import { getAllProjects } from '#lib/server/strapi.js'
 import type { EntryGenerator, RequestHandler } from './$types'
@@ -27,7 +28,10 @@ export const GET: RequestHandler = async ({ params, fetch }) => {
     getAllProjects({ fetch }),
     getAllArticles(fetch),
   ])
-  const apps = home.headlineAccent.replace('{n}', String(projects.data.length))
+  const apps = home.headlineAccent.replace(
+    '{n}',
+    String(liveProjectCount(projects.data))
+  )
   const prs = allPullRequests().length
 
   const cards: Record<(typeof PAGES)[number], OgCard> = {

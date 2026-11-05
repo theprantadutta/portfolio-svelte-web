@@ -43,13 +43,13 @@ export const commits: Commit[] = [
     lane: 'oss',
     year: '2026',
     detail:
-      '{prs} merged pull requests across the Flutter framework, DevTools, Flutter packages, Supabase, Sentry and the React Native docs, each reviewed and shipped by the maintainers.',
+      '{prs} merged pull requests across the Flutter framework, DevTools, Flutter packages, the Dart test package, Supabase, Sentry and the React Native docs, each reviewed and shipped by the maintainers.',
     href: '/open-source',
     linkLabel: 'view the PRs',
   },
   {
     type: 'docs:',
-    message: '125,000+ article views across {posts} posts',
+    message: '127,000+ article views across {posts} posts',
     tag: 'writing',
     lane: 'writing',
     year: '2026',

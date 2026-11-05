@@ -75,13 +75,15 @@ export const heroStats = [
   { value: 11, suffix: 'k+', label: 'downloads' },
   // KDS Portal's workforce. "daily" is the design's wording: confirm.
   { value: 20, suffix: 'k+', label: 'daily users' },
-  // dev.to's stats page is not public, so this cannot be computed: confirm.
-  { value: 125, suffix: 'k', label: 'article views' },
+  // The total on the dev.to dashboard (127,495 on 2026-11-05). It isn't in the
+  // public API, so it is updated by hand, along with the copies in `releases`,
+  // commits.ts and the /blogs header.
+  { value: 127, suffix: 'k', label: 'article views' },
 ] as const
 
 export const home = {
   headline: 'Four years of commits.',
-  /** `{n}` is the number of projects on the site. */
+  /** `{n}` is the number of live projects, so not ones still in progress. */
   headlineAccent: '{n} apps in production.',
   headlineAccentShort: '{n} apps shipped.',
   lead: "I'm Pranta, a Flutter & mobile engineer. I build the apps, the APIs and the infra between them, and I've had code merged into the Flutter SDK.",
@@ -153,5 +155,5 @@ export const releases = [
   { value: '{apps}', label: 'public apps, 11,000+ downloads' },
   { value: '{prs}', label: 'merged open-source PRs' },
   { value: '40', label: 'CI/CD pipelines, 17 self-hosted services' },
-  { value: '125k', label: 'article views' },
+  { value: '127k', label: 'article views' },
 ]

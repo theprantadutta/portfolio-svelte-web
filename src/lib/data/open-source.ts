@@ -23,6 +23,8 @@ export interface IOpenSourcePullRequest {
   description: string
   /** Direct link to the merged PR */
   url: string
+  /** Its release, when the repo's PRs didn't all ship in the same one */
+  shippedIn?: string
   /** Issue(s) this PR resolved, if any (auto-closed via "Fixes #N") */
   resolves?: IOpenSourceIssue[]
 }
@@ -60,7 +62,6 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     repoUrl: 'https://github.com/flutter/flutter',
     description:
       'The core Flutter SDK, framework, and command-line tooling, maintained by Google. Contributed tooling fixes to the new-project templates, reviewed and merged by the Flutter team.',
-    shippedIn: 'Flutter 3.47.1',
     pullRequests: [
       {
         number: 188941,
@@ -68,6 +69,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         description:
           'When several devices are connected, flutter run asks which one to use, every single time. After the choice is made, the tool now prints the exact -d flag for that device, so the prompt can be skipped next time. Covers both the standard and the extended wireless-discovery selection flows. Getting it merged meant diagnosing a presubmit failure down to a builder timeout on an unrelated web shard, rather than guessing at a flake. Approved by bkonyi and chingjun; closed a feature request open since 2020.',
         url: 'https://github.com/flutter/flutter/pull/188941',
+        shippedIn: 'Flutter 3.50 beta',
         resolves: [
           {
             number: 63541,
@@ -83,6 +85,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         description:
           "The AbsorbPointer sample only demonstrated AbsorbPointer, leaving the difference from IgnorePointer (the thing developers actually confuse) undemonstrated. Rebuilt it as a side-by-side comparison with live tap counters, so the distinction is visible rather than described: the AbsorbPointer side swallows the tap, the IgnorePointer side lets it through to the widget behind. Rewritten to use widgets-library APIs only after review, since a widgets example should not depend on Material, and both widgets' dartdocs now link it. Fixed an invisible-label bug found along the way: WidgetsApp installs no DefaultTextStyle, so the sample's own labels were rendering white on white. Approved by navaronbracke and victorsanni; closed an issue open since 2021.",
         url: 'https://github.com/flutter/flutter/pull/188940',
+        shippedIn: 'Flutter 3.50 beta',
         resolves: [
           {
             number: 87936,
@@ -97,6 +100,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         description:
           'Completed the template-formatting work started in #187443: reformatted the plugin template so generated projects pass dart format out of the box, and added a regression test that generates a plugin and asserts every Dart file is format-clean, a test that caught two further template regressions before the PR landed. Approved by bkonyi and chingjun; closed the long-standing template-formatting issue. Merged to main and awaiting its first stable release.',
         url: 'https://github.com/flutter/flutter/pull/188382',
+        shippedIn: 'Flutter 3.50 beta',
         resolves: [
           {
             number: 175960,
@@ -111,6 +115,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         description:
           "Reformatted the flutter create --empty app template's main.dart so freshly generated projects pass dart format out of the box, instead of reporting formatting changes on the very first run. Approved by bkonyi and chingjun. Shipped in the Flutter 3.47.1 stable release.",
         url: 'https://github.com/flutter/flutter/pull/187443',
+        shippedIn: 'Flutter 3.47.0',
       },
     ],
   },

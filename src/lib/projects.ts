@@ -198,6 +198,11 @@ export const projectStatus = (
       ? 'in progress'
       : 'planned'
 
+/** The projects that are really out there, for "N apps in production". */
+export const liveProjectCount = (
+  projects: Pick<ProjectDataAttributes, 'projectStatus'>[]
+) => projects.filter((project) => projectStatus(project) === 'live').length
+
 const yearOf = (date?: string | null) => (date ? date.slice(0, 4) : '')
 
 /** Builds a srcset from the size variants Strapi generated for an upload. */

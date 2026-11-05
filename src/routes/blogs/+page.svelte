@@ -176,7 +176,7 @@
 
 <div class="container-page page">
   <PageHeader
-    command="$ cat ~/blog/*.md | wc -w → 125,000+ reads"
+    command="$ cat ~/blog/*.md | wc -w → 127,000+ reads"
     title="Notes from shipping."
   >
     {#snippet aside()}

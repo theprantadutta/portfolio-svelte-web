@@ -10,6 +10,7 @@
   import geistUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url'
 
   import geistMonoUrl from '@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url'
+  import Footer from '#components/chrome/Footer.svelte'
   import Nav from '#components/chrome/Nav.svelte'
   import NavProgress from '#components/chrome/NavProgress.svelte'
   import Toaster from '#components/chrome/Toaster.svelte'
@@ -166,6 +167,9 @@
   <main id="main" tabindex="-1">
     {@render children()}
   </main>
+
+  <Footer />
+
   {#if MobileMenu}
     <MobileMenu />
   {/if}
@@ -180,9 +184,12 @@
 <StructuredData />
 
 <style>
+  /* A column, so a short page still puts the footer at the bottom. */
   .app {
     position: relative;
     isolation: isolate;
+    display: flex;
+    flex-direction: column;
     min-height: 100dvh;
     overflow-x: clip;
   }
@@ -202,6 +209,7 @@
   }
 
   main {
+    flex: 1;
     padding-top: 16px;
     outline: none;
   }

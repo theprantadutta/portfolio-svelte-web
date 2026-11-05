@@ -65,7 +65,7 @@ Blog reactions and the heatmap are the only things that change without one.
 
 - `src/routes/` — pages, the API endpoints, and the prerendered feeds/cards
 - `src/lib/components/` (imported as `#components/…`), grouped by area: `chrome/`
-  (nav, mobile menu, ⌘K palette, toasts, page glows), `git/` (commit graph,
+  (nav, footer, mobile menu, ⌘K palette, toasts, page glows), `git/` (commit graph,
   heatmap), `ui/` (page header, word reveal, count-up, avatar), and one folder
   per page area (`projects/`, `blog/`, `about/`, `skills/`, `oss/`,
   `contact/`)
@@ -169,6 +169,15 @@ shows it as a banner above the overview and the pinned card shows it in its
 panel. Any other cover (most are still phone screenshots) is ignored there,
 and those projects keep the three-phone gallery. Uploading a 1024 × 500 cover
 is all it takes to switch a project.
+
+The home page's three project cards also need one. `home.featuredProjects` in
+`src/lib/data/profile.ts` lists them by slug, and a slug whose project has no
+feature graphic is skipped. Under them come the newest `home.latestPosts`
+posts, then the closing card. The posts are baked at build time, so a new
+dev.to post only reaches the home page on the next deploy (`--no-cache` when
+no code changed), unlike /blogs, which refreshes itself in the browser. On
+phones the closing card hides its buttons, because the pinned `.sticky-cta`
+row sits right below it; that row must stay the last child of `.page`.
 
 #### GitHub (`src/lib/github.ts` + `src/lib/server/github.ts`)
 

@@ -164,7 +164,7 @@
   </div>
 </div>
 
-<div class="floating">
+<div class="floating" data-floating-bar>
   <Reactions {reactions} variant="bar" title={post.title} />
 </div>
 
@@ -302,8 +302,9 @@
       display: block;
     }
 
-    .page {
-      padding-bottom: 112px;
+    /* The bar floats over the end of the page, so the footer stops above it. */
+    :global(main:has([data-floating-bar]) + footer) {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
     }
   }
 

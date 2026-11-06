@@ -161,6 +161,21 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     ],
     pullRequests: [
       {
+        number: 13473,
+        title:
+          'Disable the DropdownButtonFormField decoration when the field is disabled',
+        description:
+          'A disabled DropdownButtonFormField never marked its decoration as disabled, so InputDecorator kept the enabled border and fill and still reacted to hover, unlike a disabled TextField. The dropdown now passes a disabled decoration whenever it is disabled, and keeps any decoration the developer disabled explicitly. Approved by QuncCccccc and elliette.',
+        url: 'https://github.com/flutter/packages/pull/13473',
+        resolves: [
+          {
+            number: 195192,
+            repo: 'flutter/flutter',
+            url: 'https://github.com/flutter/flutter/issues/195192',
+          },
+        ],
+      },
+      {
         number: 13012,
         title:
           'Fix CupertinoPicker crashing when disposed during its tap animation',

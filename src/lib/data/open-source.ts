@@ -161,6 +161,21 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     ],
     pullRequests: [
       {
+        number: 13316,
+        title:
+          'Fix CupertinoSheetRoute throwing when a drag ends during a pending relayout',
+        description:
+          'Ending a drag on a Cupertino sheet in the same frame as a pending relayout, for example while the keyboard opened, threw "Cannot get size from a render object that has been marked dirty for layout" in debug mode. Both drag paths now read the last laid out height from the render box, as the Material bottom sheet does, with regression tests for each. Approved by dkwingsmt and pjkammer.',
+        url: 'https://github.com/flutter/packages/pull/13316',
+        resolves: [
+          {
+            number: 194681,
+            repo: 'flutter/flutter',
+            url: 'https://github.com/flutter/flutter/issues/194681',
+          },
+        ],
+      },
+      {
         number: 13473,
         title:
           'Disable the DropdownButtonFormField decoration when the field is disabled',

@@ -165,3 +165,6 @@ xandr.com, 17779, RESELLER
 xandr.com, 7353, RESELLER
 zetaglobal.net, 525, RESELLER
 zmaticoo.com, 5135195, RESELLER
+
+# Liftoff Monetize (Vungle), AdMob mediation bidding.
+vungle.com, 6af6a1a0efb36623c25ff32e, DIRECT, c107d686becd2d77

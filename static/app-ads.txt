@@ -171,3 +171,6 @@ vungle.com, 6af6a1a0efb36623c25ff32e, DIRECT, c107d686becd2d77
 
 # Magnite DV+ (AdMob Open Bidding). Line from Magnite's onboarding email (2026-11-16).
 rubiconproject.com, 22884, DIRECT, 0bfd66d529a55807
+
+# InMobi Exchange (AdMob Open Bidding). From publisher.inmobi.com > Inventory > app-ads.txt, "Only InMobi" (2026-11-16).
+inmobi.com, 85403fc616154ee1b41247e0388c1af0, DIRECT, 83e75a7ae333ca9d

@@ -174,3 +174,7 @@ rubiconproject.com, 22884, DIRECT, 0bfd66d529a55807
 
 # InMobi Exchange (AdMob Open Bidding). From publisher.inmobi.com > Inventory > app-ads.txt, "Only InMobi" (2026-11-16).
 inmobi.com, 85403fc616154ee1b41247e0388c1af0, DIRECT, 83e75a7ae333ca9d
+
+# Equativ (formerly Smart AdServer), AdMob Open Bidding. From help.equativ.com/set-up-google-open-bidding-connection (2026-11-16). The -OB suffix must stay upper case.
+smartadserver.com, 4194-OB, RESELLER, 060d053dcf45cbf3
+smartadserver.com, 4194, RESELLER, 060d053dcf45cbf3

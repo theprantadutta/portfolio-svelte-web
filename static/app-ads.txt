@@ -168,3 +168,6 @@ zmaticoo.com, 5135195, RESELLER
 
 # Liftoff Monetize (Vungle), AdMob mediation bidding.
 vungle.com, 6af6a1a0efb36623c25ff32e, DIRECT, c107d686becd2d77
+
+# Magnite DV+ (AdMob Open Bidding). Line from Magnite's onboarding email (2026-11-16).
+rubiconproject.com, 22884, DIRECT, 0bfd66d529a55807

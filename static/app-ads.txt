@@ -178,6 +178,9 @@ inmobi.com, 85403fc616154ee1b41247e0388c1af0, DIRECT, 83e75a7ae333ca9d
 # Equativ (formerly Smart AdServer), AdMob Open Bidding. From help.equativ.com/set-up-google-open-bidding-connection (2026-11-16). The -OB suffix must stay upper case.
 smartadserver.com, 4194-OB, RESELLER, 060d053dcf45cbf3
 smartadserver.com, 4194, RESELLER, 060d053dcf45cbf3
+# Sharethrough is part of Equativ; both lines from Equativ's onboarding email (2026-11-18).
+sharethrough.com, 4194-OB, RESELLER, 060d053dcf45cbf3
+sharethrough.com, 4194, RESELLER, 060d053dcf45cbf3
 
 # OpenX, AdMob Open Bidding. From OpenX's "Inventory creation success" email (2026-11-17). RESELLER because Google sells the inventory in Open Bidding.
 openx.com, 661298559, RESELLER, 6a698e2ec38604c6

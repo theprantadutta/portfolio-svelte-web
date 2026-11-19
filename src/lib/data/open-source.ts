@@ -69,7 +69,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         description:
           'When several devices are connected, flutter run asks which one to use, every single time. After the choice is made, the tool now prints the exact -d flag for that device, so the prompt can be skipped next time. Covers both the standard and the extended wireless-discovery selection flows. Getting it merged meant diagnosing a presubmit failure down to a builder timeout on an unrelated web shard, rather than guessing at a flake. Approved by bkonyi and chingjun; closed a feature request open since 2020.',
         url: 'https://github.com/flutter/flutter/pull/188941',
-        shippedIn: 'Flutter 3.50 beta',
+        shippedIn: 'Flutter 3.50.0',
         resolves: [
           {
             number: 63541,
@@ -85,7 +85,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         description:
           "The AbsorbPointer sample only demonstrated AbsorbPointer, leaving the difference from IgnorePointer (the thing developers actually confuse) undemonstrated. Rebuilt it as a side-by-side comparison with live tap counters, so the distinction is visible rather than described: the AbsorbPointer side swallows the tap, the IgnorePointer side lets it through to the widget behind. Rewritten to use widgets-library APIs only after review, since a widgets example should not depend on Material, and both widgets' dartdocs now link it. Fixed an invisible-label bug found along the way: WidgetsApp installs no DefaultTextStyle, so the sample's own labels were rendering white on white. Approved by navaronbracke and victorsanni; closed an issue open since 2021.",
         url: 'https://github.com/flutter/flutter/pull/188940',
-        shippedIn: 'Flutter 3.50 beta',
+        shippedIn: 'Flutter 3.50.0',
         resolves: [
           {
             number: 87936,
@@ -98,9 +98,9 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         number: 188382,
         title: 'Format the plugin example template to match dart format',
         description:
-          'Completed the template-formatting work started in #187443: reformatted the plugin template so generated projects pass dart format out of the box, and added a regression test that generates a plugin and asserts every Dart file is format-clean, a test that caught two further template regressions before the PR landed. Approved by bkonyi and chingjun; closed the long-standing template-formatting issue. Merged to main and awaiting its first stable release.',
+          'Completed the template-formatting work started in #187443: reformatted the plugin template so generated projects pass dart format out of the box, and added a regression test that generates a plugin and asserts every Dart file is format-clean, a test that caught two further template regressions before the PR landed. Approved by bkonyi and chingjun; closed the long-standing template-formatting issue. Shipped in the Flutter 3.50.0 stable release.',
         url: 'https://github.com/flutter/flutter/pull/188382',
-        shippedIn: 'Flutter 3.50 beta',
+        shippedIn: 'Flutter 3.50.0',
         resolves: [
           {
             number: 175960,
@@ -151,7 +151,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
     description:
       "Flutter's first-party plugins and packages, maintained by the core Flutter team at Google. Contributed fixes and documentation improvements to path_provider, the pigeon code generator, and the material_ui and cupertino_ui packages, reviewed and merged by their maintainers.",
     shippedIn:
-      'path_provider 2.1.6 · pigeon 27.1.2 · material_ui 1.6.0 · cupertino_ui 1.1.2 & 1.1.3',
+      'path_provider 2.1.6 · pigeon 27.1.2 · material_ui 1.6.0 & 1.11.0 · cupertino_ui 1.1.2, 1.1.3 & 1.1.7',
     links: [
       { label: 'pub.dev', url: 'https://pub.dev/packages/path_provider' },
       {
@@ -165,7 +165,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         title:
           'Fix CupertinoSheetRoute throwing when a drag ends during a pending relayout',
         description:
-          'Ending a drag on a Cupertino sheet in the same frame as a pending relayout, for example while the keyboard opened, threw "Cannot get size from a render object that has been marked dirty for layout" in debug mode. Both drag paths now read the last laid out height from the render box, as the Material bottom sheet does, with regression tests for each. Approved by dkwingsmt and pjkammer.',
+          'Ending a drag on a Cupertino sheet in the same frame as a pending relayout, for example while the keyboard opened, threw "Cannot get size from a render object that has been marked dirty for layout" in debug mode. Both drag paths now read the last laid out height from the render box, as the Material bottom sheet does, with regression tests for each. Approved by dkwingsmt and pjkammer; shipped in cupertino_ui 1.1.7.',
         url: 'https://github.com/flutter/packages/pull/13316',
         resolves: [
           {
@@ -180,7 +180,7 @@ export const openSourceContributions: IOpenSourceContribution[] = [
         title:
           'Disable the DropdownButtonFormField decoration when the field is disabled',
         description:
-          'A disabled DropdownButtonFormField never marked its decoration as disabled, so InputDecorator kept the enabled border and fill and still reacted to hover, unlike a disabled TextField. The dropdown now passes a disabled decoration whenever it is disabled, and keeps any decoration the developer disabled explicitly. Approved by QuncCccccc and elliette.',
+          'A disabled DropdownButtonFormField never marked its decoration as disabled, so InputDecorator kept the enabled border and fill and still reacted to hover, unlike a disabled TextField. The dropdown now passes a disabled decoration whenever it is disabled, and keeps any decoration the developer disabled explicitly. Approved by QuncCccccc and elliette; shipped in material_ui 1.11.0.',
         url: 'https://github.com/flutter/packages/pull/13473',
         resolves: [
           {

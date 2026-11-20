@@ -72,7 +72,7 @@ export const experiences: IExperience[] = [
     summary:
       '16+ production systems for 20,000+ people, AI gateway, 40 CI/CD pipelines.',
     description:
-      "Primary developer of a garment manufacturer's internal software: 16+ production systems used across a 20,000+ person workforce, built and run end to end across mobile, web, APIs, IoT firmware, and infrastructure.",
+      "One of the key developers of a garment manufacturer's internal software: 16+ production systems used across a 20,000+ person workforce, built and run end to end across mobile, web, APIs, IoT firmware, and infrastructure.",
     highlights: [
       'KDS Portal: Flutter HRM app for 20,000+ employees on Android, iOS, and a purpose-built desktop web UI, over a .NET 10 API bridging the legacy ERP. Improved HR processing speed by 40%.',
       'Project Argus: RFID verification of sealed export cartons on 40 Zebra handhelds, offline-first, with the server independently re-deriving every verdict.',

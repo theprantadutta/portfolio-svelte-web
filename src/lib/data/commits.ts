@@ -82,7 +82,7 @@ export const commits: Commit[] = [
   },
   {
     type: 'init:',
-    message: 'joined KDS Group as primary developer',
+    message: 'joined KDS Group as one of the key developers',
     tag: 'v0.1',
     lane: 'main',
     year: '2022',
